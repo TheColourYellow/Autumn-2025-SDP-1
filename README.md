@@ -1,1 +1,1 @@
-# Autumn-2025-SDP-1
+# Online Bookstore Management System  
