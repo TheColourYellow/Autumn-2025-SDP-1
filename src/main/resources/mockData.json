@@ -1,0 +1,18 @@
+{
+  "books": [
+    {
+      "title": "The Hobbit",
+      "isbn": "9780063388468",
+      "price": 12.99,
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "year": 1937,
+      "genres": [
+        "Fantasy",
+        "Adventure"
+      ],
+      "description": "a classic fantasy novel by J.R.R. Tolkien about the home-loving hobbit Bilbo Baggins who is whisked away by Gandalf and thirteen dwarves on a perilous quest to reclaim their lost treasure from the dragon Smaug."
+    }
+  ]
+}
