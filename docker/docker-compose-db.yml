@@ -1,0 +1,13 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: bookstore-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: bookstore
+      MYSQL_USER: bookstore_user
+      MYSQL_PASSWORD: bookstore_pass
+    volumes:
+      - ../db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
