@@ -2,9 +2,7 @@ package com.group9.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.group9.dao.AuthorDao;
 import com.group9.dao.BookDao;
-import com.group9.dao.GenreDao;
 import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.Genre;
