@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class BookDao {
 
-  public static List<Book> getAllBooks() throws SQLException {
+  public List<Book> getAllBooks() throws SQLException {
     List<Book> books = new ArrayList<>();
     Connection conn = null;
 
@@ -34,7 +34,7 @@ public class BookDao {
     return books;
   }
 
-  public static List<Book> findBooks(List<Integer> authorIds, List<Integer> genreIds) {
+  public List<Book> findBooks(List<Integer> authorIds, List<Integer> genreIds) {
     StringBuilder sql = new StringBuilder(
             "SELECT DISTINCT b.* " +
             "FROM books b " +
@@ -80,7 +80,7 @@ public class BookDao {
     }
   }
 
-  public static Book getBookById(int id) throws SQLException {
+  public Book getBookById(int id) throws SQLException {
     Book book;
     Connection conn = null;
 
@@ -105,7 +105,7 @@ public class BookDao {
     return book;
   }
 
-  private static Book resultSetToBook(ResultSet rs) throws SQLException {
+  private Book resultSetToBook(ResultSet rs) throws SQLException {
     Book book = new Book(
             rs.getInt("id"),
             rs.getString("title"),
@@ -120,7 +120,7 @@ public class BookDao {
     return book;
   }
 
-  public static int addBook(Book book) throws SQLException {
+  public int addBook(Book book) throws SQLException {
     int bookId;
     Connection conn = null;
 
@@ -160,7 +160,7 @@ public class BookDao {
   }
 
   // Just for testing
-  public static void addFullBook(Book book) throws SQLException {
+  public void addFullBook(Book book) throws SQLException {
     int bookId = addBook(book);
     for (Author author : book.getAuthors()) {
       int authorId = AuthorDao.addOrGetAuthor(author.getName());
@@ -172,7 +172,7 @@ public class BookDao {
     }
   }
 
-  private static void linkBookAuthor(int bookId, int authorId) throws SQLException {
+  private void linkBookAuthor(int bookId, int authorId) throws SQLException {
     Connection conn = null;
     try {
       conn = Database.getConnection();
@@ -198,7 +198,7 @@ public class BookDao {
     }
   }
 
-  private static void linkBookGenre(int bookId, int genreId) throws SQLException {
+  private void linkBookGenre(int bookId, int genreId) throws SQLException {
     Connection conn = null;
     try {
       conn = Database.getConnection();

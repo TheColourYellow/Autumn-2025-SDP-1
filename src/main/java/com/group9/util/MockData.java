@@ -14,6 +14,7 @@ import java.util.List;
 
 public class MockData {
   public static void main(String[] args) throws Exception {
+    BookDao bookDao = new BookDao();
     InputStream in = MockData.class.getClassLoader().getResourceAsStream("mockData.json");
     ObjectMapper mapper = new ObjectMapper();
 
@@ -23,7 +24,7 @@ public class MockData {
     if (booksNode != null && booksNode.isArray()) {
       for (JsonNode node : booksNode) {
         Book book = parseBook(node);
-        BookDao.addFullBook(book);
+        bookDao.addFullBook(book);
         System.out.println("Added book: " + book.getTitle());
       }
     }

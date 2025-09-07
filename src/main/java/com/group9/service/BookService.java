@@ -6,9 +6,15 @@ import com.group9.model.Book;
 import java.util.List;
 
 public class BookService {
+  private final BookDao bookDao;
+
+  public BookService(BookDao bookDao) {
+    this.bookDao = bookDao;
+  }
+
   public List<Book> getAllBooks() {
     try {
-      return BookDao.getAllBooks();
+      return bookDao.getAllBooks();
     } catch (Exception e) {
       System.out.println("Error retrieving all books: " + e.getMessage());
       return null;
@@ -20,7 +26,7 @@ public class BookService {
       throw new IllegalArgumentException("Book ID must be positive");
 
     try {
-      return BookDao.getBookById(id);
+      return bookDao.getBookById(id);
     } catch (Exception e) {
       System.out.println("Error retrieving book by ID: " + e.getMessage());
       return null;
@@ -28,14 +34,14 @@ public class BookService {
   }
 
   public List<Book> searchBooks(List<Integer> authorIds, List<Integer> genreIds) {
-    return BookDao.findBooks(authorIds, genreIds);
+    return bookDao.findBooks(authorIds, genreIds);
   }
 
   public void addBook(Book book) {
     validateBook(book);
 
     try {
-      BookDao.addFullBook(book);
+      bookDao.addFullBook(book);
     } catch (Exception e) {
       System.out.println("Error adding book: " + e.getMessage());
     }
