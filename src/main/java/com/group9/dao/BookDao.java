@@ -8,6 +8,7 @@ import com.group9.util.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookDao {
 
@@ -31,6 +32,52 @@ public class BookDao {
     }
 
     return books;
+  }
+
+  public static List<Book> findBooks(List<Integer> authorIds, List<Integer> genreIds) {
+    StringBuilder sql = new StringBuilder(
+            "SELECT DISTINCT b.* " +
+            "FROM books b " +
+            "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+            "LEFT JOIN authors a ON ba.author_id = a.id " +
+            "LEFT JOIN book_genres bg ON b.id = bg.book_id " +
+            "LEFT JOIN genres g ON bg.genre_id = g.id " +
+            "WHERE 1=1 "
+    );
+
+    List<Object> params = new ArrayList<>();
+
+    if (authorIds != null && !authorIds.isEmpty()) {
+      sql.append(" AND a.id IN (");
+      sql.append(authorIds.stream().map(id -> "?").collect(Collectors.joining(",")));
+      sql.append(") ");
+      params.addAll(authorIds);
+    }
+
+    if (genreIds != null && !genreIds.isEmpty()) {
+      sql.append(" AND g.id IN (");
+      sql.append(genreIds.stream().map(id -> "?").collect(Collectors.joining(",")));
+      sql.append(") ");
+      params.addAll(genreIds);
+    }
+
+    try (Connection conn = Database.getConnection();
+    PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+      for (int i = 0; i < params.size(); i++) {
+        stmt.setObject(i + 1, params.get(i));
+      }
+
+      ResultSet rs = stmt.executeQuery();
+      List<Book> books = new ArrayList<>();
+
+      while (rs.next()) {
+        books.add(resultSetToBook(rs));
+      }
+
+      return books;
+    } catch (SQLException e) {
+      throw new RuntimeException("Error searching books", e);
+    }
   }
 
   public static Book getBookById(int id) throws SQLException {

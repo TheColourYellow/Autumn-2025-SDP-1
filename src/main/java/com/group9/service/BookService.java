@@ -27,6 +27,10 @@ public class BookService {
     }
   }
 
+  public List<Book> searchBooks(List<Integer> authorIds, List<Integer> genreIds) {
+    return BookDao.findBooks(authorIds, genreIds);
+  }
+
   public void addBook(Book book) {
     validateBook(book);
 
