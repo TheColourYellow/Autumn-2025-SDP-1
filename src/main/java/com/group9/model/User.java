@@ -1,7 +1,7 @@
 package com.group9.model;
 
 public class User {
-  private int id;
+  private int id = -1;
   private String username;
   private String password;
   private String email;
