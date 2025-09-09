@@ -1,4 +1,4 @@
-package controller;
+package com.group9.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
