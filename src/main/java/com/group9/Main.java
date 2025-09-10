@@ -5,10 +5,11 @@ import com.group9.model.Book;
 
 public class Main {
   public static void main(String[] args) {
+    BookDao bookDao = new BookDao();
 
     System.out.println("Get book with ID 1:");
     try {
-      Book book = BookDao.getBookById(1);
+      Book book = bookDao.getBookById(1);
       if (book != null) {
         System.out.println(book.getId() + ": " + book.getTitle());
         System.out.println("  Authors:");
@@ -28,7 +29,7 @@ public class Main {
 
     System.out.println("Books in database:");
     try {
-      for (Book book : BookDao.getAllBooks()) {
+      for (Book book : bookDao.getAllBooks()) {
         System.out.println(book.getId() + ": " + book.getTitle());
         System.out.println("  Authors:");
         book.getAuthors().forEach(author -> System.out.println("    " + author.getName()));
