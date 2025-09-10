@@ -33,13 +33,13 @@
             <Insets />
          </opaqueInsets>
       </HBox>
-      <TableView layoutX="246.0" layoutY="203.0" prefHeight="473.0" prefWidth="631.0" style="-fx-background-color: #90A1B9;">
+      <TableView fx:id="bookTable" layoutX="246.0" layoutY="203.0" prefHeight="473.0" prefWidth="631.0" style="-fx-background-color: #90A1B9;">
         <columns>
-          <TableColumn prefWidth="111.0" text="Book Name" />
-          <TableColumn prefWidth="131.0" text="Author" />
-            <TableColumn prefWidth="126.0" text="Genre" />
-            <TableColumn prefWidth="143.0" text="Price" />
-            <TableColumn prefWidth="119.0" />
+           <TableColumn fx:id="titleColumn" prefWidth="111.0" text="Book Name" />
+           <TableColumn fx:id="authorColumn" prefWidth="131.0" text="Author" />
+           <TableColumn fx:id="genreColumn" prefWidth="126.0" text="Genre" />
+           <TableColumn fx:id="priceColumn" prefWidth="143.0" text="Price" />
+           <TableColumn prefWidth="119.0" />
         </columns>
       </TableView>
       <Label layoutX="503.0" layoutY="157.0" text="Book List">

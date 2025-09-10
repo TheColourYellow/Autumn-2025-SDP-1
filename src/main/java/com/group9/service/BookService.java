@@ -13,12 +13,7 @@ public class BookService {
   }
 
   public List<Book> getAllBooks() {
-    try {
-      return bookDao.getAllBooks();
-    } catch (Exception e) {
-      System.out.println("Error retrieving all books: " + e.getMessage());
-      return null;
-    }
+    return bookDao.getAllBooks();
   }
 
   public Book getBookById(int id) {

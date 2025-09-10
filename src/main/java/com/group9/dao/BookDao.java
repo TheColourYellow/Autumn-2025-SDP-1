@@ -12,12 +12,10 @@ import java.util.stream.Collectors;
 
 public class BookDao {
 
-  public List<Book> getAllBooks() throws SQLException {
+  public List<Book> getAllBooks() {
     List<Book> books = new ArrayList<>();
-    Connection conn = null;
 
-    try {
-      conn = Database.getConnection();
+    try (Connection conn = Database.getConnection()) {
       String bookSql = "SELECT * FROM books";
       PreparedStatement ps = conn.prepareStatement(bookSql);
       ResultSet rs = ps.executeQuery();
@@ -26,9 +24,7 @@ public class BookDao {
       }
 
     } catch (SQLException e) {
-      throw new SQLException("Error fetching all books", e);
-    } finally {
-      if (conn != null) conn.close();
+      throw new RuntimeException("Error fetching all books:" + e.getMessage(), e);
     }
 
     return books;
