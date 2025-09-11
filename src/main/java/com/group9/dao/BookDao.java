@@ -155,6 +155,28 @@ public class BookDao {
     return bookId;
   }
 
+  public void deleteBook(Integer id) throws SQLException {
+    Connection conn = null;
+    try {
+      conn = Database.getConnection();
+      String deleteBookSql = "DELETE FROM books WHERE id = ?";
+      PreparedStatement stmt = conn.prepareStatement(deleteBookSql);
+      stmt.setInt(1, id);
+      stmt.executeUpdate();
+      conn.commit();
+    } catch (SQLException e) {
+      if (conn != null) {
+        conn.rollback();
+      }
+      throw e;
+    } finally {
+      if (conn != null) {
+        conn.setAutoCommit(true);
+        conn.close();
+      }
+    }
+  }
+
   // Just for testing
   public void addFullBook(Book book) throws SQLException {
     int bookId = addBook(book);
