@@ -64,19 +64,17 @@ public class BookstoreController {
     @FXML
     private void openLoginWindow() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login_view.fxml"));
-            Parent loginRoot = fxmlLoader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login_view.fxml"));
+            Parent root = loader.load();
 
-            // Create and show new login stage
-            Stage loginStage = new Stage();
-            loginStage.setTitle("Login");
-            loginStage.setScene(new Scene(loginRoot));
-            loginStage.show();
+            // login label is clicked, content of the window is replaced with the content of login window
+            Stage stage = (Stage) loginLabel.getScene().getWindow();
 
-            // Close current window
-            Stage currentStage = (Stage) loginLabel.getScene().getWindow();
-            currentStage.close();
+            // Change the view to the new login view
+            stage.setScene(new Scene(root));
 
+            stage.setTitle("Login");
+            stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open login window.");
         }
