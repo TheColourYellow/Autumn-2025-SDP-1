@@ -12,11 +12,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,11 +32,16 @@ public class BookstoreController {
     @FXML
     private Button sidebarButton;
 
+    @FXML
+    private Label loginLabel;
+
     @FXML private TableView<Book> bookTable;
     @FXML private TableColumn<Book, String> titleColumn;
     @FXML private TableColumn<Book, String> authorColumn;
     @FXML private TableColumn<Book, String> genreColumn;
     @FXML private TableColumn<Book, Double> priceColumn;
+
+
 
     private final BookService bookService = new BookService(new BookDao());
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
@@ -51,6 +57,28 @@ public class BookstoreController {
             sidebarButton.setText("Show Genres");
         } else {
             sidebarButton.setText("Hide Genres");
+        }
+    }
+
+    // Method for opening login window
+    @FXML
+    private void openLoginWindow() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login_view.fxml"));
+            Parent loginRoot = fxmlLoader.load();
+
+            // Create and show new login stage
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Login");
+            loginStage.setScene(new Scene(loginRoot));
+            loginStage.show();
+
+            // Close current window
+            Stage currentStage = (Stage) loginLabel.getScene().getWindow();
+            currentStage.close();
+
+        } catch (Exception e) {
+            showError("Error", "Could not open login window.");
         }
     }
 

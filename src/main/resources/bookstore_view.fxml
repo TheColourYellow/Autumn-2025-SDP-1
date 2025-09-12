@@ -19,7 +19,7 @@
                   <Font name="Arimo" size="25.0" />
                </font>
             </Label>
-            <Label text="Log In">
+            <Label fx:id="loginLabel" onMouseClicked="#openLoginWindow" text="Login">
                <font>
                   <Font name="Arimo" size="25.0" />
                </font>
