@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDao {
-  public static List<Genre> getGenresByBookId(int bookId) throws SQLException {
+  public List<Genre> getGenresByBookId(int bookId) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();
     try {
@@ -36,6 +36,7 @@ public class GenreDao {
     return genres;
   }
 
+
   public static int addOrGetGenre(String name) throws SQLException {
     String select = "SELECT id FROM genres WHERE name = ?";
     try (Connection conn = Database.getConnection();
@@ -53,6 +54,33 @@ public class GenreDao {
       ResultSet keys = ps.getGeneratedKeys();
       keys.next();
       return keys.getInt(1);
+    }
+  }
+
+
+  public int getGenreByName(String name) throws SQLException {
+    String select = "SELECT id FROM genres WHERE name = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(select)) {
+      ps.setString(1, name);
+      ResultSet rs = ps.executeQuery();
+      return rs.getInt("id");
+    }
+  }
+  public void addGenre(String name) throws SQLException {
+    String insert = "INSERT INTO genres (name) VALUES (?)";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(insert)) {
+      ps.setString(1, name);
+      ps.executeUpdate();
+    }
+  }
+  public void deleteGenre(int genreId) throws SQLException {
+    String delete = "DELETE FROM genres WHERE id = ?";
+    try (Connection conn = Database.getConnection();) {
+      PreparedStatement ps = conn.prepareStatement(delete);
+      ps.setInt(1, genreId);
+      ps.executeUpdate();
     }
   }
 }
