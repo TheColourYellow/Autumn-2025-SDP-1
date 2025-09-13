@@ -64,6 +64,7 @@ public class GenreDao {
          PreparedStatement ps = conn.prepareStatement(select)) {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
+      rs.next();
       return rs.getInt("id");
     }
   }
@@ -75,11 +76,11 @@ public class GenreDao {
       ps.executeUpdate();
     }
   }
-  public void deleteGenre(int genreId) throws SQLException {
-    String delete = "DELETE FROM genres WHERE id = ?";
+  public void deleteGenreByName(String genreName) throws SQLException {
+    String delete = "DELETE FROM genres WHERE name = ?";
     try (Connection conn = Database.getConnection();) {
       PreparedStatement ps = conn.prepareStatement(delete);
-      ps.setInt(1, genreId);
+      ps.setString(1, genreName);
       ps.executeUpdate();
     }
   }

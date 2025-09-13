@@ -20,7 +20,16 @@ class AuthorDaoTest {
     }
 
     @Test
+    void addAuthorTest() throws SQLException {
+        dao.addAuthor("Test Author");
+    }
+    @Test
     void getAuthorByNameTest() throws SQLException {
-        dao.getAuthorByName("J.R.R. Tolkien");
+        dao.getAuthorByName("Test Author");
+    }
+
+    @Test
+    void deleteAuthorByNameTest() throws SQLException {
+        dao.deleteAuthorByName("Test Author");
     }
 }

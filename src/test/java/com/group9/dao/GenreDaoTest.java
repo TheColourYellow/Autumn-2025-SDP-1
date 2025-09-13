@@ -20,18 +20,21 @@ class GenreDaoTest {
 
     }
 
+
+    @Test
+    void addGenre() throws SQLException {
+        genreDao.addGenre("Test Genre");
+
+    }
+
     @Test
     void getGenreByNameTest() throws SQLException {
-        int genre = genreDao.getGenreByName("Fantasy");
-        assertNotNull(genre);
+        genreDao.getGenreByName("Test Genre");
     }
 
-    @Test
-    void addGenre() {
-
-    }
 
     @Test
-    void deleteGenre() {
+    void deleteGenreTest() throws SQLException {
+        genreDao.deleteGenreByName("Test Genre");
     }
 }

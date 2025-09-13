@@ -63,6 +63,7 @@ public class AuthorDao {
          PreparedStatement ps = conn.prepareStatement(select)) {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
+      rs.next();
       return rs.getInt("id");
     }
   }
@@ -74,11 +75,11 @@ public class AuthorDao {
       ps.executeUpdate();
     }
   }
-  public void deleteAuthor(int id) throws SQLException {
-    String delete = "DELETE FROM authors WHERE id = ?";
+  public void deleteAuthorByName(String authorName) throws SQLException {
+    String delete = "DELETE FROM authors WHERE name = ?";
     try (Connection conn = Database.getConnection();) {
       PreparedStatement ps = conn.prepareStatement(delete);
-      ps.setInt(1, id);
+      ps.setString(1, authorName);
       ps.executeUpdate();
     }
   }
