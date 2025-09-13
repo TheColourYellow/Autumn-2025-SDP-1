@@ -55,17 +55,17 @@
                           <columns>
                             <TableColumn fx:id="bookColum" prefWidth="75.0" text="Book">
                                  <graphic>
-                                    <Button fx:id="addBookBtn" mnemonicParsing="false" onAction="#addBook" text="+" />
+                                    <Button fx:id="addBookButton" mnemonicParsing="false" onAction="#addBook" text="+" />
                                  </graphic>
                               </TableColumn>
                             <TableColumn fx:id="authorColumn" prefWidth="75.0" text="Author">
                                  <graphic>
-                                    <Button fx:id="addAuthorBtn" mnemonicParsing="false" onAction="#addAuthor" text="+" />
+                                    <Button fx:id="addAuthorButton" mnemonicParsing="false" onAction="#addAuthor" text="+" />
                                  </graphic>
                               </TableColumn>
                               <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre">
                                  <graphic>
-                                    <Button fx:id="addGenreBtn" mnemonicParsing="false" onAction="#addGenre" text="+" />
+                                    <Button fx:id="addGenreButton" mnemonicParsing="false" onAction="#addGenre" text="+" />
                                  </graphic>
                               </TableColumn>
                           </columns>

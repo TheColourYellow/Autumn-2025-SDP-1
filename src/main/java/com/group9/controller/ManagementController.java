@@ -7,7 +7,6 @@ import com.group9.model.Genre;
 import com.group9.service.BookService;
 import com.group9.util.AppExecutors;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -106,17 +105,17 @@ public class ManagementController {
 
     @FXML
     private void addBook () {
-        // Implementation for adding a book
+        // Implementation for adding a book, addBookButton
     }
 
     @FXML
     private void addAuthor () {
-        // Implementation for adding an author
+        // Implementation for adding an author, addAuthorButton
     }
 
     @FXML
     private void addGenre () {
-        // Implementation for adding a genre
+        // Implementation for adding a genre, addGenreButton
     }
 
     // Load books from the database
