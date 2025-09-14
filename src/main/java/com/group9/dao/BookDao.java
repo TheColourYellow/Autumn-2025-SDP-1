@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 public class BookDao {
 
+  GenreDao genreDao = new GenreDao();
+  AuthorDao authorDao = new AuthorDao();
+
   public List<Book> getAllBooks() {
     List<Book> books = new ArrayList<>();
 
@@ -111,7 +114,7 @@ public class BookDao {
             rs.getString("description")
     );
     book.setAuthors(AuthorDao.getAuthorsByBookId(book.getId()));
-    book.setGenres(GenreDao.getGenresByBookId(book.getId()));
+    book.setGenres(genreDao.getGenresByBookId(book.getId()));
 
     return book;
   }
@@ -189,6 +192,7 @@ public class BookDao {
       linkBookGenre(bookId, genreId);
     }
   }
+
 
   private void linkBookAuthor(int bookId, int authorId) throws SQLException {
     Connection conn = null;

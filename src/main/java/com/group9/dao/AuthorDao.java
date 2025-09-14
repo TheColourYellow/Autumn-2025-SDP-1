@@ -56,4 +56,31 @@ public class AuthorDao {
       return keys.getInt(1);
     }
   }
+
+  public int getAuthorByName(String name) throws SQLException {
+    String select = "SELECT id FROM authors WHERE name = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(select)) {
+      ps.setString(1, name);
+      ResultSet rs = ps.executeQuery();
+      rs.next();
+      return rs.getInt("id");
+    }
+  }
+  public void addAuthor(String name) throws SQLException {
+    String insert = "INSERT INTO authors (name) VALUES (?)";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(insert)) {
+      ps.setString(1, name);
+      ps.executeUpdate();
+    }
+  }
+  public void deleteAuthorByName(String authorName) throws SQLException {
+    String delete = "DELETE FROM authors WHERE name = ?";
+    try (Connection conn = Database.getConnection();) {
+      PreparedStatement ps = conn.prepareStatement(delete);
+      ps.setString(1, authorName);
+      ps.executeUpdate();
+    }
+  }
 }
