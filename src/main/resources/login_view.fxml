@@ -53,13 +53,16 @@
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font></TextField>
-                  <TextField layoutX="69.0" layoutY="254.0" prefHeight="43.0" prefWidth="294.0" style="-fx-background-color: #CAD5E2;" text="Password" />
+                  <TextField layoutX="69.0" layoutY="254.0" prefHeight="43.0" prefWidth="294.0" style="-fx-background-color: #CAD5E2;" text="Password">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font></TextField>
                   <Button layoutX="93.0" layoutY="348.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="223.0" style="-fx-background-color: #FB64B6;" text="Login">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Label alignment="CENTER" layoutX="101.0" layoutY="438.0" text="Not member yet? Sign up now!">
+                  <Label fx:id="registerLabel" alignment="CENTER" layoutX="101.0" layoutY="438.0" onMouseClicked="#openRegisterWindow" text="Not member yet? Sign up now!">
                      <font>
                         <Font size="15.0" />
                      </font>
