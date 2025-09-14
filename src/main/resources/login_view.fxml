@@ -49,13 +49,13 @@
                            </children>
                         </HBox>
                      </children></HBox>
-                  <TextField layoutX="70.0" layoutY="169.0" prefHeight="43.0" prefWidth="293.0" style="-fx-background-color: #CAD5E2;" text="Email">
+                  <TextField layoutX="70.0" layoutY="169.0" prefHeight="43.0" prefWidth="293.0" promptText="Email" style="-fx-background-color: #CAD5E2;">
                      <font>
-                        <Font name="System Italic" size="12.0" />
+                        <Font name="System Italic" size="15.0" />
                      </font></TextField>
-                  <TextField layoutX="69.0" layoutY="254.0" prefHeight="43.0" prefWidth="294.0" style="-fx-background-color: #CAD5E2;" text="Password">
+                  <TextField layoutX="69.0" layoutY="254.0" prefHeight="43.0" prefWidth="294.0" promptText="Password" style="-fx-background-color: #CAD5E2;">
                      <font>
-                        <Font name="System Italic" size="12.0" />
+                        <Font name="System Italic" size="15.0" />
                      </font></TextField>
                   <Button layoutX="93.0" layoutY="348.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="223.0" style="-fx-background-color: #FB64B6;" text="Login">
                      <font>

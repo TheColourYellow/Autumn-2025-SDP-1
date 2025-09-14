@@ -52,7 +52,7 @@ public class BookstoreController {
         boolean isVisible = genreSidebar.isVisible();
         genreSidebar.setVisible(!isVisible);
 
-        // Update button text, when sidebar is visble and when its not
+        // Update button text, when sidebar is visible and when it's not
         if (isVisible) {
             sidebarButton.setText("Show Genres");
         } else {
@@ -64,6 +64,7 @@ public class BookstoreController {
     @FXML
     private void openLoginWindow() {
         try {
+            // Load the FXML file for the login window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login_view.fxml"));
             Parent root = loader.load();
 

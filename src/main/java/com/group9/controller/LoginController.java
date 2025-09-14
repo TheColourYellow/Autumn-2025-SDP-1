@@ -38,6 +38,7 @@ public class LoginController {
     @FXML
     private void openRegisterWindow() {
         try {
+            // Load the FXML file for the register window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/register_view.fxml"));
             Parent root = loader.load();
 
