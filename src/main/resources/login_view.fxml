@@ -62,7 +62,7 @@
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Label fx:id="registerLabel" alignment="CENTER" layoutX="101.0" layoutY="438.0" onMouseClicked="#openRegisterWindow" text="Not member yet? Sign up now!">
+                  <Label fx:id="registerLabel" alignment="CENTER" layoutX="101.0" layoutY="438.0" onMouseClicked="#openRegisterWindow" onMouseEntered="#handleMouseEnterLabel" onMouseExited="#handleMouseExitLabel" text="Not member yet? Sign up now!">
                      <font>
                         <Font size="15.0" />
                      </font>
