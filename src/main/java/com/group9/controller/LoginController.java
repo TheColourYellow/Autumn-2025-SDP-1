@@ -18,6 +18,18 @@ public class LoginController {
     private Label registerLabel;
 
     @FXML
+    private void handleMouseEnterLabel() {
+        registerLabel.setUnderline(true);   // underline sign up text when mouse hovers over it
+        registerLabel.setStyle("-fx-text-fill: #FA33A0;"); // change color
+    }
+
+    @FXML
+    private void handleMouseExitLabel() {
+        registerLabel.setUnderline(false);  // remove underline
+        registerLabel.setStyle("-fx-text-fill: black;"); // return original color
+    }
+
+    @FXML
     private void openHomeWindow() {
         try {
             // Load the FXML file for the home window
