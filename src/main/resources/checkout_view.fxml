@@ -83,7 +83,7 @@
                </children>
             </HBox>
             <TextField fx:id="cardNumberField" prefHeight="26.0" prefWidth="298.0" promptText="Card number" />
-            <Button fx:id="orderButton" mnemonicParsing="false" text="Place Order">
+            <Button fx:id="orderButton" mnemonicParsing="false" onMouseClicked="#placeOrder" text="Place Order">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
