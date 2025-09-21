@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
 
 public class ProfileController {
@@ -33,8 +34,12 @@ public class ProfileController {
 
     @FXML
     private void logout() {
-        SessionManager.logout();
-        openHomeWindow();
+        // Confirm logout action
+        if (showConfirmation("Logout", "Are you sure you want to logout?")) {
+            // Handle logout
+            SessionManager.logout();
+            openHomeWindow();
+        }
     }
 
     @FXML
