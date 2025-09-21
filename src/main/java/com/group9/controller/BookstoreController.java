@@ -16,13 +16,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showError;
+
+import javafx.stage.Modality;
 
 public class BookstoreController {
 
@@ -41,6 +45,7 @@ public class BookstoreController {
     @FXML private TableColumn<Book, String> genreColumn;
     @FXML private TableColumn<Book, Double> priceColumn;
 
+    @FXML private ImageView shoppingCart; // image button for opening shopping cart
 
 
     private final BookService bookService = new BookService(new BookDao());
@@ -106,6 +111,27 @@ public class BookstoreController {
         // Bind data to table
         bookTable.setItems(bookData);
         loadBooks();
+    }
+
+    // Method for opening shopping cart window (new window)
+    @FXML
+    private void openShoppingCart() {
+        System.out.println("Shopping cart clicked!");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
+            stage.setTitle("Your Cart");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Load books from the database
