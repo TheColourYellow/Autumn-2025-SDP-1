@@ -20,4 +20,8 @@ public class SessionManager {
   public static boolean isLoggedIn() {
     return currentUser != null;
   }
+
+  public static boolean isAdmin() {
+    return isLoggedIn() && "admin".equals(currentUser.getRole());
+  }
 }

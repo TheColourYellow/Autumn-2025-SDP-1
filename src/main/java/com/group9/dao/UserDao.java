@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class UserDao {
   public User getUserByUsername(String username) {
-    String sql = "SELECT id, username, password_hash, email FROM users WHERE username = ?";
+    String sql = "SELECT id, username, password_hash, email, role FROM users WHERE username = ?";
     try (Connection conn = Database.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setString(1, username);
@@ -46,7 +46,8 @@ public class UserDao {
             rs.getInt("id"),
             rs.getString("username"),
             rs.getString("password_hash"),
-            rs.getString("email")
+            rs.getString("email"),
+            rs.getString("role")
     );
   }
 
@@ -63,7 +64,7 @@ public class UserDao {
       ResultSet rs = stmt.getGeneratedKeys();
       if (rs.next()) {
         int userId = rs.getInt(1);
-        return new User(userId, user.getUsername(), user.getPassword(), user.getEmail());
+        return new User(userId, user.getUsername(), user.getPassword(), user.getEmail(), user.getRole());
       } else {
         throw new SQLException("Failed to retrieve generated user ID");
       }
