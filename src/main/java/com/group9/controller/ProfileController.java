@@ -1,5 +1,6 @@
 package com.group9.controller;
 
+import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,5 +30,21 @@ public class ProfileController {
             showError("Error", "Could not open home window");
         }
     }
-}
 
+    @FXML
+    private void logout() {
+        SessionManager.logout();
+        openHomeWindow();
+    }
+
+    @FXML
+    public void initialize() {
+        // Go back to home window if not logged in
+        if (!SessionManager.isLoggedIn()) {
+            openHomeWindow();
+        }
+
+        // Use SessionManager to get user details
+        // SessionManager.getCurrentUser() returns a User object
+    }
+}

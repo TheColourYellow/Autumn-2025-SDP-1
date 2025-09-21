@@ -6,6 +6,7 @@ import com.group9.model.Book;
 import com.group9.model.Genre;
 import com.group9.service.BookService;
 import com.group9.util.AppExecutors;
+import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -88,6 +89,28 @@ public class BookstoreController {
 
     @FXML
     public void initialize() {
+        if (SessionManager.isLoggedIn()) {
+            loginLabel.setText("Profile");
+            loginLabel.setOnMouseClicked(event -> {
+                try {
+                    // Load the FXML file for the profile window
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+                    Parent root = loader.load();
+
+                    // login label is clicked, content of the window is replaced with the content of profile window
+                    Stage stage = (Stage) loginLabel.getScene().getWindow();
+
+                    // Change the view to the new profile view
+                    stage.setScene(new Scene(root));
+
+                    stage.setTitle("Profile");
+                    stage.show();
+                } catch (Exception e) {
+                    showError("Error", "Could not open profile window.");
+                }
+            });
+        }
+
         // Initialize table columns
         titleColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getTitle())

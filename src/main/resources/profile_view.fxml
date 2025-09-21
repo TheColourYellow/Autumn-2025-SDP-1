@@ -19,7 +19,7 @@
                         <Font name="Arimo" size="25.0" />
                     </font>
                 </Label>
-                <Label fx:id="logoutLabel" text="Logout">
+                <Label fx:id="logoutLabel" onMouseClicked="#logout" text="Logout">
                     <font>
                         <Font name="Arimo" size="25.0" />
                     </font>

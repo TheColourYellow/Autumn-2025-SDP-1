@@ -3,6 +3,7 @@ package com.group9.controller;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
 import com.group9.service.UserService;
+import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,6 +58,8 @@ public class RegisterController {
 
             // Attempt to register user
             User newUser = userService.registerUser(username, password, email);
+            // Log in the newly registered user
+            SessionManager.login(newUser);
 
             // Registration successful, open Profile view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));

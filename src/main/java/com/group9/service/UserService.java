@@ -2,7 +2,6 @@ package com.group9.service;
 
 import com.group9.dao.UserDao;
 import com.group9.model.User;
-import com.group9.util.SessionManager;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
