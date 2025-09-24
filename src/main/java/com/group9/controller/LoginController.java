@@ -3,6 +3,7 @@ package com.group9.controller;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
 import com.group9.service.UserService;
+import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -82,7 +83,10 @@ public class LoginController {
         String password = passwordField.getText();
 
         try {
+            // Attempt to log in user
             User user = userService.loginUser(username, password);
+            // Store logged-in user in session
+            SessionManager.login(user);
 
             // Login successful, open Profile View
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));

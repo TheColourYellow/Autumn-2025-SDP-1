@@ -10,4 +10,12 @@ public class PopupUtils {
     alert.setContentText(message);
     alert.showAndWait();
   }
+
+  public static boolean showConfirmation(String title, String message) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    return alert.showAndWait().filter(response -> response == javafx.scene.control.ButtonType.OK).isPresent();
+  }
 }
