@@ -20,14 +20,14 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showError;
-
-import javafx.stage.Modality;
 
 public class BookstoreController {
 
@@ -48,9 +48,11 @@ public class BookstoreController {
 
     @FXML private ImageView shoppingCart; // image button for opening shopping cart
 
-
     private final BookService bookService = new BookService(new BookDao());
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
+
+    @FXML
+    private TableColumn<Book, Void> actionColumn; // For add to cart button in book list
 
     // Method for controlling visibility of genres sidebar
     @FXML
@@ -130,6 +132,35 @@ public class BookstoreController {
         priceColumn.setCellValueFactory(cellData ->
                 new SimpleObjectProperty<>(cellData.getValue().getPrice())
         );
+
+        // Create add to cart button for each row
+        actionColumn.setCellFactory(new Callback<TableColumn<Book, Void>, TableCell<Book, Void>>() {
+            @Override
+            public TableCell<Book, Void> call(final TableColumn<Book, Void> param) {
+                final TableCell<Book, Void> cell = new TableCell<Book, Void>() {
+
+                    private final Button btn = new Button("Add to Cart");
+
+                    {
+                        btn.setOnAction(event -> {
+                            Book book = getTableView().getItems().get(getIndex());
+                            System.out.println("Clicked Add to Cart for: " + book.getTitle()); // Doesn't do anything else yet than print this to console
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null); // No button in empty rows
+                        } else {
+                            setGraphic(btn);  // Show button in data rows
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
 
         // Bind data to table
         bookTable.setItems(bookData);
