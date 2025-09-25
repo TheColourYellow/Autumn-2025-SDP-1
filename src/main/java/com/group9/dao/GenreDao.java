@@ -8,6 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDao {
+  public List<Genre> getAllGenres() throws SQLException {
+    Connection conn = null;
+    List<Genre> genres = new ArrayList<>();
+    try {
+      conn = Database.getConnection();
+      String query = "SELECT id, name, description FROM genres";
+      PreparedStatement ps = conn.prepareStatement(query);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        Genre genre = new Genre(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("description")
+        );
+        genres.add(genre);
+      }
+    } catch (SQLException e) {
+      throw new SQLException("Error fetching genres", e);
+    } finally {
+      if (conn != null) conn.close();
+    }
+
+    return genres;
+  }
+
   public List<Genre> getGenresByBookId(int bookId) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();

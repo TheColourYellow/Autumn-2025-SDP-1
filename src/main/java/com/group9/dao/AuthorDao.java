@@ -8,6 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorDao {
+  public List<Author> getAllAuthors() throws SQLException {
+    Connection conn = null;
+    List<Author> authors = new ArrayList<>();
+    try {
+      conn = Database.getConnection();
+      String query = "SELECT id, name, description FROM authors";
+      PreparedStatement ps = conn.prepareStatement(query);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        Author author = new Author(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("description")
+        );
+        authors.add(author);
+      }
+    } catch (SQLException e) {
+      throw new SQLException("Error fetching authors", e);
+    } finally {
+      if (conn != null) conn.close();
+    }
+
+    return authors;
+  }
+
   public static List<Author> getAuthorsByBookId(int bookId) throws SQLException {
     Connection conn = null;
     List<Author> authors = new ArrayList<>();

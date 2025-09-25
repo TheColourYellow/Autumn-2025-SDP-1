@@ -26,7 +26,7 @@
                         <Font size="24.0" />
                     </font>
                 </Label>
-            <Label prefHeight="35.0" prefWidth="190.0" text="Management">
+            <Label prefHeight="35.0" prefWidth="190.0" text="Management" underline="true">
                <font>
                   <Font size="24.0" />
                </font>

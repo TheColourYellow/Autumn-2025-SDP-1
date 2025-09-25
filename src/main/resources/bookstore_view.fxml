@@ -20,7 +20,7 @@
          </font></Label>
       <HBox alignment="CENTER_RIGHT" layoutX="246.0" layoutY="23.0" prefHeight="49.0" prefWidth="631.0" spacing="100.0">
          <children>
-            <Label text="Home">
+            <Label text="Home" underline="true">
                <font>
                   <Font name="Arimo" size="25.0" />
                </font>
