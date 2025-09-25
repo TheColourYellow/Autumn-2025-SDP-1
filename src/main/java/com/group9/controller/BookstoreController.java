@@ -39,6 +39,8 @@ public class BookstoreController {
 
     @FXML
     private Label loginLabel;
+    @FXML
+    private Label managementLabel;
 
     @FXML private TableView<Book> bookTable;
     @FXML private TableColumn<Book, String> titleColumn;
@@ -111,6 +113,30 @@ public class BookstoreController {
                     showError("Error", "Could not open profile window.");
                 }
             });
+        }
+
+        // Show management label only for admin users
+        if (SessionManager.isAdmin()) {
+            managementLabel.setOnMouseClicked(event -> {
+               try {
+                   FXMLLoader loader = new FXMLLoader(getClass().getResource("/management_view.fxml"));
+                   Parent root = loader.load();
+
+                   Stage stage = (Stage) managementLabel.getScene().getWindow();
+
+                   stage.setScene(new Scene(root));
+
+                   stage.setTitle("Management");
+                   stage.show();
+               } catch (Exception e) {
+                   showError("Error", "Could not open management window.");
+
+               }
+            });
+        } else {
+            // Hide management label if not admin
+            managementLabel.setVisible(false);
+            managementLabel.setManaged(false);
         }
 
         // Initialize table columns
