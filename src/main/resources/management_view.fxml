@@ -26,12 +26,12 @@
                         <Font size="24.0" />
                     </font>
                 </Label>
-            <Label prefHeight="35.0" prefWidth="190.0" text="Management" underline="true">
+            <Label fx:id="managementLabel" onMouseClicked="#openManagementWindow" prefHeight="35.0" prefWidth="190.0" text="Management" underline="true">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-                <Label fx:id="loginLabel" onMouseClicked="#openLoginWindow" prefHeight="36.0" prefWidth="130.0" text="Login">
+                <Label fx:id="loginLabel" onMouseClicked="#openProfileWindow" prefHeight="36.0" prefWidth="130.0" text="Profile">
                     <font>
                         <Font size="24.0" />
                     </font>
