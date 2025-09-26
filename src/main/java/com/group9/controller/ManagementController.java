@@ -18,7 +18,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import static com.group9.util.PopupUtils.showError;
@@ -34,53 +38,28 @@ public class ManagementController {
     @FXML private Button addAuthorButton;
     @FXML private Button addGenreButton;
 
-    @FXML private Label loginLabel;
+    @FXML private Label loginLabel; // for profile
     @FXML private Label homeLabel;
+    @FXML private Label managementLabel;
+    @FXML private ImageView shoppingCart;
 
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
     private final BookService bookService = new BookService(new BookDao());
 
-    @FXML
-    public void initialize() {
-        // Initialize table columns
-        bookColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getTitle())
-        );
-        authorColumn.setCellValueFactory(cellData -> {
-            String authors = cellData.getValue().getAuthors().stream()
-                    .map(Author::getName)
-                    .collect(Collectors.joining(", "));
-            return new SimpleStringProperty(authors);
-        });
-        genreColumn.setCellValueFactory(cellData -> {
-            String genres = cellData.getValue().getGenres().stream()
-                    .map(Genre::getName)
-                    .collect(Collectors.joining(", "));
-            return new SimpleStringProperty(genres);
-        });
 
-        // Bind data to table
-        managementTable.setItems(bookData);
-        loadBooks();
-    }
-
-    // Method for opening login window
     @FXML
-    private void openLoginWindow() {
+    private void openManagementWindow() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login_view.fxml"));
+            // Load the FXML file for the register window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/management_view.fxml"));
             Parent root = loader.load();
 
-            // login label is clicked, content of the window is replaced with the content of login window
-            Stage stage = (Stage) loginLabel.getScene().getWindow();
-
-            // Change the view to the new login view
+            Stage stage = (Stage) managementLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
-
-            stage.setTitle("Login");
+            stage.setTitle("Register");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open login window.");
+            showError("Error", "Could not open register window.");
         }
     }
 
@@ -100,6 +79,46 @@ public class ManagementController {
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open home window");
+        }
+    }
+
+    @FXML
+    private void openProfileWindow() {
+        try {
+            // Load the FXML file for the profile window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            Parent root = loader.load();
+
+            // login label is clicked, content of the window is replaced with the content of profile window
+            Stage stage = (Stage) loginLabel.getScene().getWindow();
+
+            // Change the view to the new profile view
+            stage.setScene(new Scene(root));
+
+            stage.setTitle("Profile");
+            stage.show();
+        } catch (Exception e) {
+            showError("Error", "Could not open profile window.");
+        }
+    }
+
+    @FXML
+    private void openShoppingCart() {
+        System.out.println("Shopping cart clicked!");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
+            stage.setTitle("Your Cart");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

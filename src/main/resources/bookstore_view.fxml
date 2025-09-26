@@ -18,9 +18,14 @@
          <font>
             <Font name="Arimo" size="47.0" />
          </font></Label>
-      <HBox alignment="CENTER_RIGHT" layoutX="246.0" layoutY="23.0" prefHeight="43.0" prefWidth="578.0" spacing="100.0">
+      <HBox alignment="CENTER_RIGHT" layoutX="246.0" layoutY="23.0" prefHeight="49.0" prefWidth="631.0" spacing="100.0">
          <children>
-            <Label text="Home">
+            <Label text="Home" underline="true">
+               <font>
+                  <Font name="Arimo" size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="managementLabel" layoutX="209.0" layoutY="17.0" text="Management">
                <font>
                   <Font name="Arimo" size="25.0" />
                </font>
@@ -45,7 +50,7 @@
            <TableColumn fx:id="authorColumn" prefWidth="131.0" text="Author" />
            <TableColumn fx:id="genreColumn" prefWidth="126.0" text="Genre" />
            <TableColumn fx:id="priceColumn" prefWidth="143.0" text="Price" />
-            <TableColumn fx:id="actionColumn" prefWidth="119.0"/>
+            <TableColumn fx:id="actionColumn" prefWidth="119.0" />
            <TableColumn prefWidth="119.0" />
         </columns>
       </TableView>

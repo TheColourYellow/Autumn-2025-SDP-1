@@ -6,15 +6,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
 
 public class ProfileController {
 
-    @FXML
-    private Label homeLabel;
+    @FXML private Label homeLabel;
+    @FXML private ImageView shoppingCart;
 
     @FXML
     private void openHomeWindow() {
@@ -29,6 +33,26 @@ public class ProfileController {
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open home window");
+        }
+    }
+
+    @FXML
+    private void openShoppingCart() {
+        System.out.println("Shopping cart clicked!");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
+            stage.setTitle("Your Cart");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

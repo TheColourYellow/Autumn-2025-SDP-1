@@ -1,10 +1,12 @@
 package com.group9.controller;
 
 import com.group9.dao.BookDao;
+import com.group9.dao.GenreDao;
 import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.Genre;
 import com.group9.service.BookService;
+import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
 import com.group9.util.SessionManager;
 import javafx.application.Platform;
@@ -24,7 +26,10 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showError;
@@ -39,6 +44,8 @@ public class BookstoreController {
 
     @FXML
     private Label loginLabel;
+    @FXML
+    private Label managementLabel;
 
     @FXML private TableView<Book> bookTable;
     @FXML private TableColumn<Book, String> titleColumn;
@@ -50,6 +57,7 @@ public class BookstoreController {
 
     private final BookService bookService = new BookService(new BookDao());
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
+    private final Map<CheckBox, Genre> genreCheckBoxMap = new HashMap<>();
 
     @FXML
     private TableColumn<Book, Void> actionColumn; // For add to cart button in book list
@@ -89,28 +97,67 @@ public class BookstoreController {
         }
     }
 
+    private void openProfileWindow() {
+        try {
+            // Load the FXML file for the profile window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            Parent root = loader.load();
+
+            // login label is clicked, content of the window is replaced with the content of profile window
+            Stage stage = (Stage) loginLabel.getScene().getWindow();
+
+            // Change the view to the new profile view
+            stage.setScene(new Scene(root));
+
+            stage.setTitle("Profile");
+            stage.show();
+        } catch (Exception e) {
+            showError("Error", "Could not open profile window.");
+        }
+    }
+
+    private void openManagementWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/management_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) managementLabel.getScene().getWindow();
+
+            stage.setScene(new Scene(root));
+
+            stage.setTitle("Management");
+            stage.show();
+        } catch (Exception e) {
+            showError("Error", "Could not open management window.");
+        }
+    }
+
     @FXML
     public void initialize() {
+        // Update login label based on session state
         if (SessionManager.isLoggedIn()) {
             loginLabel.setText("Profile");
-            loginLabel.setOnMouseClicked(event -> {
-                try {
-                    // Load the FXML file for the profile window
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
-                    Parent root = loader.load();
+            loginLabel.setOnMouseClicked(event -> openProfileWindow());
+        }
 
-                    // login label is clicked, content of the window is replaced with the content of profile window
-                    Stage stage = (Stage) loginLabel.getScene().getWindow();
+        // Show management label only for admin users
+        if (SessionManager.isAdmin()) {
+            managementLabel.setOnMouseClicked(event -> openManagementWindow());
+        } else {
+            // Hide management label if not admin
+            managementLabel.setVisible(false);
+            managementLabel.setManaged(false);
+        }
 
-                    // Change the view to the new profile view
-                    stage.setScene(new Scene(root));
-
-                    stage.setTitle("Profile");
-                    stage.show();
-                } catch (Exception e) {
-                    showError("Error", "Could not open profile window.");
-                }
-            });
+        // Load genres from the database and populate sidebar
+        List<Genre> genreList = new GenreService(new GenreDao()).getAllGenres();
+        if (genreList != null) {
+            for (Genre genre : genreList) {
+                CheckBox checkBox = new CheckBox(genre.getName());
+                checkBox.setOnAction(event -> sortByGenre());
+                genreCheckBoxMap.put(checkBox, genre);
+                genreSidebar.getChildren().add(checkBox);
+            }
         }
 
         // Initialize table columns
@@ -186,6 +233,32 @@ public class BookstoreController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sortByGenre() {
+        List<Integer> selectedGenreIds = new ArrayList<>();
+
+        // Collect IDs of selected genres
+        for (Map.Entry<CheckBox, Genre> entry : genreCheckBoxMap.entrySet()) {
+            if (entry.getKey().isSelected()) {
+                selectedGenreIds.add(entry.getValue().getId());
+            }
+        }
+
+        // Use a background thread to keep UI responsive
+        AppExecutors.databaseExecutor.execute(() -> {
+            try {
+                List<Book> books;
+                if (selectedGenreIds.isEmpty()) {
+                    books = bookService.getAllBooks(); // No genres selected, show all books
+                } else {
+                    books = bookService.searchBooks(new ArrayList<>(), selectedGenreIds); // Search by selected genres only
+                }
+                Platform.runLater(() -> bookData.setAll(books));
+            } catch (Exception e) {
+                Platform.runLater(() -> showError("Error", "Could not sort books. Please try again later."));
+            }
+        });
     }
 
     // Load books from the database

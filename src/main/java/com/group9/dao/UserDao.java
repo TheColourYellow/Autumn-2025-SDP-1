@@ -72,4 +72,16 @@ public class UserDao {
       throw new RuntimeException("Error adding user: " + e.getMessage(), e);
     }
   }
+
+  public boolean addAdminUser() {
+    String sql = "INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'default@admin.com', '$2a$10$hBux0sXhxyo8KX1vi6YEo.leo.4QyOCGfnBE3yxu6xrKHYrCowD.q', 'admin');";
+
+    try (Connection conn = Database.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+      int rowsAffected = stmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      throw new RuntimeException("Error adding admin user: " + e.getMessage(), e);
+    }
+  }
 }

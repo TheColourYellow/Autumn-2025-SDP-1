@@ -11,17 +11,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 import static com.group9.util.PopupUtils.showError;
 
 public class LoginController {
 
-    @FXML
-    private Label homeLabel;
-
-    @FXML
-    private Label registerLabel;
+    @FXML private Label homeLabel;
+    @FXML private Label registerLabel;
+    @FXML private ImageView shoppingCart;
 
     @FXML
     private TextField usernameField;
@@ -74,6 +76,26 @@ public class LoginController {
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open register window.");
+        }
+    }
+
+    @FXML
+    private void openShoppingCart() {
+        System.out.println("Shopping cart clicked!");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
+            stage.setTitle("Your Cart");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

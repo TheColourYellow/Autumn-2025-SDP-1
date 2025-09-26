@@ -8,6 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDao {
+  public List<Genre> getAllGenres() throws SQLException {
+    Connection conn = null;
+    List<Genre> genres = new ArrayList<>();
+    try {
+      conn = Database.getConnection();
+      String query = "SELECT id, name, description FROM genres";
+      PreparedStatement ps = conn.prepareStatement(query);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        Genre genre = new Genre(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("description")
+        );
+        genres.add(genre);
+      }
+    } catch (SQLException e) {
+      throw new SQLException("Error fetching genres", e);
+    } finally {
+      if (conn != null) conn.close();
+    }
+
+    return genres;
+  }
+
   public List<Genre> getGenresByBookId(int bookId) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();
@@ -58,21 +83,32 @@ public class GenreDao {
   }
 
 
-  public int getGenreByName(String name) throws SQLException {
-    String select = "SELECT id FROM genres WHERE name = ?";
+  public Genre getGenreByName(String name) throws SQLException {
+    Genre genre;
+    String select = "SELECT id, name, description FROM genres WHERE name = ?";
     try (Connection conn = Database.getConnection();
          PreparedStatement ps = conn.prepareStatement(select)) {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
-      rs.next();
-      return rs.getInt("id");
+      if (rs.next()) {
+        genre = new Genre(rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("description"));
+        return genre;
+      } else {
+        return null;
+      }
+    } catch (SQLException e) {
+      throw new SQLException("Error fetching genres for " + name, e);
     }
   }
-  public void addGenre(String name) throws SQLException {
-    String insert = "INSERT INTO genres (name) VALUES (?)";
+
+  public void addGenre(String name, String description) throws SQLException {
+    String insert = "INSERT INTO genres (name, description) VALUES (?, ?)";
     try (Connection conn = Database.getConnection();
          PreparedStatement ps = conn.prepareStatement(insert)) {
       ps.setString(1, name);
+      ps.setString(2, description);
       ps.executeUpdate();
     }
   }
