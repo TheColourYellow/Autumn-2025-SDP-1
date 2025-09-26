@@ -23,18 +23,19 @@ class GenreDaoTest {
 
     @Test
     void addGenre() throws SQLException {
-        genreDao.addGenre("Test Genre");
-
+        genreDao.addGenre("Test Genre", "This is a test genre");
     }
 
     @Test
     void getGenreByNameTest() throws SQLException {
-        genreDao.getGenreByName("Test Genre");
+        Genre response = genreDao.getGenreByName("Test Genre");
+        assertTrue(response.getName().equals("Test Genre"));
     }
 
 
     @Test
     void deleteGenreTest() throws SQLException {
         genreDao.deleteGenreByName("Test Genre");
+        assertNull(genreDao.getGenreByName("Test Genre"));
     }
 }
