@@ -18,7 +18,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import static com.group9.util.PopupUtils.showError;
@@ -37,6 +41,7 @@ public class ManagementController {
     @FXML private Label loginLabel; // for profile
     @FXML private Label homeLabel;
     @FXML private Label managementLabel;
+    @FXML private ImageView shoppingCart;
 
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
     private final BookService bookService = new BookService(new BookDao());
@@ -94,6 +99,26 @@ public class ManagementController {
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open profile window.");
+        }
+    }
+
+    @FXML
+    private void openShoppingCart() {
+        System.out.println("Shopping cart clicked!");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
+            stage.setTitle("Your Cart");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
