@@ -21,15 +21,17 @@ class AuthorDaoTest {
 
     @Test
     void addAuthorTest() throws SQLException {
-        dao.addAuthor("Test Author");
+        dao.addAuthor("Test Author", "This is a test author");
     }
     @Test
     void getAuthorByNameTest() throws SQLException {
-        dao.getAuthorByName("Test Author");
+        Author response = dao.getAuthorByName("Test Author");
+        assertEquals("Test Author", response.getName());
     }
 
     @Test
     void deleteAuthorByNameTest() throws SQLException {
         dao.deleteAuthorByName("Test Author");
+        assertNull(dao.getAuthorByName("Test Author"));
     }
 }
