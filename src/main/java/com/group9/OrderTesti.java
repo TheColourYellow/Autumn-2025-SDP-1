@@ -25,10 +25,10 @@ public class OrderTesti {
 
     // Luodaan orderItem
     OrderItem orderItem1 = new OrderItem(
-            -1,
-            -1,
-            book,
-            2
+            -1, // id, ei väliä, tietokanta asettaa
+            -1, // orderId, ei väliä, tietokanta asettaa
+            book, // kirja
+            2 // määrä
     );
 
     // Lisätään orderItem/it listaan
@@ -37,9 +37,9 @@ public class OrderTesti {
 
     // Luodaan order
     Order order = new Order(
-            -1,
-            1,
-            orderItems
+            -1, // ei väliä, tietokanta asettaa
+            1, // userId
+            orderItems // orderItems lista
     );
 
     // Tallennetaan order tietokantaan
