@@ -62,6 +62,9 @@ public class BookstoreController {
     @FXML
     private TableColumn<Book, Void> actionColumn; // For add to cart button in book list
 
+    // cart observable list to store books added to cart by user
+    private final ObservableList<Book> cart = FXCollections.observableArrayList();
+
     // Method for controlling visibility of genres sidebar
     @FXML
     private void toggleSidebar() {
@@ -191,6 +194,7 @@ public class BookstoreController {
                     {
                         btn.setOnAction(event -> {
                             Book book = getTableView().getItems().get(getIndex());
+                            cart.add(book);
                             System.out.println("Clicked Add to Cart for: " + book.getTitle()); // Doesn't do anything else yet than print this to console
                         });
                     }
@@ -221,6 +225,10 @@ public class BookstoreController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
+
+            // Get the controller instance of the loaded FXML so its methods can be called
+            ShoppingCartController controller = loader.getController();
+            controller.setCart(cart); // Pass the current cart list to ShoppingCartController so it can display books in cart
 
             Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
 

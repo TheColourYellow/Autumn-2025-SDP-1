@@ -1,5 +1,8 @@
 package com.group9.controller;
 
+import com.group9.model.Book;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,15 +21,35 @@ public class ShoppingCartController {
     @FXML private Button checkoutButton;
     @FXML private VBox cartVbox; // vbox where items go in cart
 
-    public void setCart(Object cart) {
+    private ObservableList<Book> cart; // ObservableList so that UI updates automatically when changes in cart
+
+    public void setCart(ObservableList<Book> cart) {
+        this.cart = cart;
         // TODO: populate cartItems VBox with cart contents
-        cartItems.getChildren().clear();
-        cartItems.getChildren().add(new Label("Cart content goes here..."));
+        cartVbox.getChildren().clear();
+        cartVbox.getChildren().add(new Label("Cart content goes here..."));
+
+        // Listener to refresh UI whenever the cart is modified
+        cart.addListener((ListChangeListener<Book>) change -> refreshCartItems());
+
+
+        refreshCartItems();
+    }
+
+
+    // Method to update the cart display to match the current contents of the cart
+    private void refreshCartItems() {
+        cartVbox.getChildren().clear();
+        // Loop through each book in the cart and create Label to display the book's title
+        for (Book book : cart) {
+            Label label = new Label(book.getTitle());
+            cartVbox.getChildren().add(label);
+        }
     }
 
     @FXML
     private void emptyCart() {
-        cartItems.getChildren().clear();
+        cartVbox.getChildren().clear();
         System.out.println("Empty cart...");
     }
 
