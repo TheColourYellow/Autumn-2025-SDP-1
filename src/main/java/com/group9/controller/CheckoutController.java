@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,10 +21,24 @@ public class CheckoutController {
     @FXML private Label totalLabel; // label for total amount
     @FXML private VBox checkoutBox; // vbox for checkout items
     @FXML private ImageView visaImage;
-    @FXML private ImageView masterCardImage;
+    @FXML private ImageView mastercardImage;
+
+    // selected card
+    private ImageView selectedCard = null;
+    private final String NORMAL_STYLE = "-fx-effect: dropshadow(gaussian, gray, 5, 0.3, 0, 0); -fx-cursor: hand;";
+    private final String SELECTED_STYLE = "-fx-effect: dropshadow(gaussian, blue, 15, 0.7, 0, 0); -fx-border-color: blue; -fx-border-width: 3; -fx-cursor: hand;";
+
 
     @FXML
     public void initialize() {
+        // initial style
+        visaImage.setStyle(NORMAL_STYLE);
+        mastercardImage.setStyle(NORMAL_STYLE);
+
+        // click handler
+        visaImage.setOnMouseClicked(e -> selectCard(visaImage));
+        mastercardImage.setOnMouseClicked(e -> selectCard(mastercardImage));
+
         int userId = SessionManager.getCurrentUser().getId();
         OrderService orderService = new OrderService(new OrderDao());
         List<Order> orders = orderService.getOrdersByUserId(userId);
@@ -49,8 +62,43 @@ public class CheckoutController {
         }
     }
 
+    private void selectCard(ImageView card) {
+        // reset previous selection
+        if (selectedCard != null) {
+            selectedCard.setStyle(NORMAL_STYLE);
+        }
+        // new selection
+        selectedCard = card;
+        selectedCard.setStyle(SELECTED_STYLE);
+    }
+
     @FXML
     private void placeOrder() {
-        System.out.println("placeOrder");
+
+        if (selectedCard == null) {
+            System.out.println("No card selected!");
+            return;
+        }
+
+        // number from text field
+        String cardNumber = cardNumberField.getText().trim();
+
+        if (cardNumber.isEmpty()) {
+            System.out.println("Card number cannot be empty!");
+            return;
+        }
+
+        // remove spaces
+        cardNumber = cardNumber.replaceAll("\\s+", "");
+
+        // validate length and digits
+        if (!cardNumber.matches("\\d{16}")) {
+            System.out.println("Card number must be 16 digits!");
+            return;
+        }
+
+        // if all validations pass
+        String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
+        System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
     }
 }
