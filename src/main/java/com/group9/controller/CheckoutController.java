@@ -104,21 +104,19 @@ public class CheckoutController {
             return;
         }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/accept_view.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) orderButton.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.sizeToScene();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // if all validations pass
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
         System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
-
-        // change window to payment accept
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/accept_view.fxml"));
-//            Parent checkoutRoot = loader.load();
-//            Stage stage = (Stage) orderButton.getScene().getWindow();
-//
-//            stage.setScene(new Scene(checkoutRoot));
-//            stage.setTitle("Shopping Cart");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
    }
 
     @FXML
