@@ -6,17 +6,24 @@ import com.group9.model.OrderItem;
 import com.group9.service.OrderService;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CheckoutController {
 
     @FXML private Button orderButton;
+    @FXML private Button returnButton; // return to shopping cart
     @FXML private TextField cardNumberField; // text field for card number
     @FXML private Label totalLabel; // label for total amount
     @FXML private VBox checkoutBox; // vbox for checkout items
@@ -73,7 +80,7 @@ public class CheckoutController {
     }
 
     @FXML
-    private void placeOrder() {
+    private void placeOrder() { // TODO: new window for order confirmation and moving data to history
 
         if (selectedCard == null) {
             System.out.println("No card selected!");
@@ -100,5 +107,21 @@ public class CheckoutController {
         // if all validations pass
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
         System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
+    }
+
+    @FXML
+    private void returnToCart() {
+
+        System.out.println("Return to cart...");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
+            Parent checkoutRoot = loader.load();
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+
+            stage.setScene(new Scene(checkoutRoot));
+            stage.setTitle("Shopping Cart");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
