@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class ShoppingCartController {
 
@@ -20,6 +21,7 @@ public class ShoppingCartController {
     @FXML private Button emptyButton;
     @FXML private Button checkoutButton;
     @FXML private VBox cartVbox; // vbox where items go in cart
+    @FXML private Label totalLabel; // label for total amount
 
     private ObservableList<Book> cart; // ObservableList so that UI updates automatically when changes in cart
 
@@ -34,17 +36,27 @@ public class ShoppingCartController {
 
 
         refreshCartItems();
+        updateTotal();
     }
-
 
     // Method to update the cart display to match the current contents of the cart
     private void refreshCartItems() {
         cartVbox.getChildren().clear();
         // Loop through each book in the cart and create Label to display the book's title
         for (Book book : cart) {
-            Label label = new Label(book.getTitle());
+            String authors = book.getAuthors()
+                    .stream()
+                    .map(author -> author.getName())
+                    .collect(Collectors.joining(", "));
+            Label label = new Label(book.getTitle() + " by " + authors + " - " + book.getPrice() + "€");
             cartVbox.getChildren().add(label);
         }
+    }
+
+    // calculate total
+    private void updateTotal() {
+        double total = cart.stream().mapToDouble(Book::getPrice).sum();
+        totalLabel.setText(String.format("%.2f", total));
     }
 
     @FXML
@@ -55,15 +67,18 @@ public class ShoppingCartController {
 
     @FXML
     private void openCheckoutWindow() {
-
         System.out.println("Proceed to checkout...");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/checkout_view.fxml"));
             Parent checkoutRoot = loader.load();
 
-            // Get current window (the cart stage)
-            Stage stage = (Stage) checkoutButton.getScene().getWindow();
+            // get controller of the checkout view
+            CheckoutController checkoutController = loader.getController();
 
+            // pass the current cart to the checkout controller
+            checkoutController.setCart(cart);
+
+            Stage stage = (Stage) checkoutButton.getScene().getWindow();
             stage.setScene(new Scene(checkoutRoot));
             stage.setTitle("Checkout");
         } catch (IOException e) {
