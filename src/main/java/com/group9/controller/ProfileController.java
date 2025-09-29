@@ -79,13 +79,10 @@ public class ProfileController {
             openHomeWindow();
         }
 
-        // Use SessionManager to get user details
-        // SessionManager.getCurrentUser() returns a User object
-
-        // Haetaan kirjautunut käyttäjä SessionManagerista
+        // Get user account details
         User currentUser = SessionManager.getCurrentUser();
 
-        // Näytetään käyttäjän tiedot
+        // Show account details
         nameLabel.setText("Name: " + currentUser.getUsername());
         emailLabel.setText("Email: " + currentUser.getEmail());
     }

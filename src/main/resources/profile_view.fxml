@@ -54,7 +54,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label layoutX="29.0" layoutY="327.0" text="Order history">
+                  <Label layoutX="22.0" layoutY="269.0" text="Order history">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -69,6 +69,7 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
+                  <ListView fx:id="orderListView" layoutX="6.0" layoutY="322.0" prefHeight="177.0" prefWidth="411.0" />
                     </children>
                 </AnchorPane>
             </children></AnchorPane>
