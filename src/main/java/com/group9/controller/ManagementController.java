@@ -1,11 +1,14 @@
 package com.group9.controller;
 
 import com.group9.dao.BookDao;
+import com.group9.dao.GenreDao;
 import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.Genre;
 import com.group9.service.BookService;
+import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,10 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -29,23 +29,33 @@ import static com.group9.util.PopupUtils.showError;
 
 public class ManagementController {
 
-    @FXML private TableView<Book> managementTable;
-    @FXML private TableColumn<Book, String> bookColumn;
-    @FXML private TableColumn<Book, String> authorColumn;
-    @FXML private TableColumn<Book, String> genreColumn;
+//    @FXML private TableView<Book> managementTable;
+//    @FXML private TableColumn<Book, String> bookColumn;
+//    @FXML private TableColumn<Book, String> authorColumn;
+//    @FXML private TableColumn<Book, String> genreColumn;
+//
+//    @FXML private Button addBookButton;
+//    @FXML private Button addAuthorButton;
+//    @FXML private Button addGenreButton;
 
-    @FXML private Button addBookButton;
-    @FXML private Button addAuthorButton;
-    @FXML private Button addGenreButton;
+    @FXML private Label addGenreBtn;
+    @FXML private Label addBookBtn;
+    @FXML private Label addAuthorBtn;
+
+    @FXML private ListView<Genre> genreListView;
+    @FXML private ListView<Book> bookListView;
+    @FXML private ListView<Author> authorListView;
 
     @FXML private Label loginLabel; // for profile
     @FXML private Label homeLabel;
     @FXML private Label managementLabel;
     @FXML private ImageView shoppingCart;
 
+    private final ObservableList<Genre> genreData = FXCollections.observableArrayList();
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
+    private final ObservableList<Author> authorData = FXCollections.observableArrayList();
+    private final GenreService genreService = new GenreService(new GenreDao());
     private final BookService bookService = new BookService(new BookDao());
-
 
     @FXML
     private void openManagementWindow() {
@@ -123,6 +133,25 @@ public class ManagementController {
     }
 
     @FXML
+    private void initialize() {
+        genreListView.setItems(genreData);
+        bookListView.setItems(bookData);
+        authorListView.setItems(authorData);
+
+        genreListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
+            System.out.println("Genre clicked: " + item);
+        }));
+        bookListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
+            System.out.println("Book clicked: " + item);
+        }));
+        authorListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
+            System.out.println("Author clicked: " + item);
+        }));
+
+        loadData();
+    }
+
+    @FXML
     private void addBook () {
         // Implementation for adding a book, addBookButton
     }
@@ -137,15 +166,19 @@ public class ManagementController {
         // Implementation for adding a genre, addGenreButton
     }
 
-    // Load books from the database
-    private void loadBooks() {
+    // Load data from the database
+    private void loadData() {
         // Use a background thread to keep UI responsive
         AppExecutors.databaseExecutor.execute(() -> {
             try {
                 List<Book> books = bookService.getAllBooks();
-                Platform.runLater(() -> bookData.setAll(books));
+                List<Genre> genres = genreService.getAllGenres();
+                Platform.runLater(() -> {
+                    bookData.setAll(books);
+                    genreData.setAll(genres);
+                });
             } catch (Exception e) {
-                Platform.runLater(() -> showError("Error", "Could not load books. Please try again later."));
+                Platform.runLater(() -> showError("Error", "Could not load data. Please try again later."));
             }
         });
     }

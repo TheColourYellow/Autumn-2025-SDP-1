@@ -11,6 +11,11 @@ public abstract class BookAttribute {
     this.description = description;
   }
 
+  @Override
+  public String toString() {
+    return name;
+  }
+
   public int getId() {
     return id;
   }
