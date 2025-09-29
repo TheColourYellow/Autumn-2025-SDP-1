@@ -46,6 +46,8 @@ public class BookstoreController {
     private Label loginLabel;
     @FXML
     private Label managementLabel;
+    @FXML
+    private TextField searchField;
 
     @FXML private TableView<Book> bookTable;
     @FXML private TableColumn<Book, String> titleColumn;
@@ -195,7 +197,7 @@ public class BookstoreController {
                         btn.setOnAction(event -> {
                             Book book = getTableView().getItems().get(getIndex());
                             cart.add(book);
-                            System.out.println("Clicked Add to Cart for: " + book.getTitle()); // Doesn't do anything else yet than print this to console
+                            System.out.println("Clicked Add to Cart for: " + book.getTitle());
                         });
                     }
 
@@ -216,6 +218,34 @@ public class BookstoreController {
         // Bind data to table
         bookTable.setItems(bookData);
         loadBooks();
+
+        // Trigger search when pressing enter (remember to press enter also after clearing search bar to bring back full booklist)
+        searchField.setOnAction(event -> handleSearch());
+    }
+
+    // Method to handle search input
+    public void handleSearch() {
+        String query = searchField.getText();
+
+        if (query == null || query.isEmpty()) {
+            // If query is empty, reload all books
+            bookTable.setItems(bookData);
+            return;
+        }
+
+        // Turn search query to lowercase
+        String lowerCaseQuery = query.toLowerCase();
+
+
+        // Take original bookData list that contains all books.
+        ObservableList<Book> filtered = bookData.filtered(book ->
+                book.getTitle().toLowerCase().contains(lowerCaseQuery) ||  // Match by book title
+                        book.getAuthors().stream().anyMatch(a ->
+                                a.getName().toLowerCase().contains(lowerCaseQuery))   // Match by author name
+        );
+
+        // Show filtered results in the table
+        bookTable.setItems(filtered);
     }
 
     // Method for opening shopping cart window (new window)
@@ -281,4 +311,5 @@ public class BookstoreController {
             }
         });
     }
+
 }
