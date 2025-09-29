@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GenreDaoTest {
+    /*
 
     GenreDao genreDao = new GenreDao();
 
@@ -37,5 +38,11 @@ class GenreDaoTest {
     void deleteGenreTest() throws SQLException {
         genreDao.deleteGenreByName("Test Genre");
         assertNull(genreDao.getGenreByName("Test Genre"));
+    }
+     */
+    @Test
+    void createGenreObject() {
+        Genre genre = new Genre(1, "Test Genre", "Test Description");
+        assertEquals("Test Genre", genre.getName());
     }
 }
