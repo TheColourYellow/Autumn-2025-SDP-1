@@ -1,5 +1,6 @@
 package com.group9.controller;
 
+import com.group9.model.User;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,11 @@ public class ProfileController {
 
     @FXML private Label homeLabel;
     @FXML private ImageView shoppingCart;
+
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
 
     @FXML
     private void openHomeWindow() {
@@ -75,5 +81,12 @@ public class ProfileController {
 
         // Use SessionManager to get user details
         // SessionManager.getCurrentUser() returns a User object
+
+        // Haetaan kirjautunut käyttäjä SessionManagerista
+        User currentUser = SessionManager.getCurrentUser();
+
+        // Näytetään käyttäjän tiedot
+        nameLabel.setText("Name: " + currentUser.getUsername());
+        emailLabel.setText("Email: " + currentUser.getEmail());
     }
 }
