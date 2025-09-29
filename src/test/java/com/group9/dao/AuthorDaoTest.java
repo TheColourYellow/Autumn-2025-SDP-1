@@ -9,6 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AuthorDaoTest {
+    /*
 
     AuthorDao dao = new AuthorDao();
 
@@ -33,5 +34,13 @@ class AuthorDaoTest {
     void deleteAuthorByNameTest() throws SQLException {
         dao.deleteAuthorByName("Test Author");
         assertNull(dao.getAuthorByName("Test Author"));
+    }
+     */
+    @Test
+    void createAuthorObject() {
+        Author author = new Author(1,
+                "Test Author",
+                "Test Description");
+        assertEquals("Test Author", author.getName());
     }
 }

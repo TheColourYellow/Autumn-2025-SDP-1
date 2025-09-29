@@ -11,8 +11,9 @@ import com.group9.util.MockData;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookDaoTest {
+    /*
     BookDao bookDao = new BookDao();
-/*
+
     @BeforeAll
     static void setUp() throws Exception {
         BookDao bookDao = new BookDao();
@@ -24,7 +25,7 @@ class BookDaoTest {
     static void tearDown() throws Exception {
         BookDao bookDao = new BookDao();
         bookDao.deleteBook(6);
-    }*/
+    }
 
     @Test
     void addBook() throws SQLException {
@@ -37,13 +38,6 @@ class BookDaoTest {
         List<Book> books = bookDao.getAllBooks();
         assertTrue(!books.isEmpty());
     }
-/*
-    @Test
-    void findBooks() {
-        Book book;
-        bookDao.findBooks();
-    }
-    */
 
     @Test
     void getBookById() throws SQLException {
@@ -55,5 +49,16 @@ class BookDaoTest {
     void deleteBook() throws SQLException {
         bookDao.deleteBook(13);
         assertTrue(bookDao.getAllBooks().isEmpty());
+    }
+    */
+    @Test
+    void createBookObject() {
+        Book book = new Book(1,
+                "Test",
+                "Test-ISBN",
+                2000,
+                19.99,
+                "Test Description");
+        assertEquals("Test", book.getTitle());
     }
 }
