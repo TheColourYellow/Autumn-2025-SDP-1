@@ -106,18 +106,23 @@ public class CheckoutController {
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
         System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
 
-        // create OrderItems from cart
-        List<OrderItem> orderItems = cart.stream()
-                .map(book -> new OrderItem(-1, -1, book, 1)) // default quantity = 1
-                .collect(Collectors.toList());
+        // if the user is logged in, save the order
+        if (SessionManager.isLoggedIn()) {
+            // create OrderItems from cart
+            List<OrderItem> orderItems = cart.stream()
+                    .map(book -> new OrderItem(-1, -1, book, 1)) // default quantity = 1
+                    .collect(Collectors.toList());
 
-        // create Order for current user
-        Order order = new Order(-1, SessionManager.getCurrentUser().getId(), orderItems);
+            // create Order for current user
+            Order order = new Order(-1, SessionManager.getCurrentUser().getId(), orderItems);
 
-        // save Order to database
-        OrderService orderService = new OrderService(new OrderDao());
-        int orderId = orderService.createOrder(order);
-        System.out.println("Created order with ID: " + orderId);
+            // save Order to database
+            OrderService orderService = new OrderService(new OrderDao());
+            int orderId = orderService.createOrder(order);
+            System.out.println("Created order with ID: " + orderId);
+        } else {
+            System.out.println("User not logged in, skipping database save.");
+        }
 
         // Switch to accept view
         try {
