@@ -230,6 +230,7 @@ public class BookstoreController {
         if (query == null || query.isEmpty()) {
             // If query is empty, reload all books
             bookTable.setItems(bookData);
+            bookTable.refresh(); // Makes sure table shows everything correctly (for example buttons don't disappear) after clearing the search
             return;
         }
 
