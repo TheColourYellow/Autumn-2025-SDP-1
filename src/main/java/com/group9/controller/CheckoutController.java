@@ -1,6 +1,11 @@
 package com.group9.controller;
 
+import com.group9.dao.OrderDao;
 import com.group9.model.Book;
+import com.group9.model.Order;
+import com.group9.model.OrderItem;
+import com.group9.service.OrderService;
+import com.group9.util.SessionManager;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CheckoutController {
@@ -99,6 +105,19 @@ public class CheckoutController {
 
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
         System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
+
+        // create OrderItems from cart
+        List<OrderItem> orderItems = cart.stream()
+                .map(book -> new OrderItem(-1, -1, book, 1)) // default quantity = 1
+                .collect(Collectors.toList());
+
+        // create Order for current user
+        Order order = new Order(-1, SessionManager.getCurrentUser().getId(), orderItems);
+
+        // save Order to database
+        OrderService orderService = new OrderService(new OrderDao());
+        int orderId = orderService.createOrder(order);
+        System.out.println("Created order with ID: " + orderId);
 
         // Switch to accept view
         try {
