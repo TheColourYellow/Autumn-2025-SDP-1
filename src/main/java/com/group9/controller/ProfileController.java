@@ -1,17 +1,23 @@
 package com.group9.controller;
 
+import com.group9.dao.OrderDao;
+import com.group9.model.Order;
+import com.group9.model.OrderItem;
 import com.group9.model.User;
+import com.group9.service.OrderService;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
@@ -20,6 +26,7 @@ public class ProfileController {
 
     @FXML private Label homeLabel;
     @FXML private ImageView shoppingCart;
+    @FXML private ListView <String> orderListView;
 
     @FXML
     private Label nameLabel;
@@ -85,5 +92,17 @@ public class ProfileController {
         // Show account details
         nameLabel.setText("Name: " + currentUser.getUsername());
         emailLabel.setText("Email: " + currentUser.getEmail());
+
+        System.out.println("POPULATING HISTORY ");
+        OrderService orderService = new OrderService(new OrderDao());
+        List<Order> orders = orderService.getOrdersByUserId(SessionManager.getCurrentUser().getId());
+
+        for (Order o : orders) {
+            System.out.println("Order ID: " + o.getId());
+            for (OrderItem item : o.getOrderItems()) {
+                System.out.println(item.getBook().getTitle());
+                orderListView.getItems().add(item.getBook().getTitle());
+            }
+        }
     }
 }
