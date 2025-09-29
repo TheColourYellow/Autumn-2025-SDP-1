@@ -24,7 +24,7 @@ public class MockData {
     if (booksNode != null && booksNode.isArray()) {
       for (JsonNode node : booksNode) {
         Book book = parseBook(node);
-        bookDao.addFullBook(book);
+        bookDao.addFullBookGenreAuthor(book);
         System.out.println("Added book: " + book.getTitle());
       }
     }

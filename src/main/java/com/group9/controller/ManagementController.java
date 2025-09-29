@@ -1,10 +1,13 @@
 package com.group9.controller;
 
+import com.group9.dao.AuthorDao;
 import com.group9.dao.BookDao;
 import com.group9.dao.GenreDao;
 import com.group9.model.Author;
 import com.group9.model.Book;
+import com.group9.model.BookAttribute;
 import com.group9.model.Genre;
+import com.group9.service.AuthorService;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
@@ -29,15 +32,6 @@ import static com.group9.util.PopupUtils.showError;
 
 public class ManagementController {
 
-//    @FXML private TableView<Book> managementTable;
-//    @FXML private TableColumn<Book, String> bookColumn;
-//    @FXML private TableColumn<Book, String> authorColumn;
-//    @FXML private TableColumn<Book, String> genreColumn;
-//
-//    @FXML private Button addBookButton;
-//    @FXML private Button addAuthorButton;
-//    @FXML private Button addGenreButton;
-
     @FXML private Label addGenreBtn;
     @FXML private Label addBookBtn;
     @FXML private Label addAuthorBtn;
@@ -56,6 +50,7 @@ public class ManagementController {
     private final ObservableList<Author> authorData = FXCollections.observableArrayList();
     private final GenreService genreService = new GenreService(new GenreDao());
     private final BookService bookService = new BookService(new BookDao());
+    private final AuthorService authorService = new AuthorService(new AuthorDao());
 
     @FXML
     private void openManagementWindow() {
@@ -140,12 +135,15 @@ public class ManagementController {
 
         genreListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
             System.out.println("Genre clicked: " + item);
+            openBookAttributeWindow("Edit Genre", item);
         }));
         bookListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
             System.out.println("Book clicked: " + item);
+            openBookManageWindow("Edit Book", item);
         }));
         authorListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
             System.out.println("Author clicked: " + item);
+            openBookAttributeWindow("Edit Author", item);
         }));
 
         loadData();
@@ -153,17 +151,69 @@ public class ManagementController {
 
     @FXML
     private void addBook () {
-        // Implementation for adding a book, addBookButton
+        openBookManageWindow("Add Book", null);
     }
 
     @FXML
     private void addAuthor () {
-        // Implementation for adding an author, addAuthorButton
+        openBookAttributeWindow("Add Author", null);
     }
 
     @FXML
     private void addGenre () {
-        // Implementation for adding a genre, addGenreButton
+        openBookAttributeWindow("Add Genre", null);
+    }
+
+    private void openBookAttributeWindow(String title, BookAttribute item) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/bookattribute_view.fxml"));
+            Parent root = loader.load();
+
+            BookAttributeController attributeController = loader.getController();
+            if (item != null) attributeController.setBookAttribute(item);
+            else {
+                // TODO: do this in a better way
+                if (title.contains("Genre")) attributeController.setBookAttribute(new Genre(-1, "", ""));
+                else if (title.contains("Author")) attributeController.setBookAttribute(new Author(-1, "", ""));
+            }
+
+            // Refresh data when the attribute window is closed
+            attributeController.setOnCloseCallback(this::loadData);
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openBookManageWindow(String title, Book item) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/bookmanage_view.fxml"));
+            Parent root = loader.load();
+
+            BookManageController bookManageController = loader.getController();
+            if (item != null) bookManageController.setBook(item);
+
+            bookManageController.setOnCloseCallback(this::loadData);
+
+            Stage owner = (Stage) shoppingCart.getScene().getWindow(); // acts as a popup window
+
+            Stage stage = new Stage();
+            stage.initOwner(owner);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Load data from the database
@@ -173,9 +223,11 @@ public class ManagementController {
             try {
                 List<Book> books = bookService.getAllBooks();
                 List<Genre> genres = genreService.getAllGenres();
+                List<Author> authors = authorService.getAllAuthors();
                 Platform.runLater(() -> {
                     bookData.setAll(books);
                     genreData.setAll(genres);
+                    authorData.setAll(authors);
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> showError("Error", "Could not load data. Please try again later."));

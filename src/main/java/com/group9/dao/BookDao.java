@@ -180,8 +180,20 @@ public class BookDao {
     }
   }
 
+  public int addFullBook(Book book) throws SQLException {
+    int bookId = addBook(book);
+    for (Author author : book.getAuthors()) {
+      linkBookAuthor(bookId, author.getId());
+    }
+    for (Genre genre : book.getGenres()) {
+      linkBookGenre(bookId, genre.getId());
+    }
+
+    return bookId;
+  }
+
   // Just for testing
-  public void addFullBook(Book book) throws SQLException {
+  public void addFullBookGenreAuthor(Book book) throws SQLException {
     int bookId = addBook(book);
     for (Author author : book.getAuthors()) {
       int authorId = AuthorDao.addOrGetAuthor(author.getName());

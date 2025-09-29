@@ -32,13 +32,26 @@ public class BookService {
     return bookDao.findBooks(authorIds, genreIds);
   }
 
-  public void addBook(Book book) {
+  public int addBook(Book book) {
     validateBook(book);
 
     try {
-      bookDao.addFullBook(book);
+      return bookDao.addFullBook(book);
     } catch (Exception e) {
       System.out.println("Error adding book: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  public void deleteBook(int bookId) throws Exception {
+    if (bookId <= 0)
+      throw new IllegalArgumentException("Book ID must be positive");
+
+    try {
+      bookDao.deleteBook(bookId);
+    } catch (Exception e) {
+      System.out.println("Error deleting book: " + e.getMessage());
+      throw new Exception("Error deleting book");
     }
   }
 
