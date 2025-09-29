@@ -78,6 +78,8 @@ public class CheckoutController {
 
     @FXML
     private void placeOrder() {
+        boolean success = false;
+
         if (selectedCard == null) {
             System.out.println("No card selected!");
             return;
@@ -105,8 +107,14 @@ public class CheckoutController {
             Stage stage = (Stage) orderButton.getScene().getWindow();
             stage.getScene().setRoot(root);
             stage.sizeToScene();
+            success = true;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        if (success && cart != null) {
+            cart.clear(); // clear cart after successful order
+            System.out.println("Cart cleared after payment.");
         }
     }
 
