@@ -55,7 +55,7 @@
       </Label>
       <VBox fx:id="genreSidebar" layoutX="20.0" layoutY="203.0" prefHeight="473.0" prefWidth="203.0" style="-fx-background-color: #90A1B9;" visible="false" />
       <Button fx:id="sidebarButton" layoutX="40.0" layoutY="157.0" mnemonicParsing="false" onAction="#toggleSidebar" prefHeight="36.0" prefWidth="162.0" style="-fx-background-color: transparent; -fx-background-radius: 20px; -fx-border-color: black; -fx-border-width: 2px 2px 2px 2px; -fx-border-radius: 20px;" text="Show Genres" />
-      <TextField fx:id="searchField" layoutX="303.0" layoutY="102.0" prefHeight="29.0" prefWidth="517.0" promptText="Search..." style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: black; -fx-border-width: 2;">
+      <TextField fx:id="searchField" layoutX="303.0" layoutY="102.0" onAction="#handleSearch" prefHeight="29.0" prefWidth="517.0" promptText="Search..." style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: black; -fx-border-width: 2;">
          <font>
             <Font name="System Italic" size="15.0" />
          </font>

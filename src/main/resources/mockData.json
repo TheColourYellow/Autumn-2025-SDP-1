@@ -2,7 +2,7 @@
   "books": [
     {
       "title": "The Hobbit",
-      "isbn": "9780063388468",
+      "isbn": "9080063388468",
       "price": 12.99,
       "authors": [
         "J.R.R. Tolkien"
@@ -12,7 +12,49 @@
         "Fantasy",
         "Adventure"
       ],
-      "description": "a classic fantasy novel by J.R.R. Tolkien about the home-loving hobbit Bilbo Baggins who is whisked away by Gandalf and thirteen dwarves on a perilous quest to reclaim their lost treasure from the dragon Smaug."
+      "description": "A classic fantasy novel by J.R.R. Tolkien about the home-loving hobbit Bilbo Baggins who is whisked away by Gandalf and thirteen dwarves on a perilous quest to reclaim their lost treasure from the dragon Smaug."
+    },
+    {
+      "title": "The Lord of the Rings",
+      "isbn": "9780261102385",
+      "price": 15.99,
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "year": 1954,
+      "genres": [
+        "Fantasy",
+        "Adventure"
+      ],
+      "description": "An epic fantasy trilogy following Frodo Baggins and the quest to destroy the One Ring."
+    },
+    {
+      "title": "Murder on the Orient Express",
+      "isbn": "9780062693662",
+      "price": 9.99,
+      "authors": [
+        "Agatha Christie"
+      ],
+      "year": 1934,
+      "genres": [
+        "Mystery",
+        "Crime"
+      ],
+      "description": "Detective Hercule Poirot investigates a murder aboard the luxurious Orient Express train."
+    },
+    {
+      "title": "Harry Potter and the Philosopher's Stone",
+      "isbn": "9780747532699",
+      "price": 10.99,
+      "authors": [
+        "J.K. Rowling"
+      ],
+      "year": 1997,
+      "genres": [
+        "Fantasy",
+        "Adventure"
+      ],
+      "description": "Harry discovers he is a wizard and attends Hogwarts School of Witchcraft and Wizardry."
     }
   ]
 }
