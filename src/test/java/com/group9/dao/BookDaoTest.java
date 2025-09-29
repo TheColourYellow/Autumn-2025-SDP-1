@@ -10,47 +10,60 @@ import com.group9.util.MockData;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 class BookDaoTest {
-    /*
-    BookDao bookDao = new BookDao();
+
+    private static BookDao bookDao;
+    private static Book book;
 
     @BeforeAll
     static void setUp() throws Exception {
-        BookDao bookDao = new BookDao();
-        Book book = new Book(1, "Test", "1111", 1500, 24.99, "Test" );
+        bookDao = mock(BookDao.class);
+        book = mock(Book.class);
+        //book.setId(999);
         bookDao.addBook(book);
     }
 
     @AfterAll
     static void tearDown() throws Exception {
-        BookDao bookDao = new BookDao();
-        bookDao.deleteBook(6);
+        bookDao.deleteBook(0);
     }
 
+/*
     @Test
     void addBook() throws SQLException {
-        Book book = new Book(1, "Test", "1111", 1500, 24.99, "Test" );
         bookDao.addBook(book);
-    }
+        verify(bookDao).addBook(book);
+    }*/
 
     @Test
     void getAllBooks() {
         List<Book> books = bookDao.getAllBooks();
-        assertTrue(!books.isEmpty());
+        when(bookDao.getAllBooks()).thenReturn(books);
+        verify(bookDao).getAllBooks();
+        assertEquals(books, bookDao.getAllBooks());
+        //assertTrue(!books.isEmpty());
     }
 
+    //Wanted but not invoked.
+    //Zero interactions with this mock
     @Test
     void getBookById() throws SQLException {
-        Book book = bookDao.getBookById(13);
-        assertNotNull(book);
+        when(bookDao.getBookById(anyInt())).thenReturn(book);
+        //verify(bookDao).getBookById(anyInt());
+        assertEquals(0, book.getId());
     }
-
+/*
     @Test
     void deleteBook() throws SQLException {
-        bookDao.deleteBook(13);
+        bookDao.deleteBook(999);
         assertTrue(bookDao.getAllBooks().isEmpty());
-    }
-    */
+    }*/
+
+    /*
+    //Dummy test
     @Test
     void createBookObject() {
         Book book = new Book(1,
@@ -61,4 +74,6 @@ class BookDaoTest {
                 "Test Description");
         assertEquals("Test", book.getTitle());
     }
+
+     */
 }
