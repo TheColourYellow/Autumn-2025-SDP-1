@@ -61,7 +61,7 @@ public class ShoppingCartController {
 
     @FXML
     private void emptyCart() {
-        cartVbox.getChildren().clear();
+        cart.clear();
         System.out.println("Empty cart...");
     }
 
