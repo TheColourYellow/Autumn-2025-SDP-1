@@ -35,6 +35,38 @@ public class AuthorService {
     }
   }
 
+  public void updateAuthor(Author author) {
+    if (author.getId() <= 0) {
+      throw new IllegalArgumentException("Author ID must be a positive integer");
+    }
+
+    if (author.getName() == null || author.getName().isEmpty()) {
+      throw new IllegalArgumentException("Author name cannot be null or empty");
+    }
+
+    // Check if author exists
+    try {
+      Author existingAuthor = authorDao.getAuthorByName(author.getName());
+      if (existingAuthor == null) {
+        throw new IllegalArgumentException("Author " + author.getName() + " does not exist");
+      }
+      if (existingAuthor.getId() != author.getId()) {
+        throw new IllegalArgumentException("Another author with name " + author.getName() + " already exists");
+      }
+    } catch (SQLException e) {
+      System.err.println("Error checking existing author: " + e.getMessage());
+      throw new RuntimeException("Error updating author");
+    }
+
+    // Proceed to update
+    try {
+      authorDao.updateAuthor(author);
+    } catch (Exception e) {
+      System.err.println("Error updating author: " + e.getMessage());
+      throw new RuntimeException("Error updating author");
+    }
+  }
+
   public void deleteAuthor(String name) throws Exception {
     if (name.isEmpty()) {
       throw new IllegalArgumentException("Author name cannot be empty");

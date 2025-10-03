@@ -112,6 +112,21 @@ public class GenreDao {
       ps.executeUpdate();
     }
   }
+
+  public void updateGenre(Genre genre) {
+    String update = "UPDATE genres SET name = ?, description = ? WHERE id = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(update)) {
+      ps.setString(1, genre.getName());
+      ps.setString(2, genre.getDescription());
+      ps.setInt(3, genre.getId());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("Error updating genre: " + e.getMessage());
+      throw new RuntimeException("Error updating genre", e);
+    }
+  }
+
   public void deleteGenreByName(String genreName) throws SQLException {
     String delete = "DELETE FROM genres WHERE name = ?";
     try (Connection conn = Database.getConnection();) {

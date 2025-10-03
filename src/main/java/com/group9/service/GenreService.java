@@ -34,6 +34,37 @@ public class GenreService {
     }
   }
 
+  public void updateGenre(Genre genre) {
+    if (genre.getId() <= 0) {
+      throw new IllegalArgumentException("Genre ID must be a positive integer");
+    }
+
+    if (genre.getName() == null || genre.getName().isEmpty()) {
+      throw new IllegalArgumentException("Genre name cannot be null or empty");
+    }
+
+    // Check if genre exists
+    try {
+      Genre existingGenre = genreDao.getGenreByName(genre.getName());
+      if (existingGenre == null) {
+        throw new IllegalArgumentException("Genre " + genre.getName() + " does not exist");
+      }
+      if (existingGenre.getId() != genre.getId()) {
+        throw new IllegalArgumentException("Another genre with name " + genre.getName() + " already exists");
+      }
+    } catch (Exception e) {
+      System.err.println("Error checking existing genre: " + e.getMessage());
+      throw new RuntimeException("Error updating genre");
+    }
+
+    try {
+      genreDao.updateGenre(genre);
+    } catch (Exception e) {
+      System.out.println("Error updating genre: " + e.getMessage());
+      throw new RuntimeException("Error updating genre");
+    }
+  }
+
   public void deleteGenre(String name) throws Exception {
     if (name.isEmpty()) {
       throw new IllegalArgumentException("Genre name cannot be empty");

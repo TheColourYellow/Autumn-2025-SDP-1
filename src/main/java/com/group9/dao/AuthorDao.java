@@ -112,6 +112,21 @@ public class AuthorDao {
       ps.executeUpdate();
     }
   }
+
+  public void updateAuthor(Author author) {
+    String update = "UPDATE authors SET name = ?, description = ? WHERE id = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(update)) {
+      ps.setString(1, author.getName());
+      ps.setString(2, author.getDescription());
+      ps.setInt(3, author.getId());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("Error updating author: " + e.getMessage());
+      throw new RuntimeException("Error updating author", e);
+    }
+  }
+
   public void deleteAuthorByName(String authorName) throws SQLException {
     String delete = "DELETE FROM authors WHERE name = ?";
     try (Connection conn = Database.getConnection();) {

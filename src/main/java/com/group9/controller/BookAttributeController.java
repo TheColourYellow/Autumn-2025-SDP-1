@@ -26,6 +26,10 @@ public class BookAttributeController {
   @FXML private Button cancelBtn;
   @FXML private Button deleteBtn;
 
+  // Services
+  private final AuthorService authorService = new AuthorService(new AuthorDao());
+  private final GenreService genreService = new GenreService(new GenreDao());
+
   public void setBookAttribute(BookAttribute bookAttribute) {
     this.bookAttribute = bookAttribute;
     nameTextField.setText(bookAttribute.getName());
@@ -54,12 +58,43 @@ public class BookAttributeController {
 
     if (bookAttribute.getId() != -1) {
       // Update existing attribute
+      System.out.println("Updating existing attribute");
+      if (bookAttribute instanceof Author) {
+        try {
+          authorService.updateAuthor((Author) bookAttribute);
+
+          // Refresh the author list in the main controller
+          if (onCloseCallback != null) {
+            onCloseCallback.run();
+          }
+
+          // Close the dialog
+          handleClose();
+
+        } catch (Exception e) {
+          showError("Error", "Failed to update author: " + e.getMessage());
+        }
+      } else if (bookAttribute instanceof Genre) {
+        try {
+          genreService.updateGenre((Genre) bookAttribute);
+
+          // Refresh the genre list in the main controller
+          if (onCloseCallback != null) {
+            onCloseCallback.run();
+          }
+
+          // Close the dialog
+          handleClose();
+
+        } catch (Exception e) {
+          showError("Error", "Failed to update genre: " + e.getMessage());
+        }
+      }
     } else {
       System.out.println("Adding new attribute");
       if (bookAttribute instanceof Author) {
         try {
           System.out.println("Adding new author");
-          AuthorService authorService = new AuthorService(new AuthorDao());
           authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
 
           // Refresh the author list in the main controller
@@ -68,15 +103,13 @@ public class BookAttributeController {
           }
 
           // Close the dialog
-          Stage stage = (Stage) addBtn.getScene().getWindow();
-          stage.close();
+          handleClose();
         } catch (Exception e) {
           showError("Error", "Failed to add author: " + e.getMessage());
         }
       } else if (bookAttribute instanceof Genre) {
         try {
           System.out.println("Adding new genre");
-          GenreService genreService = new GenreService(new GenreDao());
           genreService.addGenre(bookAttribute.getName(), bookAttribute.getDescription());
 
           // Refresh the genre list in the main controller
@@ -85,8 +118,7 @@ public class BookAttributeController {
           }
 
           // Close the dialog
-          Stage stage = (Stage) addBtn.getScene().getWindow();
-          stage.close();
+          handleClose();
         } catch (Exception e) {
           showError("Error", "Failed to add genre: " + e.getMessage());
         }
@@ -109,8 +141,7 @@ public class BookAttributeController {
             }
 
             // Close the dialog
-            Stage stage = (Stage) addBtn.getScene().getWindow();
-            stage.close();
+            handleClose();
           } catch (Exception e) {
             showError("Error", "Failed to delete author: " + e.getMessage());
           }
@@ -125,8 +156,7 @@ public class BookAttributeController {
             }
 
             // Close the dialog
-            Stage stage = (Stage) addBtn.getScene().getWindow();
-            stage.close();
+            handleClose();
           } catch (Exception e) {
             showError("Error", "Failed to delete genre: " + e.getMessage());
           }
