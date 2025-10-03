@@ -106,6 +106,27 @@ public class BookManageController {
   private void handleSave() {
     if (book != null && book.getId() != -1) {
       // Update existing book
+      book.setTitle(titleTextField.getText().trim());
+      book.setIsbn(isbnTextField.getText().trim());
+      book.setYear(Integer.parseInt(yearTextField.getText().trim()));
+      book.setPrice(Double.parseDouble(priceTextField.getText().trim()));
+      book.setDescription(descTextArea.getText().trim());
+      book.setGenres(getSelectedGenres());
+      book.setAuthors(getSelectedAuthors());
+
+      try {
+        bookService.updateBook(book);
+
+        // Refresh the book list in the main controller
+        if (onCloseCallback != null) {
+          onCloseCallback.run();
+        }
+
+        // Close the dialog
+        handleCancel();
+      } catch (Exception e) {
+        showError("Error", "Could not update book: " + e.getMessage());
+      }
     } else {
       Book newBook = new Book(
               -1,
@@ -125,8 +146,7 @@ public class BookManageController {
         }
 
         // Close the dialog
-        Stage stage = (Stage) addBtn.getScene().getWindow();
-        stage.close();
+        handleCancel();
       } else {
         showError("Error", "Could not add book. Please try again later.");
       }
@@ -152,8 +172,7 @@ public class BookManageController {
           }
 
           // Close the dialog
-          Stage stage = (Stage) deleteBtn.getScene().getWindow();
-          stage.close();
+          handleCancel();
         } catch (Exception e) {
           showError("Error", "Could not delete book: " + e.getMessage());
         }

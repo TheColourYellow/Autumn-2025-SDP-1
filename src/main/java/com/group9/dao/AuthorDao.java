@@ -34,7 +34,7 @@ public class AuthorDao {
     return authors;
   }
 
-  public static List<Author> getAuthorsByBookId(int bookId) throws SQLException {
+  public List<Author> getAuthorsByBookId(int bookId) throws SQLException {
     Connection conn = null;
     List<Author> authors = new ArrayList<>();
     try {

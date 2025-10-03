@@ -113,7 +113,7 @@ public class BookDao {
             rs.getBigDecimal("price").doubleValue(),
             rs.getString("description")
     );
-    book.setAuthors(AuthorDao.getAuthorsByBookId(book.getId()));
+    book.setAuthors(authorDao.getAuthorsByBookId(book.getId()));
     book.setGenres(genreDao.getGenresByBookId(book.getId()));
 
     return book;
@@ -156,6 +156,63 @@ public class BookDao {
     }
 
     return bookId;
+  }
+
+  public void updateBook(Book book) {
+    Connection conn = null;
+    try {
+      conn = Database.getConnection();
+      conn.setAutoCommit(false);
+
+      // Update book details
+      String updateBookSql = "UPDATE books SET title = ?, isbn = ?, published_year = ?, price = ?, description = ? WHERE id = ?";
+      PreparedStatement stmt = conn.prepareStatement(updateBookSql);
+      stmt.setString(1, book.getTitle());
+      stmt.setString(2, book.getIsbn());
+      stmt.setInt(3, book.getYear());
+      stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
+      stmt.setString(5, book.getDescription());
+      stmt.setInt(6, book.getId());
+      stmt.executeUpdate();
+
+      // Update authors and genres associations
+      // Clear existing associations
+      String deleteAuthorsSql = "DELETE FROM book_authors WHERE book_id = ?";
+      PreparedStatement deleteAuthorsStmt = conn.prepareStatement(deleteAuthorsSql);
+      deleteAuthorsStmt.setInt(1, book.getId());
+      deleteAuthorsStmt.executeUpdate();
+
+      String deleteGenresSql = "DELETE FROM book_genres WHERE book_id = ?";
+      PreparedStatement deleteGenresStmt = conn.prepareStatement(deleteGenresSql);
+      deleteGenresStmt.setInt(1, book.getId());
+      deleteGenresStmt.executeUpdate();
+
+      // Re-establish associations
+      for (Author author : book.getAuthors()) {
+        linkBookAuthor(conn, book.getId(), author.getId()); // Use existing connection
+      }
+      for (Genre genre : book.getGenres()) {
+        linkBookGenre(conn, book.getId(), genre.getId()); // Use existing connection
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      if (conn != null) {
+        try {
+          conn.rollback();
+        } catch (SQLException ex) {
+          throw new RuntimeException("Error rolling back transaction", ex);
+        }
+      }
+      throw new RuntimeException("Error updating book", e);
+    } finally {
+      if (conn != null) {
+        try {
+          conn.setAutoCommit(true);
+          conn.close();
+        } catch (SQLException ignored) {}
+      }
+    }
   }
 
   public void deleteBook(Integer id) throws SQLException {
@@ -232,6 +289,15 @@ public class BookDao {
     }
   }
 
+  private void linkBookAuthor(Connection conn, int bookId, int authorId) throws SQLException {
+    String sql = "INSERT INTO book_authors (book_id, author_id) VALUES (?, ?)";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, bookId);
+      ps.setInt(2, authorId);
+      ps.executeUpdate();
+    }
+  }
+
   private void linkBookGenre(int bookId, int genreId) throws SQLException {
     Connection conn = null;
     try {
@@ -255,6 +321,15 @@ public class BookDao {
         conn.setAutoCommit(true);
         conn.close();
       }
+    }
+  }
+
+  private void linkBookGenre(Connection conn, int bookId, int genreId) throws SQLException {
+    String sql = "INSERT INTO book_genres (book_id, genre_id) VALUES (?, ?)";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, bookId);
+      ps.setInt(2, genreId);
+      ps.executeUpdate();
     }
   }
 }

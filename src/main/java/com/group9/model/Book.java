@@ -54,6 +54,24 @@ public class Book {
     return description;
   }
 
+  public void setId(int id) {
+    this.id = id;
+  }
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+  public void setYear(int year) {
+    this.year = year;
+  }
+  public void setPrice(double price) {
+    this.price = price;
+  }
+  public void setDescription(String description) {
+    this.description = description;
+  }
   public void setAuthors(List<Author> authors) {
     this.authors = authors;
   }

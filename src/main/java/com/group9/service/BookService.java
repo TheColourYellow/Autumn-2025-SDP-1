@@ -43,6 +43,19 @@ public class BookService {
     }
   }
 
+  public void updateBook(Book book) {
+    validateBook(book);
+    if (book.getId() <= 0)
+      throw new IllegalArgumentException("Book ID must be positive");
+
+    try {
+      bookDao.updateBook(book);
+    } catch (Exception e) {
+      System.out.println("Error updating book: " + e.getMessage());
+      throw new RuntimeException("Error updating book");
+    }
+  }
+
   public void deleteBook(int bookId) throws Exception {
     if (bookId <= 0)
       throw new IllegalArgumentException("Book ID must be positive");
