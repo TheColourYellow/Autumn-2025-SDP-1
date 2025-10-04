@@ -21,9 +21,35 @@ public class UserServiceTest {
     userService = new UserService(userDao);
   }
 
+  @Test
+  public void testLoginUser() {
+    // Invalid inputs
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("", "password123"));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(null, "password123"));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("testUser", ""));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("testUser", null));
+
+    // Non-existent user
+    when(userDao.getUserByUsername("nonExistentUser")).thenReturn(null);
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("nonExistentUser", "password123"));
+    verify(userDao).getUserByUsername("nonExistentUser");
+
+    // Wrong password
+    String rawPassword = "password123";
+    String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+    User existingUser = new User("testUser", hashedPassword, "test@email.com");
+    when(userDao.getUserByUsername("testUser")).thenReturn(existingUser);
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("testUser", "wrongPassword"));
+    verify(userDao).getUserByUsername("testUser");
+
+    // Successful login
+    User result = userService.loginUser("testUser", rawPassword);
+    assertEquals(existingUser, result);
+  }
+
   @DisplayName("registerUser should hash password and return user")
   @Test
-  public void registerUserTest() {
+  public void testRegisterUser() {
     // Test data
     String username = "testUser";
     String rawPassword = "password123";
