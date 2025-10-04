@@ -73,10 +73,16 @@ public class GenreServiceTest {
     verify(genreDao).getGenreByName("Genre");
     verify(genreDao).updateGenre(existingGenre);
 
+    // Simulate Dao exception on update
+    when(genreDao.getGenreByName("Genre")).thenReturn(existingGenre);
+    doThrow(new RuntimeException("DB error")).when(genreDao).updateGenre(existingGenre);
+    assertThrows(RuntimeException.class, () -> genreService.updateGenre(existingGenre));
+    verify(genreDao, times(2)).updateGenre(existingGenre);
+
     // Simulate Dao exception on get
     when(genreDao.getGenreByName("Genre")).thenThrow(new SQLException("DB error"));
     assertThrows(RuntimeException.class, () -> genreService.updateGenre(new Genre(1, "Genre", "desc")));
-    verify(genreDao, times(2)).getGenreByName("Genre");
+    verify(genreDao, times(3)).getGenreByName("Genre");
   }
 
   @Test

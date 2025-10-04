@@ -73,10 +73,16 @@ public class AuthorServiceTest {
     verify(authorDao).getAuthorByName("Author");
     verify(authorDao).updateAuthor(existingAuthor);
 
+    // Simulate Dao exception on update
+    when(authorDao.getAuthorByName("Author")).thenReturn(existingAuthor);
+    doThrow(new SQLException("DB error")).when(authorDao).updateAuthor(existingAuthor);
+    assertThrows(RuntimeException.class, () -> authorService.updateAuthor(existingAuthor));
+    verify(authorDao, times(2)).updateAuthor(existingAuthor);
+
     // Simulate SQLException during existence check
     when(authorDao.getAuthorByName("Author")).thenThrow(new SQLException("DB error"));
     assertThrows(RuntimeException.class, () -> authorService.updateAuthor(existingAuthor));
-    verify(authorDao, times(2)).getAuthorByName("Author");
+    verify(authorDao, times(3)).getAuthorByName("Author");
   }
 
   @Test
