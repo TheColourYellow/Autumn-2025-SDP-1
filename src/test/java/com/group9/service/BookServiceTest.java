@@ -134,6 +134,71 @@ public class BookServiceTest {
   }
 
   @Test
+  public void testUpdateBook() {
+    Book testBook = new Book(
+            1,
+            "Test Book",
+            "1234-5678-9012",
+            2025,
+            10.00,
+            "A book for testing"
+    );
+
+    // Valid book update
+    bookService.updateBook(testBook);
+    verify(bookDao).updateBook(testBook);
+
+    Book testBookInvalidId = new Book(
+            -1,
+            "Invalid ID Book",
+            "1234-5678-9012",
+            2025,
+            10.00,
+            "Book with invalid ID"
+    );
+    Book testBookInvalidTitle = new Book(
+            2,
+            null,
+            "1234-5678-9012",
+            2025,
+            10.00,
+            "Another book for testing"
+    );
+    Book testBookInvalidTitle2 = new Book(
+            2,
+            "",
+            "1234-5678-9012",
+            2025,
+            10.00,
+            "Another book for testing"
+    );
+    Book testBookInvalidPrice = new Book(
+            3,
+            "Invalid Price Book",
+            "1234-5678-9012",
+            2025,
+            -5.00,
+            "Book with invalid price"
+    );
+    Book testBookInvalidYear = new Book(
+            4,
+            "Invalid Year Book",
+            "1234-5678-9012",
+            -2025,
+            10.00,
+            "Book with invalid year"
+    );
+
+    // Tests for validateBook through updateBook
+    assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidId));
+    assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(null));
+    assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidTitle));
+    assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidTitle2));
+    assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidPrice));
+    assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidYear));
+  }
+
+  @Test
   public void testDeleteBook() throws Exception {
     int bookId = 1;
 
