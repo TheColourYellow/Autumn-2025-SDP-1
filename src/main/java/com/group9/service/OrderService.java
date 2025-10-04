@@ -14,6 +14,9 @@ public class OrderService {
   }
 
   public List<Order> getOrdersByUserId(int userId) {
+    if (userId <= 0)
+      throw new IllegalArgumentException("User ID must be positive");
+    
     return orderDao.findOrdersByUserId(userId);
   }
 

@@ -196,6 +196,10 @@ public class BookServiceTest {
     assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidTitle2));
     assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidPrice));
     assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidYear));
+
+    // Simulate DB error on update
+    doThrow(new RuntimeException("DB error")).when(bookDao).updateBook(any(Book.class));
+    assertThrows(Exception.class, () -> bookService.updateBook(testBook));
   }
 
   @Test
