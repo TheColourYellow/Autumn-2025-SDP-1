@@ -3,6 +3,7 @@ package com.group9.service;
 import com.group9.dao.GenreDao;
 import com.group9.model.Genre;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class GenreService {
@@ -52,7 +53,7 @@ public class GenreService {
       if (existingGenre.getId() != genre.getId()) {
         throw new IllegalArgumentException("Another genre with name " + genre.getName() + " already exists");
       }
-    } catch (Exception e) {
+    } catch (SQLException e) {
       System.err.println("Error checking existing genre: " + e.getMessage());
       throw new RuntimeException("Error updating genre");
     }
