@@ -146,7 +146,7 @@ public class BookServiceTest {
     assertThrows(IllegalArgumentException.class, () -> bookService.deleteBook(invalidBookId));
 
     // Simulate DB error on delete
-    doThrow(new SQLException("DB error")).when(bookDao).deleteBook(1);
+    doThrow(new SQLException("DB error")).when(bookDao).deleteBook(2);
     assertThrows(Exception.class, () -> bookService.deleteBook(2));
   }
 }
