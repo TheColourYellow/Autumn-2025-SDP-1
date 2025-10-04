@@ -208,14 +208,14 @@ public class BookServiceTest {
 
     // Valid deletion
     bookService.deleteBook(bookId);
-    verify(bookDao).deleteBook(bookId);
+    verify(bookDao).inActivateBook(bookId);
 
     // Invalid deletion with invalid ID
     int invalidBookId = -1;
     assertThrows(IllegalArgumentException.class, () -> bookService.deleteBook(invalidBookId));
 
     // Simulate DB error on delete
-    doThrow(new SQLException("DB error")).when(bookDao).deleteBook(2);
+    doThrow(new SQLException("DB error")).when(bookDao).inActivateBook(2);
     assertThrows(Exception.class, () -> bookService.deleteBook(2));
   }
 }

@@ -7,6 +7,8 @@ import com.group9.model.BookAttribute;
 import com.group9.model.Genre;
 import com.group9.service.AuthorService;
 import com.group9.service.GenreService;
+import com.group9.util.AppExecutors;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -19,12 +21,17 @@ public class BookAttributeController {
   private BookAttribute bookAttribute;
   private Runnable onCloseCallback;
 
-  @FXML private TextField nameTextField;
-  @FXML private TextField descTextField;
+  @FXML
+  private TextField nameTextField;
+  @FXML
+  private TextField descTextField;
 
-  @FXML private Button addBtn;
-  @FXML private Button cancelBtn;
-  @FXML private Button deleteBtn;
+  @FXML
+  private Button addBtn;
+  @FXML
+  private Button cancelBtn;
+  @FXML
+  private Button deleteBtn;
 
   // Services
   private final AuthorService authorService = new AuthorService(new AuthorDao());
@@ -48,121 +55,82 @@ public class BookAttributeController {
 
   @FXML
   private void handleSave() {
-    if (nameTextField.getText().isEmpty()) {
+    String name = nameTextField.getText().trim();
+    String desc = descTextField.getText().trim();
+
+    if (name.isEmpty()) {
       showError("Validation Error", "Name cannot be empty.");
       return;
     }
 
-    bookAttribute.setName(nameTextField.getText().trim());
-    bookAttribute.setDescription(descTextField.getText().trim());
+    bookAttribute.setName(name);
+    bookAttribute.setDescription(desc);
 
-    if (bookAttribute.getId() != -1) {
-      // Update existing attribute
-      System.out.println("Updating existing attribute");
-      if (bookAttribute instanceof Author) {
-        try {
-          authorService.updateAuthor((Author) bookAttribute);
+    boolean isUpdate = bookAttribute.getId() != -1;
 
-          // Refresh the author list in the main controller
-          if (onCloseCallback != null) {
-            onCloseCallback.run();
-          }
-
-          // Close the dialog
-          handleClose();
-
-        } catch (Exception e) {
-          showError("Error", "Failed to update author: " + e.getMessage());
+    AppExecutors.databaseExecutor.execute(() -> {
+      try {
+        if (bookAttribute instanceof Author) {
+          if (isUpdate)
+            authorService.updateAuthor((Author) bookAttribute);
+          else
+            authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
+        } else if (bookAttribute instanceof Genre) {
+          if (isUpdate)
+            genreService.updateGenre((Genre) bookAttribute);
+          else
+            genreService.addGenre(bookAttribute.getName(), bookAttribute.getDescription());
+        } else {
+          throw new IllegalArgumentException("Unknown book attribute type");
         }
-      } else if (bookAttribute instanceof Genre) {
-        try {
-          genreService.updateGenre((Genre) bookAttribute);
 
-          // Refresh the genre list in the main controller
-          if (onCloseCallback != null) {
-            onCloseCallback.run();
-          }
-
-          // Close the dialog
+        // Run UI updates on the JavaFX Application Thread
+        Platform.runLater(() -> {
+          if (onCloseCallback != null) onCloseCallback.run();
           handleClose();
+        });
 
-        } catch (Exception e) {
-          showError("Error", "Failed to update genre: " + e.getMessage());
-        }
+      } catch (Exception e) {
+        Platform.runLater(() ->
+                showError("Error", "Failed to save: " + e.getMessage())
+        );
       }
-    } else {
-      System.out.println("Adding new attribute");
-      if (bookAttribute instanceof Author) {
-        try {
-          System.out.println("Adding new author");
-          authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
-
-          // Refresh the author list in the main controller
-          if (onCloseCallback != null) {
-            onCloseCallback.run();
-          }
-
-          // Close the dialog
-          handleClose();
-        } catch (Exception e) {
-          showError("Error", "Failed to add author: " + e.getMessage());
-        }
-      } else if (bookAttribute instanceof Genre) {
-        try {
-          System.out.println("Adding new genre");
-          genreService.addGenre(bookAttribute.getName(), bookAttribute.getDescription());
-
-          // Refresh the genre list in the main controller
-          if (onCloseCallback != null) {
-            onCloseCallback.run();
-          }
-
-          // Close the dialog
-          handleClose();
-        } catch (Exception e) {
-          showError("Error", "Failed to add genre: " + e.getMessage());
-        }
-      }
-    }
+    });
   }
 
   @FXML
   private void handleDelete() {
-    if (bookAttribute.getId() != -1) {
-      if (showConfirmation("Delete Attribute", "Are you sure you want to delete this attribute?")) {
-        if (bookAttribute instanceof Author) {
-          try {
-            AuthorService authorService = new AuthorService(new AuthorDao());
-            authorService.deleteAuthor(bookAttribute.getName());
-
-            // Refresh the author list in the main controller
-            if (onCloseCallback != null) {
-              onCloseCallback.run();
-            }
-
-            // Close the dialog
-            handleClose();
-          } catch (Exception e) {
-            showError("Error", "Failed to delete author: " + e.getMessage());
-          }
-        } else if (bookAttribute instanceof Genre) {
-          try {
-            GenreService genreService = new GenreService(new GenreDao());
-            genreService.deleteGenre(bookAttribute.getName());
-
-            // Refresh the author list in the main controller
-            if (onCloseCallback != null) {
-              onCloseCallback.run();
-            }
-
-            // Close the dialog
-            handleClose();
-          } catch (Exception e) {
-            showError("Error", "Failed to delete genre: " + e.getMessage());
-          }
-        }
-      }
+    if (bookAttribute.getId() == -1) {
+      showError("Error", "Cannot delete unsaved attribute.");
+      return;
     }
+
+    if (!showConfirmation("Delete Attribute",
+            "Are you sure you want to delete this attribute?")) {
+      return;
+    }
+
+    AppExecutors.databaseExecutor.execute(() -> {
+      try {
+        if (bookAttribute instanceof Author) {
+          authorService.deleteAuthor(bookAttribute.getName());
+        } else if (bookAttribute instanceof Genre) {
+          genreService.deleteGenre(bookAttribute.getName());
+        } else {
+          throw new IllegalArgumentException("Unknown attribute type");
+        }
+
+        Platform.runLater(() -> {
+          if (onCloseCallback != null) onCloseCallback.run();
+          handleClose();
+        });
+
+      } catch (Exception e) {
+        Platform.runLater(() ->
+                showError("Error", "Failed to delete: " + e.getMessage())
+        );
+      }
+    });
   }
 
   @FXML

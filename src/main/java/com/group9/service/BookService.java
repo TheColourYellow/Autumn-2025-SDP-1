@@ -61,7 +61,7 @@ public class BookService {
       throw new IllegalArgumentException("Book ID must be positive");
 
     try {
-      bookDao.deleteBook(bookId);
+      bookDao.inActivateBook(bookId); // Soft delete
     } catch (Exception e) {
       System.out.println("Error deleting book: " + e.getMessage());
       throw new Exception("Error deleting book");

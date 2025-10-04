@@ -11,6 +11,17 @@ public abstract class BookAttribute {
     this.description = description;
   }
 
+  public BookAttribute copy() {
+    try {
+      return this.getClass()
+                 .getConstructor(int.class, String.class, String.class)
+                 .newInstance(this.id, this.name, this.description);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   @Override
   public String toString() {
     return name;

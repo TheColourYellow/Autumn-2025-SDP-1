@@ -73,6 +73,19 @@ public class UserServiceTest {
 
     // Verify that addUser was called once
     verify(userDao).addUser(any(User.class));
+
+    // Test duplicate username
+    when(userDao.getUserByUsername(username)).thenReturn(new User());
+    assertThrows(IllegalArgumentException.class, () ->
+            userService.registerUser(username, rawPassword, email));
+    verify(userDao, times(2)).getUserByUsername(username);
+
+    // Test duplicate email
+    when(userDao.getUserByUsername(username)).thenReturn(null);
+    when(userDao.getUserByEmail(email)).thenReturn(new User());
+    assertThrows(IllegalArgumentException.class, () ->
+            userService.registerUser(username, rawPassword, email));
+    verify(userDao, times(2)).getUserByEmail(email);
   }
 
   // Tests for validateUser through registerUser
@@ -86,6 +99,8 @@ public class UserServiceTest {
   public void validateUser_ShortPassword_ThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
             userService.registerUser("testUser", "123", "test@email.com"));
+    assertThrows(IllegalArgumentException.class, () ->
+            userService.registerUser("testUser", null, "test@email.com"));
   }
 
   @Test

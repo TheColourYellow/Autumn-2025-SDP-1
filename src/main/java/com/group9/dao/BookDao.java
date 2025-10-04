@@ -19,7 +19,7 @@ public class BookDao {
     List<Book> books = new ArrayList<>();
 
     try (Connection conn = Database.getConnection()) {
-      String bookSql = "SELECT * FROM books";
+      String bookSql = "SELECT * FROM books WHERE active = TRUE";
       PreparedStatement ps = conn.prepareStatement(bookSql);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
@@ -41,7 +41,7 @@ public class BookDao {
             "LEFT JOIN authors a ON ba.author_id = a.id " +
             "LEFT JOIN book_genres bg ON b.id = bg.book_id " +
             "LEFT JOIN genres g ON bg.genre_id = g.id " +
-            "WHERE 1=1 "
+            "WHERE 1=1 AND b.active = TRUE "
     );
 
     List<Object> params = new ArrayList<>();
@@ -211,6 +211,28 @@ public class BookDao {
           conn.setAutoCommit(true);
           conn.close();
         } catch (SQLException ignored) {}
+      }
+    }
+  }
+
+  public void inActivateBook(Integer id) throws SQLException {
+    Connection conn = null;
+    try {
+      conn = Database.getConnection();
+      String inActivateBookSql = "UPDATE books SET active = FALSE WHERE id = ?";
+      PreparedStatement stmt = conn.prepareStatement(inActivateBookSql);
+      stmt.setInt(1, id);
+      stmt.executeUpdate();
+      conn.commit();
+    } catch (SQLException e) {
+      if (conn != null) {
+        conn.rollback();
+      }
+      throw e;
+    } finally {
+      if (conn != null) {
+        conn.setAutoCommit(true);
+        conn.close();
       }
     }
   }

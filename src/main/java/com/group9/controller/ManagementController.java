@@ -170,7 +170,7 @@ public class ManagementController {
             Parent root = loader.load();
 
             BookAttributeController attributeController = loader.getController();
-            if (item != null) attributeController.setBookAttribute(item);
+            if (item != null) attributeController.setBookAttribute(item.copy());
             else {
                 // TODO: do this in a better way
                 if (title.contains("Genre")) attributeController.setBookAttribute(new Genre(-1, "", ""));
