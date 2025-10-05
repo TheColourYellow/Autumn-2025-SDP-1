@@ -46,6 +46,12 @@
             <version>5.19.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- JavaFX dependencies -->
         <dependency>

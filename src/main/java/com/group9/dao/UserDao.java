@@ -73,6 +73,18 @@ public class UserDao {
     }
   }
 
+  public void deleteUser(int id) {
+    String sql = "DELETE FROM users WHERE id = ?";
+
+    try (Connection conn = Database.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setInt(1, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException("Error deleting user: " + e.getMessage(), e);
+    }
+  }
+
   public boolean addAdminUser() {
     String sql = "INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'default@admin.com', '$2a$10$hBux0sXhxyo8KX1vi6YEo.leo.4QyOCGfnBE3yxu6xrKHYrCowD.q', 'admin');";
 
