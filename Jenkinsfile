@@ -6,10 +6,10 @@ pipeline {
     environment {
         PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
-        DOCKERHUB_REPO = 'bookstore'
+        DOCKERHUB_REPO = 'tarunip/bookstore'
         DOCKER_IMAGE = 'sdp1-project'
         DOCKER_IMAGE_TAG = 'latest'
-        DOCKERHUB_USER = 'madeforworkblue'
+        DOCKERHUB_USER = 'tarunip'
     }
     stages {
         stage('Setup Maven') {
