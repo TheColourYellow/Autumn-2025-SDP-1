@@ -9,7 +9,7 @@ Veeti Vänttinen
 ## Overview
 The Bookstore Management System is a desktop application that allows users to browse, purchase, and
 manage books. Regular users can register, log in, add books to their cart, buy books and view their user details and order
-history on a profile page. Administrators have access to a management page where they can add, edit, and remove
+history on a profile page. Admin users have access to a management page where they can add, edit, and remove
 books from the store.
 
 ## Features
@@ -27,9 +27,9 @@ JavaFX
 Maven  
 Jenkins  
 Docker  
-JUnit
-Mockito
-TestFx
+JUnit  
+Mockito  
+TestFx  
 
 ## Development Method
 Agile
