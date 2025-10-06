@@ -9,7 +9,7 @@ pipeline {
         DOCKERHUB_REPO = 'bookstore'
         DOCKER_IMAGE = 'sdp1-project'
         DOCKER_IMAGE_TAG = 'latest'
-        DOCKERHUB_USER = 'vvanttinen'
+        DOCKERHUB_USER = ''
     }
     stages {
         stage('Setup Maven') {
