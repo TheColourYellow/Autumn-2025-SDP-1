@@ -1,15 +1,15 @@
 # Bookstore Management System
 
-## Team Members  
+## Team Members
 Patrik Granström  
 Gerli Hirv  
 Taru Nipuli  
 Veeti Vänttinen
 
 ## Overview
-The Bookstore Management System is a desktop application that allows users to browse, purchase, and 
-manage books. Regular users can register, log in, add books to their cart, buy books and view their user details and order 
-history on a profile page. Administrators have access to a management page where they can add, edit, and remove 
+The Bookstore Management System is a desktop application that allows users to browse, purchase, and
+manage books. Regular users can register, log in, add books to their cart, buy books and view their user details and order
+history on a profile page. Administrators have access to a management page where they can add, edit, and remove
 books from the store.
 
 ## Features
@@ -20,7 +20,7 @@ books from the store.
 - Shopping cart functionality
 - Checkout functionality
 
-## Technology Stack  
+## Technology Stack
 Java  
 MariaDB  
 JavaFX  
