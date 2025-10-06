@@ -15,7 +15,8 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   javafx-app:
-    build: .
+#    build: .
+    image: tarunip/bookstore:latest
     container_name: bookstore-app
     depends_on:
       - mariadb
