@@ -19,12 +19,12 @@
             </font></Label>
         <HBox alignment="CENTER_RIGHT" layoutX="246.0" layoutY="23.0" prefHeight="43.0" prefWidth="578.0" spacing="100.0">
             <children>
-                <Label fx:id="homeLabel" onMouseClicked="#openHomeWindow" text="Home">
+                <Label fx:id="homeLabel" onMouseClicked="#openHomeWindow" styleClass="nav-label" stylesheets="@look.css" text="Home">
                     <font>
                         <Font name="Arimo" size="25.0" />
                     </font>
                 </Label>
-                <Label text="Login" underline="true">
+                <Label styleClass="nav-label" stylesheets="@look.css" text="Login" underline="true">
                     <font>
                         <Font name="Arimo" size="25.0" />
                     </font>
@@ -58,7 +58,7 @@
                      <font>
                         <Font name="System Italic" size="15.0" />
                      </font></TextField>
-                  <Button fx:id="loginButton" layoutX="93.0" layoutY="348.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="49.0" prefWidth="223.0" style="-fx-background-color: #FB64B6;" text="Login">
+                  <Button fx:id="loginButton" layoutX="93.0" layoutY="348.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="49.0" prefWidth="223.0" styleClass="login-register-button" stylesheets="@look.css" text="Login">
                      <font>
                         <Font size="24.0" />
                      </font>

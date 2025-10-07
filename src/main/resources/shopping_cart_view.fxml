@@ -53,15 +53,21 @@
             </HBox>
             <HBox alignment="BOTTOM_CENTER" prefHeight="76.0" prefWidth="439.0">
                <children>
-                  <Button fx:id="emptyButton" mnemonicParsing="false" onMouseClicked="#emptyCart" text="Empty Cart" textAlignment="CENTER">
+                  <Button fx:id="emptyButton" mnemonicParsing="false" onMouseClicked="#emptyCart" styleClass="action-button" stylesheets="@look.css" text="Empty Cart" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
                   </Button>
-                  <Button fx:id="checkoutButton" mnemonicParsing="false" onMouseClicked="#openCheckoutWindow" text="Checkout">
+                  <Button fx:id="checkoutButton" mnemonicParsing="false" onMouseClicked="#openCheckoutWindow" styleClass="action-button" stylesheets="@look.css" text="Checkout">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
                   </Button>
                </children>
                <padding>

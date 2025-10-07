@@ -79,7 +79,9 @@ public class ShoppingCartController {
             checkoutController.setCart(cart);
 
             Stage stage = (Stage) checkoutButton.getScene().getWindow();
-            stage.setScene(new Scene(checkoutRoot));
+            Scene scene = new Scene(checkoutRoot);
+            scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
+            stage.setScene(scene);
             stage.setTitle("Checkout");
         } catch (IOException e) {
             e.printStackTrace();

@@ -120,7 +120,9 @@ public class ManagementController {
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
             stage.setTitle("Your Cart");
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

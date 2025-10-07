@@ -1,0 +1,70 @@
+
+.nav-label:hover {
+    -fx-underline: true;
+    -fx-underline-color: #03080b;
+}
+
+.genre-button {
+    -fx-background-color: transparent;
+    -fx-background-radius:  20px;
+    -fx-border-color: black;
+    -fx-border-width:  2px 2px 2px 2px;
+    -fx-border-radius: 20px;
+
+}
+.genre-button:hover {
+    -fx-background-color:  #90A1B9;
+    -fx-text-fill: white;
+}
+
+.add-button {
+    -fx-text-fill: rgba(106, 102, 102, 0.76);
+}
+
+.add-button:hover {
+    -fx-text-fill: black;
+}
+
+.management-table .list-cell:hover {
+    -fx-background-color: #90A1B9;
+    -fx-text-fill: white;
+}
+
+.management-table .table-row-cell:hover {
+    -fx-background-color: #90A1B9;
+    -fx-text-fill: white;
+}
+
+.management-table .button {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-border-color: rgba(0, 0, 0, 0.24);
+    -fx-border-width:  2px 2px 2px 2px;
+    -fx-border-radius: 20px;
+}
+
+.management-table .button:hover {
+    -fx-background-color: rgba(126, 156, 186, 0.42);
+    -fx-text-fill: white;
+}
+
+.login-register-button {
+    -fx-background-color: #FB64B6;
+}
+
+.login-register-button:hover {
+    -fx-background-color: #ea3294;
+}
+
+.action-button {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-border-color: rgba(0, 0, 0, 0.24);
+    -fx-border-width:  2px 2px 2px 2px;
+    -fx-border-radius: 20px;
+}
+
+.action-button:hover {
+    -fx-background-color: #90A1B9;
+    -fx-text-fill: white;
+}
