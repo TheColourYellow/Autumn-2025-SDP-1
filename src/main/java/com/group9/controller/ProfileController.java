@@ -101,7 +101,7 @@ public class ProfileController {
             System.out.println("Order ID: " + o.getId());
             for (OrderItem item : o.getOrderItems()) {
                 System.out.println(item.getBook().getTitle());
-                orderListView.getItems().add(item.getBook().getTitle());
+                orderListView.getItems().add(item.getBook().getTitle() + " x" + item.getQuantity() + " - " + (item.getBook().getPrice() * item.getQuantity()) + "€");
             }
         }
     }

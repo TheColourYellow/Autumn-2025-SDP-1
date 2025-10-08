@@ -32,6 +32,11 @@ public class Database {
         } else {
           System.err.println("Failed to create admin user.");
         }
+        try {
+          MockData.main(null);
+        } catch (Exception e) {
+          System.err.println("Failed to populate mock data: " + e.getMessage());
+        }
       }
 
     } catch (SQLException e) {
