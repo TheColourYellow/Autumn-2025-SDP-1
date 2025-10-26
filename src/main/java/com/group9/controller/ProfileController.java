@@ -18,11 +18,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
 
 public class ProfileController {
+
+    //Temporary for demonstration purposes
+    LocalisationController lcc = new LocalisationController();
+    ResourceBundle bundle = lcc.getBundle("fi", "FI");
+
 
     @FXML private Label homeLabel;
     @FXML private ImageView shoppingCart;
@@ -42,7 +48,8 @@ public class ProfileController {
 
             Stage stage = (Stage) homeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Bookstore Management System");
+            //stage.setTitle("Bookstore Management System");
+            stage.setTitle(lcc.getStageTitle(bundle));
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open home window");
@@ -52,6 +59,8 @@ public class ProfileController {
     @FXML
     private void openShoppingCart() {
         System.out.println("Shopping cart clicked!");
+        System.out.println(lcc.getStageTitle(bundle));
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
@@ -61,7 +70,8 @@ public class ProfileController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle("Your Cart");
+            //stage.setTitle("Your Cart");
+            stage.setTitle(lcc.getShoppingCartTitle(bundle));
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -72,7 +82,8 @@ public class ProfileController {
     @FXML
     private void logout() {
         // Confirm logout action
-        if (showConfirmation("Logout", "Are you sure you want to logout?")) {
+        //if (showConfirmation("Logout", "Are you sure you want to logout?")) {
+        if (showConfirmation(lcc.getLogoutTitle(bundle), lcc.getLogoutConfirmation(bundle))) {
             // Handle logout
             SessionManager.logout();
             openHomeWindow();
@@ -90,8 +101,10 @@ public class ProfileController {
         User currentUser = SessionManager.getCurrentUser();
 
         // Show account details
-        nameLabel.setText("Name: " + currentUser.getUsername());
-        emailLabel.setText("Email: " + currentUser.getEmail());
+        //nameLabel.setText("Name: " + currentUser.getUsername());
+        nameLabel.setText(lcc.getNameLabel(bundle) + currentUser.getUsername());
+        //emailLabel.setText("Email: " + currentUser.getEmail());
+        emailLabel.setText(lcc.getEmailLabel(bundle) + currentUser.getEmail());
 
         System.out.println("POPULATING HISTORY ");
         OrderService orderService = new OrderService(new OrderDao());
