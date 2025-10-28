@@ -144,7 +144,7 @@ public class BookstoreController {
     public void initialize() {
 
         // Initialize language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Chinese", "Arabic", "English"));
+        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "Arabic", "English"));
         languageSelector.setOnAction(event -> handleLanguageChange());
 
         // Update login label based on session state
@@ -328,7 +328,7 @@ public class BookstoreController {
         if (selectedLanguage == null) return;
 
         switch (selectedLanguage) {
-            case "Chinese":
+            case "Japanese":
                 System.out.println("Language changed to Chinese");
                 break;
             case "Arabic":
