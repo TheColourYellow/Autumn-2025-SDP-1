@@ -64,6 +64,9 @@ public class BookstoreController {
     @FXML
     private TableColumn<Book, Void> actionColumn; // For add to cart button in book list
 
+    @FXML
+    private ComboBox<String> languageSelector; // Language dropdown menu
+
     // cart observable list to store books added to cart by user
     private final ObservableList<Book> cart = FXCollections.observableArrayList();
 
@@ -139,6 +142,11 @@ public class BookstoreController {
 
     @FXML
     public void initialize() {
+
+        // Initialize language selector
+        languageSelector.setItems(FXCollections.observableArrayList("Chinese", "Arabic", "English"));
+        languageSelector.setOnAction(event -> handleLanguageChange());
+
         // Update login label based on session state
         if (SessionManager.isLoggedIn()) {
             loginLabel.setText("Profile");
@@ -312,5 +320,25 @@ public class BookstoreController {
             }
         });
     }
+
+    // For handling language change
+    // TODO: Implement actual language change functionality
+    private void handleLanguageChange() {
+        String selectedLanguage = languageSelector.getValue();
+        if (selectedLanguage == null) return;
+
+        switch (selectedLanguage) {
+            case "Chinese":
+                System.out.println("Language changed to Chinese");
+                break;
+            case "Arabic":
+                System.out.println("Language changed to Arabic");
+                break;
+            case "English":
+                System.out.println("Language changed to English");
+                break;
+        }
+    }
+
 
 }

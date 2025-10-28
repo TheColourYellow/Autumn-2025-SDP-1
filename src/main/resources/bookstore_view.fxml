@@ -60,5 +60,6 @@
             <Font name="System Italic" size="15.0" />
          </font>
       </TextField>
+      <ComboBox fx:id="languageSelector" layoutX="31.0" layoutY="86.0" prefWidth="150.0" promptText="Select language" />
    </children>
 </AnchorPane>
