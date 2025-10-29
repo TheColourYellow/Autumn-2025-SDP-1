@@ -26,15 +26,23 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showError;
 
 public class BookstoreController {
+
+    private ResourceBundle rb;
+
+    @FXML
+    private Label homeLabel;
+
+    @FXML
+    private Label bookListLabel;
+
+    @FXML
+    private Label bookStoreLabel;
 
     @FXML
     private VBox genreSidebar;
@@ -78,9 +86,9 @@ public class BookstoreController {
 
         // Update button text, when sidebar is visible and when it's not
         if (isVisible) {
-            sidebarButton.setText("Show Genres");
+            sidebarButton.setText(rb.getString("sidebarButtonShow"));
         } else {
-            sidebarButton.setText("Hide Genres");
+            sidebarButton.setText(rb.getString("sidebarButtonHide"));
         }
     }
 
@@ -143,14 +151,22 @@ public class BookstoreController {
     @FXML
     public void initialize() {
 
+        rb = ResourceBundle.getBundle("LanguageBundle", new Locale("en", "US"));
+
         // Initialize language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "Arabic", "English"));
+        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English"));
+        languageSelector.setValue("English"); // Default language
         languageSelector.setOnAction(event -> handleLanguageChange());
+
+
 
         // Update login label based on session state
         if (SessionManager.isLoggedIn()) {
-            loginLabel.setText("Profile");
+            loginLabel.setText(rb.getString("profileLabel"));
             loginLabel.setOnMouseClicked(event -> openProfileWindow());
+        } else {
+            loginLabel.setText(rb.getString("loginLabel"));
+            loginLabel.setOnMouseClicked(event -> openLoginWindow());
         }
 
         // Show management label only for admin users
@@ -199,7 +215,7 @@ public class BookstoreController {
             public TableCell<Book, Void> call(final TableColumn<Book, Void> param) {
                 final TableCell<Book, Void> cell = new TableCell<Book, Void>() {
 
-                    private final Button btn = new Button("Add to Cart");
+                    private final Button btn = new Button(rb.getString("addToCartButton"));
 
                     {
                         btn.setOnAction(event -> {
@@ -321,23 +337,41 @@ public class BookstoreController {
         });
     }
 
-    // For handling language change
-    // TODO: Implement actual language change functionality
+    // For handling language change with the dropdown menu
     private void handleLanguageChange() {
         String selectedLanguage = languageSelector.getValue();
         if (selectedLanguage == null) return;
 
         switch (selectedLanguage) {
             case "Japanese":
+                loadLanguage("ja", "JP");
                 System.out.println("Language changed to Japanese");
                 break;
-            case "Arabic":
-                System.out.println("Language changed to Arabic");
-                break;
             case "English":
+                loadLanguage("en", "US");
                 System.out.println("Language changed to English");
                 break;
         }
+    }
+
+    // Load a specific language
+    private void loadLanguage(String langCode, String country) {
+        Locale locale = new Locale(langCode, country);
+        rb = ResourceBundle.getBundle("LanguageBundle", locale);
+
+        // Update UI texts
+        sidebarButton.setText(rb.getString("sidebarButtonShow"));
+        loginLabel.setText(SessionManager.isLoggedIn() ? rb.getString("profileLabel") : rb.getString("loginLabel"));
+        managementLabel.setText(rb.getString("managementLabel"));
+        searchField.setPromptText(rb.getString("searchPrompt"));
+        titleColumn.setText(rb.getString("bookNameColumn"));
+        authorColumn.setText(rb.getString("authorColumn"));
+        genreColumn.setText(rb.getString("genreColumn"));
+        priceColumn.setText(rb.getString("priceColumn"));
+        actionColumn.setText(rb.getString("addToCartButton"));
+        homeLabel.setText(rb.getString("homeLabel"));
+        bookListLabel.setText(rb.getString("bookListLabel"));
+        bookStoreLabel.setText(rb.getString("bookStoreLabel"));
     }
 
 

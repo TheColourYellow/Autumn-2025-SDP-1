@@ -8,13 +8,13 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="704.0" prefWidth="953.0" style="-fx-background-color: #CAD5E2;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group9.controller.BookstoreController">
    <children>
-      <Label layoutX="14.0" prefHeight="85.0" prefWidth="270.0" text="Bookstore">
+      <Label fx:id="bookStoreLabel" layoutX="14.0" prefHeight="85.0" prefWidth="270.0" text="Bookstore">
          <font>
             <Font name="Arimo" size="47.0" />
          </font></Label>
       <HBox alignment="CENTER_RIGHT" layoutX="246.0" layoutY="23.0" prefHeight="49.0" prefWidth="631.0" spacing="100.0">
          <children>
-            <Label text="Home" underline="true">
+            <Label fx:id="homeLabel" text="Home" underline="true">
                <font>
                   <Font name="Arimo" size="25.0" />
                </font>
@@ -48,7 +48,7 @@
            <TableColumn prefWidth="119.0" />
         </columns>
       </TableView>
-      <Label layoutX="503.0" layoutY="157.0" text="Book List">
+      <Label fx:id="bookListLabel" layoutX="503.0" layoutY="157.0" text="Book List">
          <font>
             <Font name="Arimo" size="25.0" />
          </font>
