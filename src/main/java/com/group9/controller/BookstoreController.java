@@ -329,7 +329,7 @@ public class BookstoreController {
 
         switch (selectedLanguage) {
             case "Japanese":
-                System.out.println("Language changed to Chinese");
+                System.out.println("Language changed to Japanese");
                 break;
             case "Arabic":
                 System.out.println("Language changed to Arabic");
