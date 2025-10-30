@@ -10,6 +10,7 @@ import com.group9.service.AuthorService;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -17,16 +18,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showConfirmation;
@@ -57,6 +56,14 @@ public class BookManageController {
   @FXML
   private Button deleteBtn;
 
+  @FXML private Label titleLabel;
+  @FXML private Label isbnLabel;
+  @FXML private Label yearLabel;
+  @FXML private Label priceLabel;
+  @FXML private Label descLabel;
+  @FXML private Label genresLabel;
+  @FXML private Label authorsLabel;
+
   private final BookService bookService = new BookService(new BookDao());
   private final GenreService genreService = new GenreService(new GenreDao());
   private final AuthorService authorService = new AuthorService(new AuthorDao());
@@ -67,8 +74,22 @@ public class BookManageController {
   private final Map<Genre, BooleanProperty> genreSelections = new HashMap<>();
   private final Map<Author, BooleanProperty> authorSelections = new HashMap<>();
 
+  private ResourceBundle rb;
+
   @FXML
   private void initialize() {
+    rb = SessionManager.getResourceBundle();
+    titleLabel.setText(rb.getString("titleLabel"));
+    isbnLabel.setText(rb.getString("isbnLabel"));
+    yearLabel.setText(rb.getString("yearLabel"));
+    priceLabel.setText(rb.getString("priceLabel"));
+    descLabel.setText(rb.getString("descriptionLabel"));
+    genresLabel.setText(rb.getString("genresLabel"));
+    authorsLabel.setText(rb.getString("authorsLabel"));
+    addBtn.setText(rb.getString("addButton"));
+    cancelBtn.setText(rb.getString("cancelButton"));
+    deleteBtn.setText(rb.getString("deleteButton"));
+
     deleteBtn.setVisible(false); // Hide delete button for new books
 
     genreListView.setItems(genreData);
@@ -90,7 +111,7 @@ public class BookManageController {
     yearTextField.setText(String.valueOf(book.getYear()));
     priceTextField.setText(String.valueOf(book.getPrice()));
     descTextArea.setText(book.getDescription());
-    addBtn.setText("Update");
+    addBtn.setText(rb.getString("updateButton"));
 
     // Apply selections if data is already loaded
     if (!genreData.isEmpty() && !authorData.isEmpty()) {
