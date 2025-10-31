@@ -11,6 +11,7 @@ import com.group9.service.AuthorService;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,11 +28,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import static com.group9.util.PopupUtils.showError;
 
 public class ManagementController {
-
     @FXML private Label addGenreBtn;
     @FXML private Label addBookBtn;
     @FXML private Label addAuthorBtn;
@@ -40,10 +41,15 @@ public class ManagementController {
     @FXML private ListView<Book> bookListView;
     @FXML private ListView<Author> authorListView;
 
+    @FXML private Label bookStoreLabel;
     @FXML private Label loginLabel; // for profile
     @FXML private Label homeLabel;
     @FXML private Label managementLabel;
     @FXML private ImageView shoppingCart;
+
+    @FXML private Label addGenreLabel;
+    @FXML private Label addBookLabel;
+    @FXML private Label addAuthorLabel;
 
     private final ObservableList<Genre> genreData = FXCollections.observableArrayList();
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
@@ -51,6 +57,8 @@ public class ManagementController {
     private final GenreService genreService = new GenreService(new GenreDao());
     private final BookService bookService = new BookService(new BookDao());
     private final AuthorService authorService = new AuthorService(new AuthorDao());
+
+    private ResourceBundle rb;
 
     @FXML
     private void openManagementWindow() {
@@ -129,42 +137,56 @@ public class ManagementController {
 
     @FXML
     private void initialize() {
+        rb = SessionManager.getResourceBundle();
+        updateUI();
+
         genreListView.setItems(genreData);
         bookListView.setItems(bookData);
         authorListView.setItems(authorData);
 
         genreListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
             System.out.println("Genre clicked: " + item);
-            openBookAttributeWindow("Edit Genre", item);
+            openBookAttributeWindow(rb.getString("editGenreTitle"), item, true);
         }));
         bookListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
             System.out.println("Book clicked: " + item);
-            openBookManageWindow("Edit Book", item);
+            openBookManageWindow(rb.getString("editBookTitle"), item);
         }));
         authorListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
             System.out.println("Author clicked: " + item);
-            openBookAttributeWindow("Edit Author", item);
+            openBookAttributeWindow(rb.getString("editAuthorTitle"), item, false);
         }));
 
         loadData();
     }
 
+    private void updateUI() {
+        bookStoreLabel.setText(rb.getString("bookStoreLabel"));
+        homeLabel.setText(rb.getString("homeLabel"));
+        managementLabel.setText(rb.getString("managementLabel"));
+        loginLabel.setText(rb.getString("profileLabel"));
+
+        addGenreLabel.setText(rb.getString("genreColumn"));
+        addBookLabel.setText(rb.getString("bookColumn"));
+        addAuthorLabel.setText(rb.getString("authorColumn"));
+    }
+
     @FXML
     private void addBook () {
-        openBookManageWindow("Add Book", null);
+        openBookManageWindow(rb.getString("addBookTitle"), null);
     }
 
     @FXML
     private void addAuthor () {
-        openBookAttributeWindow("Add Author", null);
+        openBookAttributeWindow(rb.getString("addAuthorTitle"), null, false);
     }
 
     @FXML
     private void addGenre () {
-        openBookAttributeWindow("Add Genre", null);
+        openBookAttributeWindow(rb.getString("addGenreTitle"), null, true);
     }
 
-    private void openBookAttributeWindow(String title, BookAttribute item) {
+    private void openBookAttributeWindow(String title, BookAttribute item, boolean isGenre) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/bookattribute_view.fxml"));
             Parent root = loader.load();
@@ -172,9 +194,8 @@ public class ManagementController {
             BookAttributeController attributeController = loader.getController();
             if (item != null) attributeController.setBookAttribute(item.copy());
             else {
-                // TODO: do this in a better way
-                if (title.contains("Genre")) attributeController.setBookAttribute(new Genre(-1, "", ""));
-                else if (title.contains("Author")) attributeController.setBookAttribute(new Author(-1, "", ""));
+                if (isGenre) attributeController.setBookAttribute(new Genre(-1, "", ""));
+                else attributeController.setBookAttribute(new Author(-1, "", ""));
             }
 
             // Refresh data when the attribute window is closed

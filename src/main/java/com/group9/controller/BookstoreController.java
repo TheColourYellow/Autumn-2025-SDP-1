@@ -150,15 +150,13 @@ public class BookstoreController {
 
     @FXML
     public void initialize() {
-
-        rb = ResourceBundle.getBundle("LanguageBundle", new Locale("en", "US"));
+        rb = SessionManager.getResourceBundle();
+        updateUI();
 
         // Initialize language selector
         languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English"));
-        languageSelector.setValue("English"); // Default language
+        languageSelector.setValue(SessionManager.getLanguage()); // Get current language
         languageSelector.setOnAction(event -> handleLanguageChange());
-
-
 
         // Update login label based on session state
         if (SessionManager.isLoggedIn()) {
@@ -345,10 +343,12 @@ public class BookstoreController {
         switch (selectedLanguage) {
             case "Japanese":
                 loadLanguage("ja", "JP");
+                SessionManager.setLanguage("Japanese");
                 System.out.println("Language changed to Japanese");
                 break;
             case "English":
                 loadLanguage("en", "US");
+                SessionManager.setLanguage("English");
                 System.out.println("Language changed to English");
                 break;
         }
@@ -356,10 +356,14 @@ public class BookstoreController {
 
     // Load a specific language
     private void loadLanguage(String langCode, String country) {
-        Locale locale = new Locale(langCode, country);
-        rb = ResourceBundle.getBundle("LanguageBundle", locale);
+        SessionManager.setLocale(new Locale(langCode, country));
+        rb = SessionManager.getResourceBundle();
 
         // Update UI texts
+        updateUI();
+    }
+
+    private void updateUI() {
         sidebarButton.setText(rb.getString("sidebarButtonShow"));
         loginLabel.setText(SessionManager.isLoggedIn() ? rb.getString("profileLabel") : rb.getString("loginLabel"));
         managementLabel.setText(rb.getString("managementLabel"));
@@ -373,6 +377,4 @@ public class BookstoreController {
         bookListLabel.setText(rb.getString("bookListLabel"));
         bookStoreLabel.setText(rb.getString("bookStoreLabel"));
     }
-
-
 }
