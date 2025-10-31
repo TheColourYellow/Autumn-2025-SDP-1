@@ -213,7 +213,7 @@ public class BookstoreController {
             public TableCell<Book, Void> call(final TableColumn<Book, Void> param) {
                 final TableCell<Book, Void> cell = new TableCell<Book, Void>() {
 
-                    private final Button btn = new Button(rb.getString("addToCartButton"));
+                    private final Button btn = new Button();
 
                     {
                         btn.setOnAction(event -> {
@@ -229,6 +229,7 @@ public class BookstoreController {
                         if (empty) {
                             setGraphic(null); // No button in empty rows
                         } else {
+                            btn.setText(rb.getString("addToCartButton"));
                             setGraphic(btn);  // Show button in data rows
                         }
                     }
@@ -376,5 +377,8 @@ public class BookstoreController {
         homeLabel.setText(rb.getString("homeLabel"));
         bookListLabel.setText(rb.getString("bookListLabel"));
         bookStoreLabel.setText(rb.getString("bookStoreLabel"));
+
+        // Refresh table to update button texts when language changes
+        bookTable.refresh();
     }
 }
