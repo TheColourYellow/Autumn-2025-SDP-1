@@ -35,6 +35,8 @@ public class ProfileController {
     @FXML
     private Label emailLabel;
 
+    private ResourceBundle rb;
+
     @FXML
     private void openHomeWindow() {
         try {
@@ -47,7 +49,7 @@ public class ProfileController {
             stage.setTitle("Bookstore Management System");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open home window");
+            showError(rb.getString("errorLabel"), rb.getString("homewindowErrorMessage"));
         }
     }
 
@@ -77,7 +79,7 @@ public class ProfileController {
     @FXML
     private void logout() {
         // Confirm logout action
-        if (showConfirmation("Logout", "Are you sure you want to logout?")) {
+        if (showConfirmation(rb.getString("logoutWindowTitle"), rb.getString("logoutWindowMessage"))) {
             // Handle logout
             SessionManager.logout();
             openHomeWindow();
@@ -86,17 +88,19 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
+        // Get user account details
+        User currentUser = SessionManager.getCurrentUser();
+
+        rb = SessionManager.getResourceBundle();
+        updateUI(currentUser);
         // Go back to home window if not logged in
         if (!SessionManager.isLoggedIn()) {
             openHomeWindow();
         }
 
-        // Get user account details
-        User currentUser = SessionManager.getCurrentUser();
-
         // Show account details
-        nameLabel.setText("Name: " + currentUser.getUsername());
-        emailLabel.setText("Email: " + currentUser.getEmail());
+        nameLabel.setText(rb.getString("nameLabel")+ ": " + currentUser.getUsername());
+        emailLabel.setText(rb.getString("emailPrompt")+ ": " + currentUser.getEmail());
 
         System.out.println("POPULATING HISTORY ");
         OrderService orderService = new OrderService(new OrderDao());
@@ -109,5 +113,10 @@ public class ProfileController {
                 orderListView.getItems().add(item.getBook().getTitle());
             }
         }
+    }
+    private void updateUI(User user) {
+        nameLabel.setText(rb.getString("nameLabel")+ ": " + user.getUsername());
+        emailLabel.setText(rb.getString("emailPrompt")+ ": " + user.getEmail());
+
     }
 }
