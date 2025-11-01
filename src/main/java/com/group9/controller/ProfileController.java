@@ -35,8 +35,6 @@ public class ProfileController {
     @FXML
     private Label emailLabel;
 
-    private ResourceBundle rb;
-
     @FXML
     private void openHomeWindow() {
         try {
