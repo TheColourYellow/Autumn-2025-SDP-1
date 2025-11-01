@@ -106,7 +106,7 @@ public class BookstoreController {
             // Change the view to the new login view
             stage.setScene(new Scene(root));
 
-            stage.setTitle("Login");
+            stage.setTitle(rb.getString("loginPageText"));
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open login window.");

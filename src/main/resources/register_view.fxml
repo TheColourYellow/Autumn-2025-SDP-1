@@ -41,7 +41,7 @@
                             <children>
                                 <HBox alignment="CENTER" prefHeight="86.0" prefWidth="458.0" style="-fx-background-color: #CAD5E2;">
                                     <children>
-                                        <Label fx:id="registerLabel" text="Register">
+                                        <Label fx:id="registerText" text="Register">
                                             <font>
                                                 <Font size="33.0" />
                                             </font>

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -35,6 +36,24 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
+    private Button loginButton;
+
+    @FXML
+    private Label loginText;
+
+    @FXML
+    private Label loginLabel;
+
+    @FXML
+    private Label bookstoreLabel;
+
+    @FXML
+    public void initialize() {
+        rb = SessionManager.getResourceBundle();
+        updateUI();
+    }
+
+    @FXML
     private void handleMouseEnterLabel() {
         registerLabel.setUnderline(true);   // underline sign up text when mouse hovers over it
         registerLabel.setStyle("-fx-text-fill: #FA33A0;"); // change color
@@ -58,8 +77,6 @@ public class LoginController {
             Stage stage = (Stage) homeLabel.getScene().getWindow();
 
             stage.setScene(new Scene(loginRoot));
-
-            stage.setTitle("Bookstore Management System");
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open home window");
@@ -75,7 +92,7 @@ public class LoginController {
 
             Stage stage = (Stage) registerLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Register");
+            stage.setTitle(rb.getString("registerPageText"));
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open register window.");
@@ -130,6 +147,17 @@ public class LoginController {
         } catch (Exception e) {
             showError("Error", "Could not log in user");
         }
+    }
+
+    private void updateUI() {
+        homeLabel.setText(rb.getString("homeLabel"));
+        registerLabel.setText(rb.getString("registerLabel"));
+        loginButton.setText(rb.getString("loginButton"));
+        usernameField.setPromptText(rb.getString("usernamePrompt"));
+        passwordField.setPromptText(rb.getString("passwordPrompt"));
+        loginText.setText(rb.getString("loginText"));
+        bookstoreLabel.setText(rb.getString("bookStoreLabel"));
+        loginLabel.setText(SessionManager.isLoggedIn() ? rb.getString("profileLabel") : rb.getString("loginLabel"));
     }
 }
 

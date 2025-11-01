@@ -42,7 +42,7 @@ public class RegisterController {
     private Button registerButton;
 
     @FXML
-    private Label registerLabel;
+    private Label registerText;
 
     @FXML
     private Label bookstoreLabel;
@@ -140,7 +140,7 @@ public class RegisterController {
         emailField.setPromptText(rb.getString("emailPrompt"));
         passwordField.setPromptText(rb.getString("passwordPrompt"));
         registerButton.setText(rb.getString("registerButton"));
-        registerLabel.setText(rb.getString("registerLabel"));
+        registerText.setText(rb.getString("registerText"));
         bookstoreLabel.setText(rb.getString("bookStoreLabel"));
         loginLabel.setText(SessionManager.isLoggedIn() ? rb.getString("profileLabel") : rb.getString("loginLabel"));
 
