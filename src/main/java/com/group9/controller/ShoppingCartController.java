@@ -1,6 +1,7 @@
 package com.group9.controller;
 
 import com.group9.model.Book;
+import com.group9.util.SessionManager;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,17 +14,36 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class ShoppingCartController {
+
+    private ResourceBundle rb;
 
     @FXML private VBox cartItems;
     @FXML private Button emptyButton;
     @FXML private Button checkoutButton;
     @FXML private VBox cartVbox; // vbox where items go in cart
     @FXML private Label totalLabel; // label for total amount
+    @FXML private Label yourCartLabel; //
+    @FXML private Label totalTextLabel;
+    @FXML private Label currencyLabel;
 
     private ObservableList<Book> cart; // ObservableList so that UI updates automatically when changes in cart
+
+    public void initialize() {
+        rb = SessionManager.getResourceBundle();
+        updateUI();
+    }
+
+    public void updateUI() {
+        yourCartLabel.setText(rb.getString("yourCartLabel"));
+        totalTextLabel.setText(rb.getString("totalTextLabel"));
+        currencyLabel.setText(rb.getString("currencyLabel"));
+        emptyButton.setText(rb.getString("emptyCartButton"));
+        checkoutButton.setText(rb.getString("checkoutButton"));
+    }
 
     public void setCart(ObservableList<Book> cart) {
         this.cart = cart;
