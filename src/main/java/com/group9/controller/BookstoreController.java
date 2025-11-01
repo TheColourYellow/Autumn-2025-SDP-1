@@ -276,6 +276,7 @@ public class BookstoreController {
     @FXML
     private void openShoppingCart() {
         System.out.println("Shopping cart clicked!");
+        rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
@@ -289,7 +290,7 @@ public class BookstoreController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle("Your Cart");
+            stage.setTitle(rb.getString("yourCartLabel"));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
             stage.setScene(scene);

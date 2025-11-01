@@ -6,6 +6,7 @@ import com.group9.model.Order;
 import com.group9.model.OrderItem;
 import com.group9.service.OrderService;
 import com.group9.util.SessionManager;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +19,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import static com.group9.util.SessionManager.getLanguage;
 
 public class CheckoutController {
 
@@ -30,21 +34,45 @@ public class CheckoutController {
     @FXML private ImageView visaImage;
     @FXML private ImageView mastercardImage;
 
+    @FXML private Label currencyLabel;
+    @FXML private Label totalTextLabel;
+    @FXML private Label checkoutTitleLabel;
+    @FXML private Label selectPaymentLabel;
+
+
     // selected card
     private ImageView selectedCard = null;
     private final String NORMAL_STYLE = "-fx-effect: dropshadow(gaussian, gray, 5, 0.3, 0, 0); -fx-cursor: hand;";
     private final String SELECTED_STYLE = "-fx-effect: dropshadow(gaussian, blue, 15, 0.7, 0, 0); -fx-border-color: blue; -fx-border-width: 3; -fx-cursor: hand;";
 
     private ObservableList<Book> cart; // holds cart items
+    private ResourceBundle rb;
 
     @FXML
     public void initialize() {
+        rb = SessionManager.getResourceBundle();
+        updateUI();
         // initial style and click handler
         visaImage.setStyle(NORMAL_STYLE);
         mastercardImage.setStyle(NORMAL_STYLE);
 
         visaImage.setOnMouseClicked(e -> selectCard(visaImage));
         mastercardImage.setOnMouseClicked(e -> selectCard(mastercardImage));
+
+        Platform.runLater(() -> {
+            // move focus away
+            cardNumberField.getParent().requestFocus();
+        });
+    }
+
+    public void updateUI() {
+        checkoutTitleLabel.setText(rb.getString("checkoutLabel"));
+        totalTextLabel.setText(rb.getString("totalTextLabel"));
+        currencyLabel.setText(rb.getString("currencyLabel"));
+        selectPaymentLabel.setText(rb.getString("selectPaymentLabel"));
+        orderButton.setText(rb.getString("placeOrderButton"));
+        returnButton.setText(rb.getString("returnToCartButton"));
+        cardNumberField.setPromptText(rb.getString("cardNumberField"));
     }
 
     // called by ShoppingCartController to pass the cart items
@@ -63,15 +91,48 @@ public class CheckoutController {
                     .stream()
                     .map(author -> author.getName())
                     .collect(Collectors.joining(", "));
-            Label label = new Label(book.getTitle() + " by " + authors + " - " +  book.getPrice() + "€");
+            Label label = new Label(book.getTitle() + " by " + authors + " - " +  currencyPrice(book.getPrice()) + rb.getString("currencyLabel"));
             checkoutBox.getChildren().add(label);
         }
     }
 
+    // convert price based on selected language
+    private String currencyPrice(double price) {
+        String selectedLanguage = getLanguage();
+        double convertedPrice = price;
+
+        switch (selectedLanguage) {
+            case "English": // euro = dollar
+                break;
+            case "Japanese":
+                convertedPrice = price * 178.68; // 1 Euro = 178 Yen
+                break;
+            case "Arabic":
+                convertedPrice = price * 4.33; // 1 Euro = 4.33 SAR
+                break;
+        }
+        String formatted = String.format("%.2f", convertedPrice).replace('.', ',');
+        return formatted;
+    }
+
     // calculate total
     private void updateTotal() {
+        String selectedLanguage = getLanguage();
         double total = cart.stream().mapToDouble(Book::getPrice).sum();
-        totalLabel.setText(String.format("%.2f", total));
+
+        switch (selectedLanguage) {
+            case "English": // euro = dollar
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
+            case "Japanese":
+                total = total * 178.68; // 1 Euro = 178 Yen
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
+            case "Arabic":
+                total = total * 4.33; // 1 Euro = 4.33 SAR
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
+        }
     }
 
     private void selectCard(ImageView card) {

@@ -18,11 +18,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
 
 public class ProfileController {
+    private ResourceBundle rb;
 
     @FXML private Label homeLabel;
     @FXML private ImageView shoppingCart;
@@ -52,6 +54,7 @@ public class ProfileController {
     @FXML
     private void openShoppingCart() {
         System.out.println("Shopping cart clicked!");
+        rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
@@ -61,7 +64,7 @@ public class ProfileController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle("Your Cart");
+            stage.setTitle(rb.getString("yourCartLabel"));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
             stage.setScene(scene);
