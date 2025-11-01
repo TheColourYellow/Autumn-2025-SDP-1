@@ -77,8 +77,6 @@ public class LoginController {
             Stage stage = (Stage) homeLabel.getScene().getWindow();
 
             stage.setScene(new Scene(loginRoot));
-
-            stage.setTitle(rb.getString("bookstoreTitle"));
             stage.show();
         } catch (Exception e) {
             showError("Error", "Could not open home window");
