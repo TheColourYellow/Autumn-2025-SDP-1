@@ -8,11 +8,15 @@ import com.group9.model.Genre;
 import com.group9.service.AuthorService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
@@ -33,6 +37,11 @@ public class BookAttributeController {
   @FXML
   private Button deleteBtn;
 
+  @FXML private Label nameLabel;
+  @FXML private Label descLabel;
+
+  private ResourceBundle rb;
+
   // Services
   private final AuthorService authorService = new AuthorService(new AuthorDao());
   private final GenreService genreService = new GenreService(new GenreDao());
@@ -43,10 +52,20 @@ public class BookAttributeController {
     descTextField.setText(bookAttribute.getDescription());
     if (bookAttribute.getId() != -1) {
       deleteBtn.setVisible(true);
-      addBtn.setText("Update");
+      addBtn.setText(rb.getString("updateButton"));
     } else {
       deleteBtn.setVisible(false);
     }
+  }
+
+  @FXML
+  private void initialize() {
+    rb = SessionManager.getResourceBundle();
+    nameLabel.setText(rb.getString("nameLabel"));
+    descLabel.setText(rb.getString("descriptionLabel"));
+    addBtn.setText(rb.getString("addButton"));
+    cancelBtn.setText(rb.getString("cancelButton"));
+    deleteBtn.setText(rb.getString("deleteButton"));
   }
 
   public void setOnCloseCallback(Runnable onCloseCallback) {

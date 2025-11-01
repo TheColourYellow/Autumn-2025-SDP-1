@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -16,10 +17,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showError;
 
 public class RegisterController {
+
+    private ResourceBundle rb;
 
     @FXML private Label homeLabel;
 
@@ -34,8 +38,26 @@ public class RegisterController {
     @FXML
     private PasswordField passwordField;
 
+    @FXML
+    private Button registerButton;
+
+    @FXML
+    private Label registerLabel;
+
+    @FXML
+    private Label bookstoreLabel;
+
+    @FXML
+    private Label loginLabel;
+
     // UserService manages all registration related tasks -> give it new UserDao to get access to users table
     private final UserService userService = new UserService(new UserDao());
+
+    @FXML
+    public void initialize() {
+        rb = SessionManager.getResourceBundle();
+        updateUI();
+    }
 
     @FXML
     private void openHomeWindow() {
@@ -110,6 +132,20 @@ public class RegisterController {
     private void handleRegister() {
         registerUser(); // Call the main registration logic
     }
+
+    private void updateUI() {
+        homeLabel.setText(rb.getString("homeLabel"));
+        usernameField.setPromptText(rb.getString("usernamePrompt"));
+        emailField.setPromptText(rb.getString("emailPrompt"));
+        passwordField.setPromptText(rb.getString("passwordPrompt"));
+        registerButton.setText(rb.getString("registerButton"));
+        registerLabel.setText(rb.getString("registerLabel"));
+        bookstoreLabel.setText(rb.getString("bookStoreLabel"));
+        loginLabel.setText(SessionManager.isLoggedIn() ? rb.getString("profileLabel") : rb.getString("loginLabel"));
+
+    }
+
+
 
 
 }
