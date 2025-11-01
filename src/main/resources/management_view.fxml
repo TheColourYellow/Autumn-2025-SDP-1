@@ -18,17 +18,17 @@
             </font></Label>
         <HBox alignment="CENTER_RIGHT" layoutX="266.0" layoutY="23.0" prefHeight="50.0" prefWidth="662.0" spacing="100.0">
             <children>
-                <Label fx:id="homeLabel" onMouseClicked="#openHomeWindow" prefHeight="36.0" prefWidth="129.0" text="Home">
+                <Label fx:id="homeLabel" onMouseClicked="#openHomeWindow" prefHeight="36.0" prefWidth="129.0" styleClass="nav-label" stylesheets="@look.css" text="Home">
                     <font>
                         <Font size="24.0" />
                     </font>
                 </Label>
-            <Label fx:id="managementLabel" onMouseClicked="#openManagementWindow" prefHeight="35.0" prefWidth="190.0" text="Management" underline="true">
+            <Label fx:id="managementLabel" onMouseClicked="#openManagementWindow" prefHeight="35.0" prefWidth="190.0" styleClass="nav-label" stylesheets="@look.css" text="Management" underline="true">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-                <Label fx:id="loginLabel" onMouseClicked="#openProfileWindow" prefHeight="36.0" prefWidth="130.0" text="Profile">
+                <Label fx:id="loginLabel" onMouseClicked="#openProfileWindow" prefHeight="36.0" prefWidth="130.0" styleClass="nav-label" stylesheets="@look.css" text="Profile">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -55,14 +55,14 @@
                                     <Font name="System Bold" size="24.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="addGenreBtn" onMouseClicked="#addGenre" alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="50.0" text="+" textFill="#00000080">
+                              <Label fx:id="addGenreBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#addGenre" prefHeight="50.0" prefWidth="50.0" styleClass="add-button" stylesheets="@look.css" text="+">
                                  <font>
                                     <Font name="System Bold" size="36.0" />
                                  </font>
                               </Label>
                            </children>
                         </HBox>
-                        <ListView fx:id="genreListView" prefHeight="486.0" prefWidth="300.0" />
+                        <ListView fx:id="genreListView" prefHeight="486.0" prefWidth="300.0" styleClass="management-table" stylesheets="@look.css" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER" prefHeight="580.0" prefWidth="300.0">
@@ -74,14 +74,14 @@
                                     <Font name="System Bold" size="24.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="addBookBtn" onMouseClicked="#addBook" alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="50.0" text="+" textFill="#00000080">
+                              <Label fx:id="addBookBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#addBook" prefHeight="50.0" prefWidth="50.0" styleClass="add-button" stylesheets="@look.css" text="+">
                                  <font>
                                     <Font name="System Bold" size="36.0" />
                                  </font>
                               </Label>
                            </children>
                         </HBox>
-                        <ListView fx:id="bookListView"  prefHeight="486.0" prefWidth="300.0" />
+                        <ListView fx:id="bookListView" prefHeight="486.0" prefWidth="300.0" styleClass="management-table" stylesheets="@look.css" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER" prefHeight="580.0" prefWidth="300.0">
@@ -93,14 +93,14 @@
                                     <Font name="System Bold" size="24.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="addAuthorBtn" onMouseClicked="#addAuthor" alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="50.0" text="+" textFill="#00000080">
+                              <Label fx:id="addAuthorBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#addAuthor" prefHeight="50.0" prefWidth="50.0" styleClass="add-button" stylesheets="@look.css" text="+">
                                  <font>
                                     <Font name="System Bold" size="36.0" />
                                  </font>
                               </Label>
                            </children>
                         </HBox>
-                        <ListView fx:id="authorListView" prefHeight="486.0" prefWidth="300.0" />
+                        <ListView fx:id="authorListView" prefHeight="486.0" prefWidth="300.0" styleClass="management-table" stylesheets="@look.css" />
                      </children>
                   </VBox>
                </children>

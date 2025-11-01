@@ -64,8 +64,10 @@ public class ProfileController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle(rb.getString("yourCartLabel"));
-            stage.setScene(new Scene(root));
+            stage.setTitle("Your Cart");
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
