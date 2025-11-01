@@ -18,11 +18,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
 
 public class ProfileController {
+    private ResourceBundle rb;
 
     @FXML private Label homeLabel;
     @FXML private ImageView shoppingCart;
@@ -45,13 +47,14 @@ public class ProfileController {
             stage.setTitle("Bookstore Management System");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open home window");
+            showError(rb.getString("errorLabel"), rb.getString("homewindowErrorMessage"));
         }
     }
 
     @FXML
     private void openShoppingCart() {
         System.out.println("Shopping cart clicked!");
+        rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
@@ -61,8 +64,10 @@ public class ProfileController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle("Your Cart");
-            stage.setScene(new Scene(root));
+            stage.setTitle(rb.getString("yourCartLabel"));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +77,7 @@ public class ProfileController {
     @FXML
     private void logout() {
         // Confirm logout action
-        if (showConfirmation("Logout", "Are you sure you want to logout?")) {
+        if (showConfirmation(rb.getString("logoutWindowTitle"), rb.getString("logoutWindowMessage"))) {
             // Handle logout
             SessionManager.logout();
             openHomeWindow();
@@ -81,17 +86,19 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
+        // Get user account details
+        User currentUser = SessionManager.getCurrentUser();
+
+        rb = SessionManager.getResourceBundle();
+        updateUI(currentUser);
         // Go back to home window if not logged in
         if (!SessionManager.isLoggedIn()) {
             openHomeWindow();
         }
 
-        // Get user account details
-        User currentUser = SessionManager.getCurrentUser();
-
         // Show account details
-        nameLabel.setText("Name: " + currentUser.getUsername());
-        emailLabel.setText("Email: " + currentUser.getEmail());
+        nameLabel.setText(rb.getString("nameLabel")+ ": " + currentUser.getUsername());
+        emailLabel.setText(rb.getString("emailPrompt")+ ": " + currentUser.getEmail());
 
         System.out.println("POPULATING HISTORY ");
         OrderService orderService = new OrderService(new OrderDao());
@@ -104,5 +111,10 @@ public class ProfileController {
                 orderListView.getItems().add(item.getBook().getTitle());
             }
         }
+    }
+    private void updateUI(User user) {
+        nameLabel.setText(rb.getString("nameLabel")+ ": " + user.getUsername());
+        emailLabel.setText(rb.getString("emailPrompt")+ ": " + user.getEmail());
+
     }
 }

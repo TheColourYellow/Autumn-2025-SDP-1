@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="591.0" prefWidth="439.0" style="-fx-background-color: #CAD5E2;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group9.controller.CheckoutController">
+<AnchorPane prefHeight="591.0" prefWidth="439.0" style="-fx-background-color: #CAD5E2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group9.controller.CheckoutController">
    <children>
-      <Label layoutX="156.0" text="Checkout">
+      <Label fx:id="checkoutTitleLabel" layoutX="156.0" text="Checkout">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -31,7 +31,7 @@
          <children>
             <HBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="439.0">
                <children>
-                  <Label text="Total:">
+                  <Label fx:id="totalTextLabel" text="Total:">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -47,7 +47,7 @@
                         <Insets bottom="10.0" left="5.0" top="10.0" />
                      </padding>
                   </Label>
-                  <Label text="€">
+                  <Label fx:id="currencyLabel" text="€">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -57,7 +57,7 @@
                   </Label>
                </children>
             </HBox>
-            <Label text="Select payment method">
+            <Label fx:id="selectPaymentLabel" text="Select payment method">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -82,18 +82,24 @@
                   </ImageView>
                </children>
             </HBox>
-            <TextField fx:id="cardNumberField" prefHeight="26.0" prefWidth="298.0" promptText="Card number" />
+            <TextField fx:id="cardNumberField" prefHeight="26.0" prefWidth="298.0" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="returnButton" mnemonicParsing="false" onMouseClicked="#returnToCart" text="Return">
+                  <Button fx:id="returnButton" mnemonicParsing="false" onMouseClicked="#returnToCart" styleClass="action-button" stylesheets="@look.css" text="Return">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
                   </Button>
-                  <Button fx:id="orderButton" mnemonicParsing="false" onMouseClicked="#placeOrder" text="Place Order">
+                  <Button fx:id="orderButton" mnemonicParsing="false" onMouseClicked="#placeOrder" styleClass="action-button" stylesheets="@look.css" text="Place Order">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
                   </Button>
                </children>
             </HBox>

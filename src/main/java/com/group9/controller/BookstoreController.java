@@ -154,7 +154,7 @@ public class BookstoreController {
         updateUI();
 
         // Initialize language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English"));
+        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English", "Arabic"));
         languageSelector.setValue(SessionManager.getLanguage()); // Get current language
         languageSelector.setOnAction(event -> handleLanguageChange());
 
@@ -276,6 +276,7 @@ public class BookstoreController {
     @FXML
     private void openShoppingCart() {
         System.out.println("Shopping cart clicked!");
+        rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
@@ -289,8 +290,10 @@ public class BookstoreController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle("Your Cart");
-            stage.setScene(new Scene(root));
+            stage.setTitle(rb.getString("yourCartLabel"));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -352,6 +355,10 @@ public class BookstoreController {
                 SessionManager.setLanguage("English");
                 System.out.println("Language changed to English");
                 break;
+            case "Arabic":
+                loadLanguage("ar", "SA");
+                SessionManager.setLanguage("Arabic");
+                System.out.println("Language changed to Arabic");
         }
     }
 

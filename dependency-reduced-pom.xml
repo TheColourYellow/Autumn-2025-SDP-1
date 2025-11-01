@@ -140,6 +140,26 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit5</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>testfx-core</artifactId>
+          <groupId>org.testfx</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hamcrest</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>assertj-core</artifactId>
+          <groupId>org.assertj</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
   <properties>
     <maven.compiler.target>17</maven.compiler.target>

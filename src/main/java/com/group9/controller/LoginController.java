@@ -16,10 +16,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showError;
 
 public class LoginController {
+
+    private ResourceBundle rb;
 
     @FXML private Label homeLabel;
     @FXML private Label registerLabel;
@@ -81,6 +84,7 @@ public class LoginController {
 
     @FXML
     private void openShoppingCart() {
+        rb = SessionManager.getResourceBundle();
         System.out.println("Shopping cart clicked!");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -91,7 +95,7 @@ public class LoginController {
             Stage stage = new Stage();
             stage.initOwner(owner);
             stage.initModality(Modality.WINDOW_MODAL); // makes the cart window as modal
-            stage.setTitle("Your Cart");
+            stage.setTitle(rb.getString("yourCartLabel"));
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -115,7 +119,9 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
+            stage.setScene(scene);
             stage.setTitle("Profile");
             stage.show();
 
