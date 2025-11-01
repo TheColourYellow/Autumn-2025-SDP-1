@@ -154,7 +154,7 @@ public class BookstoreController {
         updateUI();
 
         // Initialize language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English"));
+        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English", "Arabic"));
         languageSelector.setValue(SessionManager.getLanguage()); // Get current language
         languageSelector.setOnAction(event -> handleLanguageChange());
 
@@ -352,6 +352,10 @@ public class BookstoreController {
                 SessionManager.setLanguage("English");
                 System.out.println("Language changed to English");
                 break;
+            case "Arabic":
+                loadLanguage("ar", "SA");
+                SessionManager.setLanguage("Arabic");
+                System.out.println("Language changed to Arabic");
         }
     }
 
