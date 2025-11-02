@@ -116,7 +116,13 @@ public class BookstoreController {
     private void openProfileWindow() {
         try {
             // Load the FXML file for the profile window
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            FXMLLoader loader;
+            if (SessionManager.getLanguage().equals("Arabic")) {
+                loader = new FXMLLoader(getClass().getResource("/profile_view_rtl.fxml"));
+            }
+            else {
+                loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            }
             Parent root = loader.load();
 
             // login label is clicked, content of the window is replaced with the content of profile window
