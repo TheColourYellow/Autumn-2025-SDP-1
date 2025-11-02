@@ -30,10 +30,15 @@ public class ProfileController {
     @FXML private ImageView shoppingCart;
     @FXML private ListView <String> orderListView;
 
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private Label emailLabel;
+    @FXML private Label nameLabel;
+    @FXML private Label emailLabel;
+
+    @FXML private Label bookStoreLabel;
+    @FXML private Label logoutLabel;
+    @FXML private Label profileTextLabel;
+    @FXML private Label accountDetailsLabel;
+    @FXML private Label orderHistoryLabel;
+
 
     @FXML
     private void openHomeWindow() {
@@ -90,15 +95,20 @@ public class ProfileController {
         User currentUser = SessionManager.getCurrentUser();
 
         rb = SessionManager.getResourceBundle();
-        updateUI(currentUser);
         // Go back to home window if not logged in
         if (!SessionManager.isLoggedIn()) {
             openHomeWindow();
         }
 
         // Show account details
+        updateUI(currentUser);
+        /*
         nameLabel.setText(rb.getString("nameLabel")+ ": " + currentUser.getUsername());
         emailLabel.setText(rb.getString("emailPrompt")+ ": " + currentUser.getEmail());
+        homeLabel.setText(rb.getString("homeLabel"));
+        logoutLabel.setText("logoutWindowTitle");
+        accountDetailsLabel.setText(rb.getString("accountDetailsLabel"));
+        orderHistoryLabel.setText(rb.getString("orderHistoryLabel"));*/
 
         System.out.println("POPULATING HISTORY ");
         OrderService orderService = new OrderService(new OrderDao());
@@ -115,6 +125,12 @@ public class ProfileController {
     private void updateUI(User user) {
         nameLabel.setText(rb.getString("nameLabel")+ ": " + user.getUsername());
         emailLabel.setText(rb.getString("emailPrompt")+ ": " + user.getEmail());
+        bookStoreLabel.setText(rb.getString("bookStoreLabel"));
+        homeLabel.setText(rb.getString("homeLabel"));
+        logoutLabel.setText(rb.getString("logoutWindowTitle"));
+        profileTextLabel.setText(rb.getString("profileLabel"));
+        accountDetailsLabel.setText(rb.getString("accountDetailsLabel"));
+        orderHistoryLabel.setText(rb.getString("orderHistoryLabel"));
 
     }
 }
