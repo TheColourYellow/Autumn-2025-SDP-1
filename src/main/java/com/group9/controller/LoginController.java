@@ -3,6 +3,7 @@ package com.group9.controller;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
 import com.group9.service.UserService;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,7 +27,9 @@ import static com.group9.util.SessionManager.getLanguage;
 public class LoginController {
 
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
 
+    @FXML private AnchorPane loginAnchor;
     @FXML private Label homeLabel;
     @FXML private Label registerLabel;
     @FXML private ImageView shoppingCart;
@@ -51,6 +55,7 @@ public class LoginController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(loginAnchor);
         updateUI();
     }
 

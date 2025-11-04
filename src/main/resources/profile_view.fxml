@@ -36,7 +36,7 @@
                 <Insets />
             </opaqueInsets>
         </HBox>
-        <AnchorPane layoutY="90.0" prefHeight="615.0" prefWidth="953.0" style="-fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FDA5D5, #FFFFFF);;">
+        <AnchorPane fx:id="profileAnchor" layoutY="90.0" prefHeight="615.0" prefWidth="953.0" style="-fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FDA5D5, #FFFFFF);;">
             <children>
                 <AnchorPane layoutX="298.0" layoutY="33.0" prefHeight="507.0" prefWidth="413.0" style="-fx-background-color: white;">
                     <children>

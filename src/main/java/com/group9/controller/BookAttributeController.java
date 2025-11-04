@@ -8,12 +8,14 @@ import com.group9.model.Genre;
 import com.group9.service.AuthorService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
@@ -24,6 +26,9 @@ import static com.group9.util.PopupUtils.showError;
 public class BookAttributeController {
   private BookAttribute bookAttribute;
   private Runnable onCloseCallback;
+  private LayoutOrienter orienter = new LayoutOrienter();
+
+  @FXML private AnchorPane bookattributeAnchor;
 
   @FXML
   private TextField nameTextField;
@@ -61,6 +66,7 @@ public class BookAttributeController {
   @FXML
   private void initialize() {
     rb = SessionManager.getResourceBundle();
+    orienter.orientLayout(bookattributeAnchor);
     nameLabel.setText(rb.getString("nameLabel"));
     descLabel.setText(rb.getString("descriptionLabel"));
     addBtn.setText(rb.getString("addButton"));

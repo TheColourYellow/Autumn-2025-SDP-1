@@ -5,6 +5,7 @@ import com.group9.model.Book;
 import com.group9.model.Order;
 import com.group9.model.OrderItem;
 import com.group9.service.OrderService;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -26,6 +28,9 @@ import static com.group9.util.SessionManager.getLanguage;
 
 public class CheckoutController {
 
+    private LayoutOrienter orienter = new LayoutOrienter();
+
+    @FXML private AnchorPane checkoutAnchor;
     @FXML private Button orderButton;
     @FXML private Button returnButton; // return to shopping cart
     @FXML private TextField cardNumberField; // text field for card number
@@ -51,6 +56,7 @@ public class CheckoutController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(checkoutAnchor);
         updateUI();
         // initial style and click handler
         visaImage.setStyle(NORMAL_STYLE);

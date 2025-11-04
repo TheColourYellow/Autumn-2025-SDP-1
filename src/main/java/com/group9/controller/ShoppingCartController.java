@@ -1,6 +1,7 @@
 package com.group9.controller;
 
 import com.group9.model.Book;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -22,6 +24,9 @@ import static com.group9.util.SessionManager.getLanguage;
 public class ShoppingCartController {
 
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
+
+    @FXML private AnchorPane shoppingCartAnchor;
 
     @FXML private VBox cartItems;
     @FXML private Button emptyButton;
@@ -36,6 +41,7 @@ public class ShoppingCartController {
 
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(shoppingCartAnchor);
         updateUI();
     }
 
