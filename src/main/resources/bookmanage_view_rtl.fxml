@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="509.0" prefWidth="294.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group9.controller.BookManageController">
+    <children>
+        <Label fx:id="titleLabel" layoutX="29.0" layoutY="24.0" text="Title" />
+        <Label fx:id="isbnLabel" layoutX="29.0" layoutY="58.0" text="Isbn" />
+        <Label fx:id="yearLabel" layoutX="166.0" layoutY="92.0" text="Year" />
+        <Label fx:id="priceLabel" layoutX="27.0" layoutY="92.0" text="Price" />
+        <Button fx:id="addBtn" layoutX="235.0" layoutY="468.0" mnemonicParsing="false" onMouseClicked="#handleSave" text="Add" />
+        <Button fx:id="cancelBtn" layoutX="15.0" layoutY="468.0" mnemonicParsing="false" onMouseClicked="#handleCancel" text="Cancel" />
+        <TextField fx:id="titleTextField" layoutX="66.0" layoutY="20.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="isbnTextField" layoutX="66.0" layoutY="54.0" prefHeight="25.0" prefWidth="200.0" />
+        <TextField fx:id="yearTextField" layoutX="202.0" layoutY="88.0" prefHeight="25.0" prefWidth="65.0" />
+        <TextField fx:id="priceTextField" layoutX="66.0" layoutY="88.0" prefHeight="25.0" prefWidth="65.0" />
+        <ListView fx:id="genreListView" layoutX="92.0" layoutY="131.0" prefHeight="60.0" prefWidth="172.0" />
+        <TextArea fx:id="descTextArea" layoutX="30.0" layoutY="314.0" prefHeight="144.0" prefWidth="234.0" />
+        <Label fx:id="descLabel" layoutX="23.0" layoutY="290.0" text="Description" />
+        <Label fx:id="genresLabel" layoutX="28.0" layoutY="131.0" text="Genres" />
+        <Label fx:id="authorsLabel" layoutX="28.0" layoutY="211.0" text="Authors" />
+        <ListView fx:id="authorListView" layoutX="92.0" layoutY="211.0" prefHeight="60.0" prefWidth="172.0" />
+        <Button fx:id="deleteBtn" layoutX="165.0" layoutY="468.0" mnemonicParsing="false" onMouseClicked="#handleDelete" text="Delete" />
+    </children>
+</AnchorPane>
