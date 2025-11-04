@@ -31,7 +31,7 @@ public class OrderService {
           return orderDao.insertOrder(order); // Return the generated order ID
       } catch (SQLException e) {
           String message = rb.getString("orderError");
-          System.err.println(message + e.getMessage());
+          System.err.println(message + " " + e.getMessage());
           return -1; // Indicate failure
       }
   }
