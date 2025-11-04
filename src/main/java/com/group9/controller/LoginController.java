@@ -85,7 +85,7 @@ public class LoginController {
             stage.setScene(new Scene(loginRoot));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open home window");
+            showError(rb.getString("error"), rb.getString("couldNotOpenHome"));
         }
     }
 
@@ -101,13 +101,12 @@ public class LoginController {
             stage.setTitle(rb.getString("registerPageText"));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open register window.");
+            showError(rb.getString("error"), rb.getString("couldNotOpenRegister"));
         }
     }
 
     @FXML
     private void openShoppingCart() {
-        rb = SessionManager.getResourceBundle();
         System.out.println("Shopping cart clicked!");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -130,7 +129,6 @@ public class LoginController {
     private void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        rb = SessionManager.getResourceBundle();
 
         try {
             // Attempt to log in user
@@ -146,7 +144,7 @@ public class LoginController {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Profile");
+            stage.setTitle(rb.getString("profilePageTitle"));
             stage.show();
 
         } catch (IllegalArgumentException e) {
