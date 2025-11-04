@@ -129,58 +129,79 @@ public class BookManageController {
     this.onCloseCallback = onCloseCallback;
   }
 
-  @FXML
-  private void handleSave() {
-    if (book != null && book.getId() != -1) {
-      // Update existing book
-      book.setTitle(titleTextField.getText().trim());
-      book.setIsbn(isbnTextField.getText().trim());
-      book.setYear(Integer.parseInt(yearTextField.getText().trim()));
-      book.setPrice(Double.parseDouble(priceTextField.getText().trim()));
-      book.setDescription(descTextArea.getText().trim());
-      book.setGenres(getSelectedGenres());
-      book.setAuthors(getSelectedAuthors());
+    @FXML
+    private void handleSave() {
+        try {
+            String title = titleTextField.getText().trim();
+            String isbn = isbnTextField.getText().trim();
+            String yearText = yearTextField.getText().trim();
+            String priceText = priceTextField.getText().trim();
+            String desc = descTextArea.getText().trim();
 
-      try {
-        bookService.updateBook(book);
+            // input validation
+            if (title.isEmpty()) {
+                showError("Validation Error", "Title cannot be empty.");
+                return;
+            }
 
-        // Refresh the book list in the main controller
-        if (onCloseCallback != null) {
-          onCloseCallback.run();
+            if (yearText.isEmpty()) {
+                showError("Validation Error", "Year cannot be empty.");
+                return;
+            }
+
+            if (priceText.isEmpty()) {
+                showError("Validation Error", "Price cannot be empty.");
+                return;
+            }
+
+            int year;
+            double price;
+            try {
+                year = Integer.parseInt(yearText);
+                price = Double.parseDouble(priceText);
+            } catch (NumberFormatException e) {
+                showError("Validation Error", "Year and price must be valid numbers.");
+                return;
+            }
+
+            if (book != null && book.getId() != -1) {
+                // Update existing book
+                book.setTitle(title);
+                book.setIsbn(isbn);
+                book.setYear(year);
+                book.setPrice(price);
+                book.setDescription(desc);
+                book.setGenres(getSelectedGenres());
+                book.setAuthors(getSelectedAuthors());
+
+                bookService.updateBook(book);
+
+            } else {
+                // Create new book
+                Book newBook = new Book(-1, title, isbn, year, price, desc);
+                newBook.setGenres(getSelectedGenres());
+                newBook.setAuthors(getSelectedAuthors());
+
+                if (bookService.addBook(newBook) == -1) {
+                    showError("Error", "Could not add book. Please try again later.");
+                    return;
+                }
+            }
+
+            // Refresh list & close
+            if (onCloseCallback != null) {
+                onCloseCallback.run();
+            }
+            handleCancel();
+
+        } catch (Exception e) {
+            showError("Error", "Unexpected error: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        // Close the dialog
-        handleCancel();
-      } catch (Exception e) {
-        showError("Error", "Could not update book: " + e.getMessage());
-      }
-    } else {
-      Book newBook = new Book(
-              -1,
-              titleTextField.getText().trim(),
-              isbnTextField.getText().trim(),
-              Integer.parseInt(yearTextField.getText().trim()),
-              Double.parseDouble(priceTextField.getText().trim()),
-              descTextArea.getText().trim()
-      );
-      newBook.setGenres(getSelectedGenres());
-      newBook.setAuthors(getSelectedAuthors());
-
-      if (bookService.addBook(newBook) != -1) { // Successfully added
-        // Refresh the book list in the main controller
-        if (onCloseCallback != null) {
-          onCloseCallback.run();
-        }
-
-        // Close the dialog
-        handleCancel();
-      } else {
-        showError("Error", "Could not add book. Please try again later.");
-      }
     }
-  }
 
-  @FXML
+
+    @FXML
   private void handleCancel() {
     Stage stage = (Stage) cancelBtn.getScene().getWindow();
     stage.close();
