@@ -12,6 +12,8 @@ manage books. Regular users can register, log in, add books to their cart, buy b
 history on a profile page. Admin users have access to a management page where they can add, edit, and remove
 books from the store.
 
+The application features multilingual support, allowing users to switch between English, Japanese, and Arabic.
+
 ## Features
 - User registration and authentication
 - User profile page with user details and order history
@@ -33,3 +35,15 @@ TestFx
 
 ## Development Method
 Agile
+
+## Localization
+The Bookstore Management System allows users to switch between multiple languages.
+Localization is implemented using Java’s ResourceBundle with all translations stored in the resources/ResourceBundles.
+
+Users can select their preferred language from the language dropdown menu on the landing page.
+After selecting the language, it is saved through the SessionManager, and all views are shown in the chosen language.
+
+The application supports following languages:
+- English
+- Japanese
+- Arabic
