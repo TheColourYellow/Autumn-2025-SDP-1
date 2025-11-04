@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showError;
+import static com.group9.util.SessionManager.getLanguage;
 
 public class LoginController {
 
@@ -124,6 +125,7 @@ public class LoginController {
     private void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
+        rb = SessionManager.getResourceBundle();
 
         try {
             // Attempt to log in user
@@ -143,11 +145,26 @@ public class LoginController {
             stage.show();
 
         } catch (IllegalArgumentException e) {
-            showError("Login Error", e.getMessage());
+            showError(rb.getString("loginError"), e.getMessage());
         } catch (Exception e) {
-            showError("Error", "Could not log in user");
+            showError(rb.getString("usernameOrPasswordIncorrect"), rb.getString("couldNotLogin"));
         }
     }
+
+//    private String updateError(String title) {
+//        String selectedLanguage = getLanguage();
+//        switch (selectedLanguage) {
+//            case "English":
+//                if (title.equals("Login error")) {
+//                    return rb.getString("loginError");
+//                } else {
+//                    return rb.getString("usernameOrPasswordIncorrect");
+//                }
+//            case "Japanese":
+//
+//        }
+//        return rb.getString("loginError");
+//    }
 
     private void updateUI() {
         homeLabel.setText(rb.getString("homeLabel"));

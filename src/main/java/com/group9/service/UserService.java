@@ -2,7 +2,10 @@ package com.group9.service;
 
 import com.group9.dao.UserDao;
 import com.group9.model.User;
+import com.group9.util.SessionManager;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.ResourceBundle;
 
 public class UserService {
   private final UserDao userDao;
@@ -12,27 +15,24 @@ public class UserService {
   }
 
   public User loginUser(String username, String password) {
-    // Validate input
-    if (username == null || username.trim().isEmpty()) {
-      throw new IllegalArgumentException("Username cannot be null or empty");
-    }
-    if (password == null || password.isEmpty()) {
-      throw new IllegalArgumentException("Password cannot be null or empty");
-    }
-
-    // Retrieve user
-    User user = userDao.getUserByUsername(username);
-    if (user == null) {
-      throw new IllegalArgumentException("Invalid username or password");
-    }
-
-    // Verify password
-    if (!BCrypt.checkpw(password, user.getPassword())) {
-      throw new IllegalArgumentException("Invalid username or password");
-    }
-
-    // Successful login
-    return user;
+      // Validate input
+      if (username == null || username.trim().isEmpty()) {
+        throw new IllegalArgumentException("Username cannot be null or empty");
+      }
+      if (password == null || password.isEmpty()) {
+        throw new IllegalArgumentException("Password cannot be null or empty");
+      }
+      // Retrieve user
+      User user = userDao.getUserByUsername(username);
+      if (user == null) {
+        throw new IllegalArgumentException("Invalid username or password");
+      }
+      // Verify password
+      if (!BCrypt.checkpw(password, user.getPassword())) {
+        throw new IllegalArgumentException("Invalid username or password");
+      }
+      // Successful login
+        return user;
   }
 
   public User registerUser(String username, String password, String email) {
