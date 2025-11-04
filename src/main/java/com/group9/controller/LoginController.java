@@ -154,21 +154,6 @@ public class LoginController {
         }
     }
 
-//    private String updateError(String title) {
-//        String selectedLanguage = getLanguage();
-//        switch (selectedLanguage) {
-//            case "English":
-//                if (title.equals("Login error")) {
-//                    return rb.getString("loginError");
-//                } else {
-//                    return rb.getString("usernameOrPasswordIncorrect");
-//                }
-//            case "Japanese":
-//
-//        }
-//        return rb.getString("loginError");
-//    }
-
     private void updateUI() {
         homeLabel.setText(rb.getString("homeLabel"));
         registerLabel.setText(rb.getString("registerLabel"));
