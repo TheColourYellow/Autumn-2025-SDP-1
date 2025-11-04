@@ -84,7 +84,7 @@ public class BookAttributeController {
     String desc = descTextField.getText().trim();
 
     if (name.isEmpty()) {
-      showError("Validation Error", "Name cannot be empty.");
+      showError(rb.getString("validationError"), rb.getString("nameEmptyError"));
       return;
     }
 
@@ -106,7 +106,7 @@ public class BookAttributeController {
           else
             genreService.addGenre(bookAttribute.getName(), bookAttribute.getDescription());
         } else {
-          throw new IllegalArgumentException("Unknown book attribute type");
+          throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
         }
 
         // Run UI updates on the JavaFX Application Thread
@@ -117,7 +117,7 @@ public class BookAttributeController {
 
       } catch (Exception e) {
         Platform.runLater(() ->
-                showError("Error", "Failed to save: " + e.getMessage())
+                showError(rb.getString("error"), e.getMessage())
         );
       }
     });
@@ -126,12 +126,11 @@ public class BookAttributeController {
   @FXML
   private void handleDelete() {
     if (bookAttribute.getId() == -1) {
-      showError("Error", "Cannot delete unsaved attribute.");
-      return;
+      return; // Should not happen, button hidden for new attributes
     }
 
-    if (!showConfirmation("Delete Attribute",
-            "Are you sure you want to delete this attribute?")) {
+    if (!showConfirmation(rb.getString("deleteAttributeConfirmationTitle"),
+            rb.getString("deleteAttributeConfirmationMessage"))) {
       return;
     }
 
@@ -142,7 +141,7 @@ public class BookAttributeController {
         } else if (bookAttribute instanceof Genre) {
           genreService.deleteGenre(bookAttribute.getName());
         } else {
-          throw new IllegalArgumentException("Unknown attribute type");
+          throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
         }
 
         Platform.runLater(() -> {
@@ -152,7 +151,7 @@ public class BookAttributeController {
 
       } catch (Exception e) {
         Platform.runLater(() ->
-                showError("Error", "Failed to delete: " + e.getMessage())
+                showError(rb.getString("error"), e.getMessage())
         );
       }
     });

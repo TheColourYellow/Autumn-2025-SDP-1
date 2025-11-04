@@ -76,10 +76,10 @@ public class ManagementController {
 
             Stage stage = (Stage) managementLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Register");
+            stage.setTitle(rb.getString("registerText"));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open register window.");
+            showError(rb.getString("error"), rb.getString("couldNotOpenRegister"));
         }
     }
 
@@ -98,7 +98,7 @@ public class ManagementController {
             stage.setTitle("Bookstore Management System");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open home window");
+            showError(rb.getString("error"), rb.getString("couldNotOpenHome"));
         }
     }
 
@@ -115,10 +115,10 @@ public class ManagementController {
             // Change the view to the new profile view
             stage.setScene(new Scene(root));
 
-            stage.setTitle("Profile");
+            stage.setTitle(rb.getString("profileLabel"));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open profile window.");
+            showError(rb.getString("error"), rb.getString("couldNotOpenProfile"));
         }
     }
 
@@ -262,7 +262,7 @@ public class ManagementController {
                     authorData.setAll(authors);
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> showError("Error", "Could not load data. Please try again later."));
+                Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
             }
         });
     }

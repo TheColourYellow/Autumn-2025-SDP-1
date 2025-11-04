@@ -140,17 +140,17 @@ public class BookManageController {
 
             // input validation
             if (title.isEmpty()) {
-                showError("Validation Error", "Title cannot be empty.");
+                showError(rb.getString("validationError"), rb.getString("bookTitleNull"));
                 return;
             }
 
             if (yearText.isEmpty()) {
-                showError("Validation Error", "Year cannot be empty.");
+                showError(rb.getString("validationError"), rb.getString("bookYearNull"));
                 return;
             }
 
             if (priceText.isEmpty()) {
-                showError("Validation Error", "Price cannot be empty.");
+                showError(rb.getString("validationError"), rb.getString("bookPriceNull"));
                 return;
             }
 
@@ -160,7 +160,7 @@ public class BookManageController {
                 year = Integer.parseInt(yearText);
                 price = Double.parseDouble(priceText);
             } catch (NumberFormatException e) {
-                showError("Validation Error", "Year and price must be valid numbers.");
+                showError(rb.getString("validationError"), rb.getString("yearPriceValidationError"));
                 return;
             }
 
@@ -183,7 +183,7 @@ public class BookManageController {
                 newBook.setAuthors(getSelectedAuthors());
 
                 if (bookService.addBook(newBook) == -1) {
-                    showError("Error", "Could not add book. Please try again later.");
+                    showError(rb.getString("error"), rb.getString("errorAddingBook"));
                     return;
                 }
             }
@@ -195,7 +195,7 @@ public class BookManageController {
             handleCancel();
 
         } catch (Exception e) {
-            showError("Error", "Unexpected error: " + e.getMessage());
+            showError(rb.getString("error"), e.getMessage());
             e.printStackTrace();
         }
     }
@@ -210,7 +210,7 @@ public class BookManageController {
   @FXML
   private void handleDelete() {
     if (book != null && book.getId() != -1) {
-      if (showConfirmation("Delete Book: " + book.getTitle(), "Are you sure you want to delete this book?")) {
+      if (showConfirmation(rb.getString("deleteBookConfirmationTitle") + book.getTitle(), rb.getString("deleteBookConfirmationMessage"))) {
         try {
           bookService.deleteBook(book.getId());
 
@@ -222,7 +222,7 @@ public class BookManageController {
           // Close the dialog
           handleCancel();
         } catch (Exception e) {
-          showError("Error", "Could not delete book: " + e.getMessage());
+          showError(rb.getString("error"), e.getMessage());
         }
       }
     }
@@ -280,7 +280,7 @@ public class BookManageController {
           }
         });
       } catch (Exception e) {
-        Platform.runLater(() -> showError("Error", "Could not load data. Please try again later."));
+        Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
       }
     });
   }
