@@ -11,6 +11,7 @@ import com.group9.service.AuthorService;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
@@ -23,6 +24,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -33,6 +35,11 @@ import java.util.stream.Collectors;
 import static com.group9.util.PopupUtils.showError;
 
 public class ManagementController {
+
+    private LayoutOrienter orienter = new LayoutOrienter();
+
+    @FXML private AnchorPane managementAnchor;
+
     @FXML private Label addGenreBtn;
     @FXML private Label addBookBtn;
     @FXML private Label addAuthorBtn;
@@ -141,6 +148,7 @@ public class ManagementController {
     @FXML
     private void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(managementAnchor);
         updateUI();
 
         genreListView.setItems(genreData);

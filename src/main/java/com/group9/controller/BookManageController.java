@@ -10,6 +10,7 @@ import com.group9.service.AuthorService;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
@@ -34,6 +36,9 @@ import static com.group9.util.PopupUtils.showError;
 public class BookManageController {
   private Book book;
   private Runnable onCloseCallback;
+  private LayoutOrienter orienter = new LayoutOrienter();
+
+  @FXML private AnchorPane bookmanageAnchor;
 
   @FXML
   private TextField titleTextField;
@@ -79,6 +84,7 @@ public class BookManageController {
   @FXML
   private void initialize() {
     rb = SessionManager.getResourceBundle();
+    orienter.orientLayout(bookmanageAnchor);
     titleLabel.setText(rb.getString("titleLabel"));
     isbnLabel.setText(rb.getString("isbnLabel"));
     yearLabel.setText(rb.getString("yearLabel"));

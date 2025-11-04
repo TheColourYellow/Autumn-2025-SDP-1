@@ -8,6 +8,7 @@ import com.group9.model.Genre;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
@@ -34,6 +36,9 @@ import static com.group9.util.PopupUtils.showError;
 public class BookstoreController {
 
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
+
+    @FXML private AnchorPane bookstoreAnchor;
 
     @FXML
     private Label homeLabel;
@@ -117,12 +122,7 @@ public class BookstoreController {
         try {
             // Load the FXML file for the profile window
             FXMLLoader loader;
-            if (SessionManager.getLanguage().equals("Arabic")) {
-                loader = new FXMLLoader(getClass().getResource("/profile_view_rtl.fxml"));
-            }
-            else {
-                loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
-            }
+            loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
             Parent root = loader.load();
 
             // login label is clicked, content of the window is replaced with the content of profile window
@@ -157,6 +157,7 @@ public class BookstoreController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(bookstoreAnchor);
         updateUI();
 
         // Initialize language selector
