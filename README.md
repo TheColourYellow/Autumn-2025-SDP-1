@@ -42,6 +42,7 @@ Localization is implemented using Java’s ResourceBundle with all translations 
 
 Users can select their preferred language from the language dropdown menu on the landing page.
 After selecting the language, it is saved through the SessionManager, and all views are shown in the chosen language.
+The Application also supports both LTR (Left-to-Right) and RTL (Right-to-Left) text directions.
 
 The application supports following languages:
 - English
