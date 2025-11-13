@@ -19,7 +19,7 @@ public class GenreService {
   public List<Genre> getAllGenres() {
       rb = SessionManager.getResourceBundle();
     try {
-      return genreDao.getAllGenres();
+      return genreDao.getAllGenres(SessionManager.getLocale().getLanguage());
     } catch (Exception e) {
         String message = rb.getString("errorRetrievingGenres");
       System.out.println(message + " " + e.getMessage());

@@ -49,6 +49,15 @@ CREATE TABLE genres (
     description TEXT
 );
 
+CREATE TABLE genre_translations (
+    genre_id INT NOT NULL,
+    language_code VARCHAR(5) NOT NULL,
+    translated_name VARCHAR(50) NOT NULL,
+    translated_description TEXT,
+    PRIMARY KEY (genre_id, language_code),
+    FOREIGN KEY (genre_id) REFERENCES genres (id) ON DELETE CASCADE
+);
+
 CREATE TABLE book_authors (
     book_id   INT NOT NULL,
     author_id INT NOT NULL,

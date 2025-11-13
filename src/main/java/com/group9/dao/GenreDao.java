@@ -8,13 +8,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDao {
-  public List<Genre> getAllGenres() throws SQLException {
+  public List<Genre> getAllGenres(String languageCode) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();
+
+    // If language is English, fetch directly from genres table
+    String query;
+    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+    if (isEnglish) {
+      query = "SELECT id, name, description FROM genres";
+    } else {
+      query = "SELECT " +
+              "g.id, " +
+              "COALESCE(gt.translated_name, g.name) AS name, " +
+              "COALESCE(gt.translated_description, g.description) AS description " +
+              "FROM genres g " +
+              "LEFT JOIN genre_translations gt " +
+              "ON g.id = gt.genre_id " +
+              "AND gt.language_code = ?";
+    }
+
     try {
       conn = Database.getConnection();
-      String query = "SELECT id, name, description FROM genres";
       PreparedStatement ps = conn.prepareStatement(query);
+      if (!isEnglish) {
+        ps.setString(1, languageCode);
+      }
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Genre genre = new Genre(
