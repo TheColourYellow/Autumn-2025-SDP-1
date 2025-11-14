@@ -30,10 +30,13 @@ public class BookAttributeController {
 
   @FXML private AnchorPane bookattributeAnchor;
 
-  @FXML
-  private TextField nameTextField;
-  @FXML
-  private TextField descTextField;
+  @FXML private TextField nameTextField_en;
+  @FXML private TextField nameTextField_ja;
+  @FXML private TextField nameTextField_ar;
+
+  @FXML private TextField descTextField_en;
+  @FXML private TextField descTextField_ja;
+  @FXML private TextField descTextField_ar;
 
   @FXML
   private Button addBtn;
@@ -53,8 +56,8 @@ public class BookAttributeController {
 
   public void setBookAttribute(BookAttribute bookAttribute) {
     this.bookAttribute = bookAttribute;
-    nameTextField.setText(bookAttribute.getName());
-    descTextField.setText(bookAttribute.getDescription());
+    //nameTextField.setText(bookAttribute.getName());
+    //descTextField.setText(bookAttribute.getDescription());
     if (bookAttribute.getId() != -1) {
       deleteBtn.setVisible(true);
       addBtn.setText(rb.getString("updateButton"));
@@ -80,8 +83,8 @@ public class BookAttributeController {
 
   @FXML
   private void handleSave() {
-    String name = nameTextField.getText().trim();
-    String desc = descTextField.getText().trim();
+    String name = ""; //nameTextField.getText().trim();
+    String desc = ""; //descTextField.getText().trim();
 
     if (name.isEmpty()) {
       showError(rb.getString("validationError"), rb.getString("nameEmptyError"));

@@ -148,7 +148,7 @@ public class GenreDao {
 
   public void deleteGenreByName(String genreName) throws SQLException {
     String delete = "DELETE FROM genres WHERE name = ?";
-    try (Connection conn = Database.getConnection();) {
+    try (Connection conn = Database.getConnection()) {
       PreparedStatement ps = conn.prepareStatement(delete);
       ps.setString(1, genreName);
       ps.executeUpdate();

@@ -2,17 +2,53 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="bookattributeAnchor" prefHeight="200.0" prefWidth="215.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group9.controller.BookAttributeController">
-   <children>
-      <Label fx:id="nameLabel" layoutX="30.0" layoutY="28.0" text="Name" />
-      <Label fx:id="descLabel" layoutX="30.0" layoutY="78.0" text="Description" />
-      <TextField fx:id="nameTextField" layoutX="30.0" layoutY="45.0" />
-      <TextField fx:id="descTextField" layoutX="30.0" layoutY="95.0" />
-      <Button fx:id="addBtn" layoutX="160.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#handleSave" text="Add" />
-      <Button fx:id="cancelBtn" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#handleClose" text="Cancel" />
-      <Button fx:id="deleteBtn" layoutX="105.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#handleDelete" text="Delete" />
-   </children>
+<AnchorPane fx:id="bookattributeAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group9.controller.BookAttributeController">
+   <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="270.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+      <tabs>
+         <Tab text="English">
+            <content>
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <Label fx:id="nameLabel_en" layoutX="26.0" layoutY="14.0" text="Name" />
+                     <Label fx:id="descLabel_en" layoutX="24.0" layoutY="69.0" text="Description" />
+                     <TextField fx:id="nameTextField_en" layoutX="26.0" layoutY="31.0" />
+                     <TextField fx:id="descTextField_en" layoutX="24.0" layoutY="86.0" />
+                  </children>
+               </AnchorPane>
+            </content>
+         </Tab>
+         <Tab text="Japanese">
+            <content>
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <Label fx:id="nameLabel_ja" layoutX="26.0" layoutY="14.0" text="Name" />
+                     <Label fx:id="descLabel_ja" layoutX="24.0" layoutY="69.0" text="Description" />
+                     <TextField fx:id="nameTextField_ja" layoutX="26.0" layoutY="31.0" />
+                     <TextField fx:id="descTextField_ja" layoutX="24.0" layoutY="86.0" />
+                  </children>
+               </AnchorPane>
+            </content>
+         </Tab>
+         <Tab text="Arabic">
+            <content>
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <Label fx:id="nameLabel_ar" layoutX="26.0" layoutY="14.0" text="Name" />
+                     <Label fx:id="descLabel_ar" layoutX="24.0" layoutY="69.0" text="Description" />
+                     <TextField fx:id="nameTextField_ar" layoutX="26.0" layoutY="31.0" />
+                     <TextField fx:id="descTextField_ar" layoutX="24.0" layoutY="86.0" />
+                  </children>
+               </AnchorPane>
+            </content>
+         </Tab>
+      </tabs>
+   </TabPane>
+   <Button fx:id="deleteBtn" layoutX="150.0" layoutY="160.0" mnemonicParsing="false" text="Delete" />
+   <Button fx:id="addBtn" layoutX="218.0" layoutY="160.0" mnemonicParsing="false" text="Add" />
+   <Button fx:id="cancelBtn" layoutX="24.0" layoutY="160.0" mnemonicParsing="false" text="Cancel" />
 </AnchorPane>
