@@ -1,10 +1,12 @@
 package com.group9.service;
 
 import com.group9.dao.GenreDao;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
 import com.group9.util.SessionManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -27,7 +29,7 @@ public class GenreService {
     }
   }
 
-  public void addGenre(String name, String desc) throws Exception {
+  public int addGenre(String name, String desc) throws Exception {
       rb = SessionManager.getResourceBundle();
     if (name == null || name.isEmpty()) {
         String message = rb.getString("genreNull");
@@ -35,7 +37,7 @@ public class GenreService {
     }
 
     try {
-        genreDao.addGenre(name, desc);
+      return genreDao.addGenre(name, desc);
     } catch (Exception e) {
         String message = rb.getString("errorAddingGenre");
         System.out.println(message + " " + e.getMessage());
@@ -85,6 +87,35 @@ public class GenreService {
       }
   }
 
+  public void saveGenreWithTranslations(Genre genre, List<BookAttributeTranslation> translations) {
+    rb = SessionManager.getResourceBundle();
+    int genreId = genre.getId();
+
+    // Save new or update existing genre
+    if (genreId <= 0) {
+      try {
+        genreId = addGenre(genre.getName(), genre.getDescription());
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      try {
+        updateGenre(genre);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    // Save translations
+    try {
+      genreDao.upsertTranslations(genreId, translations);
+    } catch (Exception e) {
+      String message = rb.getString("errorSavingTranslations");
+      System.err.println(message + " " + e.getMessage());
+      throw new RuntimeException(message);
+    }
+  }
+
   public void deleteGenre(String name) throws Exception {
     if (name.isEmpty()) {
         String message = rb.getString("genreNameNull");
@@ -97,6 +128,16 @@ public class GenreService {
         String message = rb.getString("errorDeletingGenre");
         System.out.println(message + " " + e.getMessage());
         throw new Exception(message);
+    }
+  }
+
+  public List<BookAttributeTranslation> getTranslationsForGenre(int genreId) {
+    try {
+      return genreDao.getTranslations(genreId);
+    } catch (Exception e) {
+      //String message = rb.getString("errorRetrievingTranslations");
+      System.out.println("message" + " " + e.getMessage());
+      throw new RuntimeException("message");
     }
   }
 }

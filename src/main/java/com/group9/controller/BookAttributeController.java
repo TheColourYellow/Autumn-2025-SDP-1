@@ -4,6 +4,7 @@ import com.group9.dao.AuthorDao;
 import com.group9.dao.GenreDao;
 import com.group9.model.Author;
 import com.group9.model.BookAttribute;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
 import com.group9.service.AuthorService;
 import com.group9.service.GenreService;
@@ -18,6 +19,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showConfirmation;
@@ -48,7 +52,10 @@ public class BookAttributeController {
   @FXML private Label nameLabel;
   @FXML private Label descLabel;
 
+  // Translations
   private ResourceBundle rb;
+  private HashMap<String, TextField> nameFields;
+  private HashMap<String, TextField> descFields;
 
   // Services
   private final AuthorService authorService = new AuthorService(new AuthorDao());
@@ -56,14 +63,17 @@ public class BookAttributeController {
 
   public void setBookAttribute(BookAttribute bookAttribute) {
     this.bookAttribute = bookAttribute;
-    //nameTextField.setText(bookAttribute.getName());
-    //descTextField.setText(bookAttribute.getDescription());
+    nameTextField_en.setText(bookAttribute.getName());
+    descTextField_en.setText(bookAttribute.getDescription());
+
     if (bookAttribute.getId() != -1) {
       deleteBtn.setVisible(true);
       addBtn.setText(rb.getString("updateButton"));
     } else {
       deleteBtn.setVisible(false);
     }
+
+    loadTranslations();
   }
 
   @FXML
@@ -75,6 +85,45 @@ public class BookAttributeController {
     addBtn.setText(rb.getString("addButton"));
     cancelBtn.setText(rb.getString("cancelButton"));
     deleteBtn.setText(rb.getString("deleteButton"));
+
+    nameFields = new HashMap<>();
+    nameFields.put("en", nameTextField_en);
+    nameFields.put("ja", nameTextField_ja);
+    nameFields.put("ar", nameTextField_ar);
+    descFields = new HashMap<>();
+    descFields.put("en", descTextField_en);
+    descFields.put("ja", descTextField_ja);
+    descFields.put("ar", descTextField_ar);
+  }
+
+  private void loadTranslations() {
+    System.out.println("Loading translations...");
+    if (bookAttribute == null) return;
+
+    System.out.println("Loading translations for attribute ID: " + bookAttribute.getId());
+
+    List<BookAttributeTranslation> translations = new ArrayList<>();
+
+    if (bookAttribute instanceof Genre) {
+      translations = genreService.getTranslationsForGenre(bookAttribute.getId());
+      System.out.println("Loaded " + translations.size() + " translations for genre.");
+    }
+    else if (bookAttribute instanceof Author) {
+      //translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
+    } else {
+      throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
+    }
+
+    for (BookAttributeTranslation t : translations) {
+      TextField nameField = nameFields.get(t.languageCode);
+      if (nameField != null) {
+        nameField.setText(t.translatedName);
+      }
+      TextField descField = descFields.get(t.languageCode);
+      if (descField != null) {
+        descField.setText(t.translatedDescription);
+      }
+    }
   }
 
   public void setOnCloseCallback(Runnable onCloseCallback) {
@@ -83,14 +132,49 @@ public class BookAttributeController {
 
   @FXML
   private void handleSave() {
-    String name = ""; //nameTextField.getText().trim();
-    String desc = ""; //descTextField.getText().trim();
-
-    if (name.isEmpty()) {
+    // Make sure the name field for the default language (English) is not empty
+    if (nameTextField_en.getText().trim().isEmpty()) {
       showError(rb.getString("validationError"), rb.getString("nameEmptyError"));
       return;
     }
 
+    bookAttribute.setName(nameTextField_en.getText().trim());
+    bookAttribute.setDescription(descTextField_en.getText().trim());
+
+    // Gather translations
+    List<BookAttributeTranslation> translationsToSave = new ArrayList<>();
+    for (String langCode : nameFields.keySet()) {
+      if (langCode.equals("en")) continue; // Skip default language
+      String name = nameFields.get(langCode).getText().trim();
+      String desc = descFields.get(langCode).getText().trim();
+      if (!name.isEmpty() || !desc.isEmpty()) {
+        translationsToSave.add(new BookAttributeTranslation(langCode, name, desc));
+      }
+    }
+
+    AppExecutors.databaseExecutor.execute(() -> {
+      try {
+        if (bookAttribute instanceof Author) {
+            //authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
+        } else if (bookAttribute instanceof Genre) {
+            genreService.saveGenreWithTranslations((Genre) bookAttribute, translationsToSave);
+        } else {
+          throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
+        }
+
+        // Run UI updates on the JavaFX Application Thread
+        Platform.runLater(() -> {
+          if (onCloseCallback != null) onCloseCallback.run();
+          handleClose();
+        });
+      } catch (Exception e) {
+        Platform.runLater(() ->
+                showError(rb.getString("error"), e.getMessage())
+        );
+      }
+    });
+
+    /*
     bookAttribute.setName(name);
     bookAttribute.setDescription(desc);
 
@@ -124,6 +208,8 @@ public class BookAttributeController {
         );
       }
     });
+
+     */
   }
 
   @FXML

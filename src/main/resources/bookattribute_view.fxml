@@ -14,8 +14,6 @@
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <Label fx:id="nameLabel_en" layoutX="26.0" layoutY="14.0" text="Name" />
-                     <Label fx:id="descLabel_en" layoutX="24.0" layoutY="69.0" text="Description" />
                      <TextField fx:id="nameTextField_en" layoutX="26.0" layoutY="31.0" />
                      <TextField fx:id="descTextField_en" layoutX="24.0" layoutY="86.0" />
                   </children>
@@ -26,8 +24,6 @@
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <Label fx:id="nameLabel_ja" layoutX="26.0" layoutY="14.0" text="Name" />
-                     <Label fx:id="descLabel_ja" layoutX="24.0" layoutY="69.0" text="Description" />
                      <TextField fx:id="nameTextField_ja" layoutX="26.0" layoutY="31.0" />
                      <TextField fx:id="descTextField_ja" layoutX="24.0" layoutY="86.0" />
                   </children>
@@ -38,8 +34,6 @@
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <Label fx:id="nameLabel_ar" layoutX="26.0" layoutY="14.0" text="Name" />
-                     <Label fx:id="descLabel_ar" layoutX="24.0" layoutY="69.0" text="Description" />
                      <TextField fx:id="nameTextField_ar" layoutX="26.0" layoutY="31.0" />
                      <TextField fx:id="descTextField_ar" layoutX="24.0" layoutY="86.0" />
                   </children>
@@ -48,7 +42,9 @@
          </Tab>
       </tabs>
    </TabPane>
-   <Button fx:id="deleteBtn" layoutX="150.0" layoutY="160.0" mnemonicParsing="false" text="Delete" />
-   <Button fx:id="addBtn" layoutX="218.0" layoutY="160.0" mnemonicParsing="false" text="Add" />
-   <Button fx:id="cancelBtn" layoutX="24.0" layoutY="160.0" mnemonicParsing="false" text="Cancel" />
+   <Button fx:id="deleteBtn" layoutX="150.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
+   <Button fx:id="addBtn" layoutX="218.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleSave" text="Add" />
+   <Button fx:id="cancelBtn" layoutX="24.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleClose" text="Cancel" />
+   <Label fx:id="nameLabel" layoutX="26.0" layoutY="43.0" text="Name" />
+   <Label fx:id="descLabel" layoutX="26.0" layoutY="98.0" text="Description" />
 </AnchorPane>

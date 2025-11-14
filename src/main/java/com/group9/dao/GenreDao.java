@@ -1,5 +1,6 @@
 package com.group9.dao;
 
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
 import com.group9.util.Database;
 
@@ -122,13 +123,23 @@ public class GenreDao {
     }
   }
 
-  public void addGenre(String name, String description) throws SQLException {
+  public int addGenre(String name, String description) {
     String insert = "INSERT INTO genres (name, description) VALUES (?, ?)";
     try (Connection conn = Database.getConnection();
-         PreparedStatement ps = conn.prepareStatement(insert)) {
+         PreparedStatement ps = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, name);
       ps.setString(2, description);
       ps.executeUpdate();
+      try (ResultSet keys = ps.getGeneratedKeys()) {
+        if (keys.next()) {
+          return keys.getInt(1);
+        } else {
+          throw new RuntimeException("Creating genre failed, no ID obtained.");
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("Error adding genre: " + e.getMessage());
+      throw new RuntimeException("Error adding genre", e);
     }
   }
 
@@ -152,6 +163,56 @@ public class GenreDao {
       PreparedStatement ps = conn.prepareStatement(delete);
       ps.setString(1, genreName);
       ps.executeUpdate();
+    }
+  }
+
+  public List<BookAttributeTranslation> getTranslations(int genreId) {
+    String sql = "SELECT language_code, translated_name, translated_description " +
+            "FROM genre_translations " +
+            "WHERE genre_id = ?";
+    List<BookAttributeTranslation> translations = new ArrayList<>();
+
+    try (Connection conn = Database.getConnection()) {
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setInt(1, genreId);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        translations.add(new BookAttributeTranslation(
+                rs.getString("language_code"),
+                rs.getString("translated_name"),
+                rs.getString("translated_description")
+        ));
+      }
+    } catch (SQLException e) {
+      System.err.println("Error fetching genre translations: " + e.getMessage());
+      throw new RuntimeException("Error fetching genre translations");
+    }
+
+    return translations;
+  }
+
+  public void upsertTranslations(int genreId, List<BookAttributeTranslation> list) {
+    String sql = "INSERT INTO genre_translations (genre_id, language_code, translated_name, translated_description) " +
+        "VALUES (?, ?, ?, ?) " +
+        "ON DUPLICATE KEY UPDATE " +
+            "translated_name = VALUES(translated_name), " +
+            "translated_description = VALUES(translated_description)";
+
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      for (BookAttributeTranslation t : list) {
+        ps.setInt(1, genreId);
+        ps.setString(2, t.languageCode);
+        ps.setString(3, t.translatedName);
+        ps.setString(4, t.translatedDescription);
+        ps.addBatch();
+      }
+
+      ps.executeBatch();
+    } catch (SQLException e) {
+      System.err.println("Error upserting genre translations: " + e.getMessage());
+      throw new RuntimeException("Error upserting genre translations");
     }
   }
 }
