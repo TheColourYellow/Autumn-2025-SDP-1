@@ -392,7 +392,33 @@ public class BookstoreController {
         bookListLabel.setText(rb.getString("bookListLabel"));
         bookStoreLabel.setText(rb.getString("bookStoreLabel"));
 
+        // Refresh genre checkboxes with translated names
+        refreshGenreCheckboxes();
         // Refresh table to update button texts when language changes
         bookTable.refresh();
+    }
+
+    private void refreshGenreCheckboxes() {
+        try {
+            // Reload genres in the newly selected language
+            List<Genre> updatedGenres = new GenreService(new GenreDao()).getAllGenres();
+
+            // A quick lookup: id -> Genre
+            Map<Integer, Genre> genreById = updatedGenres.stream()
+                    .collect(Collectors.toMap(Genre::getId, g -> g));
+
+            // Update each checkbox with the new translated name
+            for (Map.Entry<CheckBox, Genre> entry : genreCheckBoxMap.entrySet()) {
+                CheckBox cb = entry.getKey();
+                Genre original = entry.getValue();
+
+                Genre updated = genreById.get(original.getId());
+                if (updated != null) {
+                    cb.setText(updated.getName());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error refreshing genre checkboxes: " + e.getMessage());
+        }
     }
 }
