@@ -28,7 +28,7 @@ public class RegisterController {
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
 
-    @FXML private AnchorPane profileAnchor;
+    @FXML private AnchorPane registerAnchor;
 
     @FXML private Label homeLabel;
 
@@ -61,6 +61,7 @@ public class RegisterController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(registerAnchor);
         updateUI();
     }
 
