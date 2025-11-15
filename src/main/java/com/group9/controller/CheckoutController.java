@@ -176,7 +176,7 @@ public class CheckoutController {
         }
 
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
-        log.info("Placing order with " + selectedCardType + " card number: " + cardNumber);
+        log.info(String.format("Placing order with: %s card number: %s", selectedCardType, cardNumber));
 
         // if the user is logged in, save the order
         if (SessionManager.isLoggedIn()) {
@@ -191,7 +191,7 @@ public class CheckoutController {
             // save Order to database
             OrderService orderService = new OrderService(new OrderDao());
             int orderId = orderService.createOrder(order);
-            log.info("Created order with ID: " + orderId);
+            log.info(String.format("Created order with ID: %s", orderId));
         } else {
             log.info("User not logged in, skipping database save.");
         }
