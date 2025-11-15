@@ -24,12 +24,12 @@ public class AuthorServiceTest {
   @Test
   public void testGetAllAuthors() throws SQLException {
     // Mock Dao response with empty list
-    when(authorDao.getAllAuthors()).thenReturn(new ArrayList<Author>());
+    when(authorDao.getAllAuthors("en")).thenReturn(new ArrayList<Author>());
     assertEquals(new ArrayList<Author>(), authorService.getAllAuthors());
-    verify(authorDao).getAllAuthors();
+    verify(authorDao).getAllAuthors("en");
 
     // Return null on exception
-    when(authorDao.getAllAuthors()).thenThrow(new SQLException("DB error"));
+    when(authorDao.getAllAuthors("en")).thenThrow(new SQLException("DB error"));
     assertNull(authorService.getAllAuthors());
   }
 
