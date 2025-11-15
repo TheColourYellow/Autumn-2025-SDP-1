@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ import static com.group9.util.SessionManager.getLanguage;
 public class CheckoutController {
 
     private LayoutOrienter orienter = new LayoutOrienter();
-    private Logger log = Logger.getLogger(CheckoutController.class.getName());
+    private static final Logger log = Logger.getLogger(CheckoutController.class.getName());
 
     @FXML private AnchorPane checkoutAnchor;
     @FXML private Button orderButton;
@@ -176,7 +177,7 @@ public class CheckoutController {
         }
 
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
-        log.info(String.format("Placing order with: %s card number: %s", selectedCardType, cardNumber));
+        log.log(Level.INFO, "Placing order with {0} card number: {1}", new Object[]{selectedCardType, cardNumber});
 
         // if the user is logged in, save the order
         if (SessionManager.isLoggedIn()) {
@@ -191,7 +192,7 @@ public class CheckoutController {
             // save Order to database
             OrderService orderService = new OrderService(new OrderDao());
             int orderId = orderService.createOrder(order);
-            log.info(String.format("Created order with ID: %s", orderId));
+            log.log(Level.INFO, "Created order with ID: {0}", orderId);
         } else {
             log.info("User not logged in, skipping database save.");
         }
