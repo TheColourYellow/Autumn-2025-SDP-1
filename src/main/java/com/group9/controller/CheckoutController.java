@@ -47,8 +47,8 @@ public class CheckoutController {
 
     // selected card
     private ImageView selectedCard = null;
-    private final String NORMAL_STYLE = "-fx-effect: dropshadow(gaussian, gray, 5, 0.3, 0, 0); -fx-cursor: hand;";
-    private final String SELECTED_STYLE = "-fx-effect: dropshadow(gaussian, blue, 15, 0.7, 0, 0); -fx-border-color: blue; -fx-border-width: 3; -fx-cursor: hand;";
+    private static final String NORMAL_STYLE = "-fx-effect: dropshadow(gaussian, gray, 5, 0.3, 0, 0); -fx-cursor: hand;";
+    private static final String SELECTED_STYLE = "-fx-effect: dropshadow(gaussian, blue, 15, 0.7, 0, 0); -fx-border-color: blue; -fx-border-width: 3; -fx-cursor: hand;";
 
     private ObservableList<Book> cart; // holds cart items
     private ResourceBundle rb;
@@ -116,6 +116,8 @@ public class CheckoutController {
             case "Arabic":
                 convertedPrice = price * 4.33; // 1 Euro = 4.33 SAR
                 break;
+            default:
+                break;
         }
         String formatted = String.format("%.2f", convertedPrice).replace('.', ',');
         return formatted;
@@ -136,6 +138,9 @@ public class CheckoutController {
                 break;
             case "Arabic":
                 total = total * 4.33; // 1 Euro = 4.33 SAR
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
+            default: // English
                 totalLabel.setText(String.format("%.2f", total).replace('.', ','));
                 break;
         }

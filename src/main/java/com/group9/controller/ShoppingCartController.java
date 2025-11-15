@@ -94,6 +94,8 @@ public class ShoppingCartController {
             case "Arabic":
                 convertedPrice = price * 4.33; // 1 Euro = 4.33 SAR
                 break;
+            default:
+                break;
         }
         String formatted = String.format("%.2f", convertedPrice).replace('.', ',');
         return formatted;
@@ -116,6 +118,10 @@ public class ShoppingCartController {
                 total = total * 4.33; // 1 Euro = 4.33 SAR
                 totalLabel.setText(String.format("%.2f", total).replace('.', ','));
                 break;
+            default: // English
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
+
         }
     }
 
