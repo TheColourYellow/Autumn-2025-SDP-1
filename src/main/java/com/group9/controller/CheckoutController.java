@@ -1,6 +1,7 @@
 package com.group9.controller;
 
 import com.group9.dao.OrderDao;
+import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.Order;
 import com.group9.model.OrderItem;
@@ -67,10 +68,8 @@ public class CheckoutController {
         visaImage.setOnMouseClicked(e -> selectCard(visaImage));
         mastercardImage.setOnMouseClicked(e -> selectCard(mastercardImage));
 
-        Platform.runLater(() -> {
-            // move focus away
-            cardNumberField.getParent().requestFocus();
-        });
+        // move focus away
+        Platform.runLater(() -> cardNumberField.getParent().requestFocus());
     }
 
     public void updateUI() {
@@ -97,7 +96,7 @@ public class CheckoutController {
             // join author names
             String authors = book.getAuthors()
                     .stream()
-                    .map(author -> author.getName())
+                    .map(Author::getName)
                     .collect(Collectors.joining(", "));
             Label label = new Label(book.getTitle() + " by " + authors + " - " +  currencyPrice(book.getPrice()) + rb.getString("currencyLabel"));
             checkoutBox.getChildren().add(label);
@@ -121,8 +120,7 @@ public class CheckoutController {
             default:
                 break;
         }
-        String formatted = String.format("%.2f", convertedPrice).replace('.', ',');
-        return formatted;
+        return String.format("%.2f", convertedPrice).replace('.', ',');
     }
 
     // calculate total
