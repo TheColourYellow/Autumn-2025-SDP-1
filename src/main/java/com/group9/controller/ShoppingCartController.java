@@ -27,7 +27,7 @@ public class ShoppingCartController {
 
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
-    private static final Logger log = Logger.getLogger(CheckoutController.class.getName());
+    private static final Logger log = Logger.getLogger(ShoppingCartController.class.getName());
 
     @FXML private AnchorPane shoppingCartAnchor;
 
