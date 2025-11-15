@@ -117,6 +117,7 @@ public class GenreService {
   }
 
   public void deleteGenre(String name) throws Exception {
+    rb = SessionManager.getResourceBundle();
     if (name.isEmpty()) {
         String message = rb.getString("genreNameNull");
         throw new IllegalArgumentException(message);

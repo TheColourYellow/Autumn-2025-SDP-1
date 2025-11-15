@@ -44,7 +44,7 @@ public class GenreServiceTest {
     verify(genreDao).addGenre("New Genre", "desc");
 
     // Simulate Dao exception
-    doThrow(new SQLException("DB error")).when(genreDao).addGenre("New Genre", "desc");
+    doThrow(new RuntimeException("DB error")).when(genreDao).addGenre("New Genre", "desc");
     assertThrows(Exception.class, () -> genreService.addGenre("New Genre", "desc"));
   }
 
