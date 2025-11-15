@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.group9.util.SessionManager.getLanguage;
@@ -29,6 +30,7 @@ import static com.group9.util.SessionManager.getLanguage;
 public class CheckoutController {
 
     private LayoutOrienter orienter = new LayoutOrienter();
+    private Logger log = Logger.getLogger(CheckoutController.class.getName());
 
     @FXML private AnchorPane checkoutAnchor;
     @FXML private Button orderButton;
@@ -159,24 +161,24 @@ public class CheckoutController {
         boolean success = false;
 
         if (selectedCard == null) {
-            System.out.println("No card selected!");
+            log.info("No card selected!");
             return;
         }
 
         String cardNumber = cardNumberField.getText().trim();
         if (cardNumber.isEmpty()) {
-            System.out.println("Card number cannot be empty!");
+            log.info("Card number cannot be empty!");
             return;
         }
 
         cardNumber = cardNumber.replaceAll("\\s+", "");
         if (!cardNumber.matches("\\d{16}")) {
-            System.out.println("Card number must be 16 digits!");
+            log.info("Card number must be 16 digits!");
             return;
         }
 
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
-        System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
+        log.info("Placing order with " + selectedCardType + " card number: " + cardNumber);
 
         // if the user is logged in, save the order
         if (SessionManager.isLoggedIn()) {
@@ -191,9 +193,9 @@ public class CheckoutController {
             // save Order to database
             OrderService orderService = new OrderService(new OrderDao());
             int orderId = orderService.createOrder(order);
-            System.out.println("Created order with ID: " + orderId);
+            log.info("Created order with ID: " + orderId);
         } else {
-            System.out.println("User not logged in, skipping database save.");
+            log.info("User not logged in, skipping database save.");
         }
 
         // Switch to accept view
@@ -210,13 +212,13 @@ public class CheckoutController {
 
         if (success && cart != null) {
             cart.clear(); // clear cart after successful order
-            System.out.println("Cart cleared after payment.");
+            log.info("Cart cleared after payment.");
         }
     }
 
     @FXML
     private void returnToCart() {
-        System.out.println("Return to cart...");
+        log.info("Return to cart...");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent cartRoot = loader.load();
