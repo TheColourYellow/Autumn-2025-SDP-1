@@ -6,7 +6,8 @@ CREATE TABLE users (
     email         VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role          ENUM('user', 'admin')  NOT NULL DEFAULT 'user',
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    language_code VARCHAR(5) NOT NULL DEFAULT 'en'
 );
 
 CREATE TABLE books (
@@ -18,28 +19,6 @@ CREATE TABLE books (
     price          DECIMAL(8, 2) NOT NULL,
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     active         BOOLEAN   DEFAULT TRUE
-);
--- Added 14.11.2025
-CREATE TABLE books_ja (
-   id                INT PRIMARY KEY AUTO_INCREMENT,
-   title_ja          VARCHAR(255)  NOT NULL,
-   description_ja    TEXT,
-   isbn_ja           VARCHAR(20) UNIQUE,
-   published_year_ja INT,
-   price_ja          DECIMAL(8, 2) NOT NULL,
-   created_at_ja     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   active_ja         BOOLEAN   DEFAULT TRUE
-);
--- Added 14.11.2025
-CREATE TABLE books_ar (
-   id                INT PRIMARY KEY AUTO_INCREMENT,
-   title_ar          VARCHAR(255)  NOT NULL,
-   description_ar    TEXT,
-   isbn_ar           VARCHAR(20) UNIQUE,
-   published_year_ar INT,
-   price_ar          DECIMAL(8, 2) NOT NULL,
-   created_at_ar     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   active_ar         BOOLEAN   DEFAULT TRUE
 );
 
 CREATE TABLE orders (
@@ -64,35 +43,11 @@ CREATE TABLE authors (
     name        VARCHAR(100) NOT NULL,
     description TEXT
 );
--- Added 14.11.2025
-CREATE TABLE authors_ja (
-     id             INT PRIMARY KEY AUTO_INCREMENT,
-     name_ja        VARCHAR(100) NOT NULL,
-     description_ja TEXT
-);
--- Added 14.11.2025
-CREATE TABLE authors_ar (
-     id             INT PRIMARY KEY AUTO_INCREMENT,
-     name_ar        VARCHAR(100) NOT NULL,
-     description_ar TEXT
-);
 
 CREATE TABLE genres (
     id          INT PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(50) NOT NULL UNIQUE,
     description TEXT
-);
--- Added 14.11.2025
-CREATE TABLE genres_ja (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
-    name_ja        VARCHAR(50) NOT NULL UNIQUE,
-    description_ja TEXT
-);
--- Added 14.11.2025
-CREATE TABLE genres_ar (
-    id             INT PRIMARY KEY AUTO_INCREMENT,
-    name_ja        VARCHAR(50) NOT NULL UNIQUE,
-    description_ja TEXT
 );
 
 CREATE TABLE genre_translations (
@@ -102,6 +57,15 @@ CREATE TABLE genre_translations (
     translated_description TEXT,
     PRIMARY KEY (genre_id, language_code),
     FOREIGN KEY (genre_id) REFERENCES genres (id) ON DELETE CASCADE
+);
+-- Added 15.11. based on previously done work
+CREATE TABLE author_translations (
+    author_id INT NOT NULL,
+    language_code VARCHAR(5) NOT NULL,
+    translated_name VARCHAR(50) NOT NULL,
+    translated_description TEXT,
+    PRIMARY KEY (author_id, language_code),
+    FOREIGN KEY (author_id) REFERENCES authors (id) ON DELETE CASCADE
 );
 
 CREATE TABLE book_authors (

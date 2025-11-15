@@ -1,5 +1,6 @@
 package com.group9.dao;
 
+import com.group9.model.Genre;
 import com.group9.model.User;
 import com.group9.util.Database;
 
@@ -94,6 +95,35 @@ public class UserDao {
       return rowsAffected > 0;
     } catch (SQLException e) {
       throw new RuntimeException("Error adding admin user: " + e.getMessage(), e);
+    }
+  }
+  //Function added 15.11. for database localisation
+  public String getLanguageByUsername(String username) {
+    String sql = "SELECT username, language_code FROM users WHERE username = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setString(1, username);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        return rs.getString("language_code");
+      } else {
+        return null; // User not found
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Error retrieving user by username: " + e.getMessage(), e);
+    }
+  }
+  //Function added 15.11. for database localisation
+  public void updateUserLanguage(User user, String languageCode) {
+    String update = "UPDATE users SET language_code = ? WHERE id = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(update)) {
+      ps.setString(1, languageCode);
+      ps.setInt(2, user.getId());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("Error updating genre: " + e.getMessage());
+      throw new RuntimeException("Error updating genre", e);
     }
   }
 }
