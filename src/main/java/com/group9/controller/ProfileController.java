@@ -5,14 +5,17 @@ import com.group9.model.Order;
 import com.group9.model.OrderItem;
 import com.group9.model.User;
 import com.group9.service.OrderService;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,6 +28,9 @@ import static com.group9.util.PopupUtils.showError;
 
 public class ProfileController {
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
+
+    @FXML private AnchorPane profileAnchor;
 
     @FXML private Label homeLabel;
     @FXML private ImageView shoppingCart;
@@ -101,6 +107,15 @@ public class ProfileController {
         }
 
         // Show account details
+        orienter.orientLayout(profileAnchor);
+        /*
+        if (SessionManager.getLanguage().equals("Arabic")) {
+            profileAnchor.nodeOrientationProperty().set(NodeOrientation.RIGHT_TO_LEFT);
+        }
+        else {
+            profileAnchor.nodeOrientationProperty().set(NodeOrientation.LEFT_TO_RIGHT);
+
+        }*/
         updateUI(currentUser);
         /*
         nameLabel.setText(rb.getString("nameLabel")+ ": " + currentUser.getUsername());

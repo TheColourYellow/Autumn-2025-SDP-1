@@ -6,6 +6,7 @@ public class User {
   private String password;
   private String email;
   private String role = "user";
+  private String language = "en";  //Added 15.11. to implement language choice to database
 
   public User() {}
   public User(String username, String password, String email) {
@@ -36,4 +37,8 @@ public class User {
 
   public String getRole() { return role; }
   public void setRole(String role) { this.role = role; }
+
+  //Added 15.11. to implement language choice to database
+  public String getLanguage() { return language; }
+  public void setLanguage(String language) { this.language = language; }
 }

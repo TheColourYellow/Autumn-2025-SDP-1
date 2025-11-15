@@ -1,6 +1,8 @@
 package com.group9.controller;
 
+import com.group9.model.Author;
 import com.group9.model.Book;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,11 +12,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.group9.util.SessionManager.getLanguage;
@@ -22,6 +26,10 @@ import static com.group9.util.SessionManager.getLanguage;
 public class ShoppingCartController {
 
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
+    private static final Logger log = Logger.getLogger(ShoppingCartController.class.getName());
+
+    @FXML private AnchorPane shoppingCartAnchor;
 
     @FXML private VBox cartItems;
     @FXML private Button emptyButton;
@@ -36,6 +44,7 @@ public class ShoppingCartController {
 
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(shoppingCartAnchor);
         updateUI();
     }
 
@@ -49,7 +58,6 @@ public class ShoppingCartController {
 
     public void setCart(ObservableList<Book> cart) {
         this.cart = cart;
-        // TODO: populate cartItems VBox with cart contents
         cartVbox.getChildren().clear();
         cartVbox.getChildren().add(new Label("Cart content goes here..."));
 
@@ -67,7 +75,7 @@ public class ShoppingCartController {
         for (Book book : cart) {
             String authors = book.getAuthors()
                     .stream()
-                    .map(author -> author.getName())
+                    .map(Author::getName)
                     .collect(Collectors.joining(", "));
             Label label = new Label(book.getTitle() + " by " + authors + " - " + currencyPrice(book.getPrice()) + rb.getString("currencyLabel"));
             cartVbox.getChildren().add(label);
@@ -88,9 +96,10 @@ public class ShoppingCartController {
             case "Arabic":
                 convertedPrice = price * 4.33; // 1 Euro = 4.33 SAR
                 break;
+            default:
+                break;
         }
-        String formatted = String.format("%.2f", convertedPrice).replace('.', ',');
-        return formatted;
+        return String.format("%.2f", convertedPrice).replace('.', ',');
     }
 
     // calculate total
@@ -110,18 +119,22 @@ public class ShoppingCartController {
                 total = total * 4.33; // 1 Euro = 4.33 SAR
                 totalLabel.setText(String.format("%.2f", total).replace('.', ','));
                 break;
+            default: // English
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
+
         }
     }
 
     @FXML
     private void emptyCart() {
         cart.clear();
-        System.out.println("Empty cart...");
+        log.info("Empty cart...");
     }
 
     @FXML
     private void openCheckoutWindow() {
-        System.out.println("Proceed to checkout...");
+        log.info("Proceed to checkout...");
         rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/checkout_view.fxml"));

@@ -1,81 +1,144 @@
 package com.group9.service;
 
 import com.group9.dao.GenreDao;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
+import com.group9.util.SessionManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class GenreService {
-  private GenreDao genreDao;
+    private GenreDao genreDao;
+    private ResourceBundle rb;
 
   public GenreService(GenreDao genreDao) {
     this.genreDao = genreDao;
   }
 
   public List<Genre> getAllGenres() {
+      rb = SessionManager.getResourceBundle();
     try {
-      return genreDao.getAllGenres();
+      return genreDao.getAllGenres(SessionManager.getLocale().getLanguage());
     } catch (Exception e) {
-      System.out.println("Error retrieving genres: " + e.getMessage());
+        String message = rb.getString("errorRetrievingGenres");
+      System.out.println(message + " " + e.getMessage());
       return null;
     }
   }
 
-  public void addGenre(String name, String desc) throws Exception {
+  public int addGenre(String name, String desc) throws Exception {
+      rb = SessionManager.getResourceBundle();
     if (name == null || name.isEmpty()) {
-      throw new IllegalArgumentException("Genre and genre name cannot be null or empty");
+        String message = rb.getString("genreNull");
+        throw new IllegalArgumentException(message);
     }
 
     try {
-      genreDao.addGenre(name, desc);
+      return genreDao.addGenre(name, desc);
     } catch (Exception e) {
-      System.out.println("Error adding genre: " + e.getMessage());
-      throw new Exception("Error adding genre");
+        String message = rb.getString("errorAddingGenre");
+        System.out.println(message + " " + e.getMessage());
+        throw new Exception(message);
     }
   }
 
   public void updateGenre(Genre genre) {
-    if (genre.getId() <= 0) {
-      throw new IllegalArgumentException("Genre ID must be a positive integer");
-    }
+      rb = SessionManager.getResourceBundle();
 
-    if (genre.getName() == null || genre.getName().isEmpty()) {
-      throw new IllegalArgumentException("Genre name cannot be null or empty");
-    }
-
-    // Check if genre exists
-    try {
-      Genre existingGenre = genreDao.getGenreByName(genre.getName());
-      if (existingGenre == null) {
-        throw new IllegalArgumentException("Genre " + genre.getName() + " does not exist");
+      if (genre.getId() <= 0) {
+          String message = rb.getString("genreIdError");
+          throw new IllegalArgumentException(message);
       }
-      if (existingGenre.getId() != genre.getId()) {
-        throw new IllegalArgumentException("Another genre with name " + genre.getName() + " already exists");
+
+      if (genre.getName() == null || genre.getName().isEmpty()) {
+          String message = rb.getString("genreNameNull");
+          throw new IllegalArgumentException(message);
       }
-    } catch (SQLException e) {
-      System.err.println("Error checking existing genre: " + e.getMessage());
-      throw new RuntimeException("Error updating genre");
+
+      // Check if genre exists
+      try {
+          Genre existingGenre = genreDao.getGenreByName(genre.getName());
+          if (existingGenre == null) {
+              String message = rb.getString("genre");
+              String message2 = rb.getString("doesNotExist");
+              throw new IllegalArgumentException(message + " " + genre.getName() + " " + message2);
+          }
+          if (existingGenre.getId() != genre.getId()) {
+              String message = rb.getString("genreNameConflict");
+              String message2 = rb.getString("alreadyExists");
+              throw new IllegalArgumentException(message + " " + genre.getName() + " " + message2);
+          }
+      } catch (SQLException e) {
+          String message = rb.getString("errorCheckingGenre");
+          String message2 = rb.getString("errorUpdatingGenre");
+          System.err.println(message + " " + e.getMessage());
+          throw new RuntimeException(message2);
+      }
+
+      try {
+          genreDao.updateGenre(genre);
+      } catch (Exception e) {
+          String message = rb.getString("errorUpdatingGenre");
+          System.out.println(message + " " + e.getMessage());
+          throw new RuntimeException(message);
+      }
+  }
+
+  public void saveGenreWithTranslations(Genre genre, List<BookAttributeTranslation> translations) {
+    rb = SessionManager.getResourceBundle();
+    int genreId = genre.getId();
+
+    // Save new or update existing genre
+    if (genreId <= 0) {
+      try {
+        genreId = addGenre(genre.getName(), genre.getDescription());
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      try {
+        updateGenre(genre);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
+    // Save translations
     try {
-      genreDao.updateGenre(genre);
+      genreDao.upsertTranslations(genreId, translations);
     } catch (Exception e) {
-      System.out.println("Error updating genre: " + e.getMessage());
-      throw new RuntimeException("Error updating genre");
+      String message = rb.getString("errorSavingTranslations");
+      System.err.println(message + " " + e.getMessage());
+      throw new RuntimeException(message);
     }
   }
 
   public void deleteGenre(String name) throws Exception {
+    rb = SessionManager.getResourceBundle();
     if (name.isEmpty()) {
-      throw new IllegalArgumentException("Genre name cannot be empty");
+        String message = rb.getString("genreNameNull");
+        throw new IllegalArgumentException(message);
     }
 
     try {
       genreDao.deleteGenreByName(name);
     } catch (Exception e) {
-      System.out.println("Error deleting genre: " + e.getMessage());
-      throw new Exception("Error deleting genre");
+        String message = rb.getString("errorDeletingGenre");
+        System.out.println(message + " " + e.getMessage());
+        throw new Exception(message);
+    }
+  }
+
+  public List<BookAttributeTranslation> getTranslationsForGenre(int genreId) {
+    try {
+      return genreDao.getTranslations(genreId);
+    } catch (Exception e) {
+      //String message = rb.getString("errorRetrievingTranslations");
+      System.out.println("message" + " " + e.getMessage());
+      throw new RuntimeException("message");
     }
   }
 }

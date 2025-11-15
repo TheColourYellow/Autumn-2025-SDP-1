@@ -3,6 +3,7 @@ package com.group9.controller;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
 import com.group9.service.UserService;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -20,11 +22,14 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 import static com.group9.util.PopupUtils.showError;
+import static com.group9.util.SessionManager.getLanguage;
 
 public class LoginController {
 
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
 
+    @FXML private AnchorPane loginAnchor;
     @FXML private Label homeLabel;
     @FXML private Label registerLabel;
     @FXML private ImageView shoppingCart;
@@ -50,6 +55,7 @@ public class LoginController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(loginAnchor);
         updateUI();
     }
 
@@ -79,7 +85,7 @@ public class LoginController {
             stage.setScene(new Scene(loginRoot));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open home window");
+            showError(rb.getString("error"), rb.getString("couldNotOpenHome"));
         }
     }
 
@@ -95,13 +101,12 @@ public class LoginController {
             stage.setTitle(rb.getString("registerPageText"));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open register window.");
+            showError(rb.getString("error"), rb.getString("couldNotOpenRegister"));
         }
     }
 
     @FXML
     private void openShoppingCart() {
-        rb = SessionManager.getResourceBundle();
         System.out.println("Shopping cart clicked!");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -139,13 +144,13 @@ public class LoginController {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/look.css").toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Profile");
+            stage.setTitle(rb.getString("profilePageTitle"));
             stage.show();
 
         } catch (IllegalArgumentException e) {
-            showError("Login Error", e.getMessage());
+            showError(rb.getString("loginError"), e.getMessage());
         } catch (Exception e) {
-            showError("Error", "Could not log in user");
+            showError(rb.getString("usernameOrPasswordIncorrect"), rb.getString("couldNotLogin"));
         }
     }
 

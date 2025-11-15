@@ -6,7 +6,8 @@ CREATE TABLE users (
     email         VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role          ENUM('user', 'admin')  NOT NULL DEFAULT 'user',
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    language_code VARCHAR(5) NOT NULL DEFAULT 'en'
 );
 
 CREATE TABLE books (
@@ -47,6 +48,24 @@ CREATE TABLE genres (
     id          INT PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(50) NOT NULL UNIQUE,
     description TEXT
+);
+
+CREATE TABLE genre_translations (
+    genre_id INT NOT NULL,
+    language_code VARCHAR(5) NOT NULL,
+    translated_name VARCHAR(50) NOT NULL,
+    translated_description TEXT,
+    PRIMARY KEY (genre_id, language_code),
+    FOREIGN KEY (genre_id) REFERENCES genres (id) ON DELETE CASCADE
+);
+-- Added 15.11. based on previously done work
+CREATE TABLE author_translations (
+    author_id INT NOT NULL,
+    language_code VARCHAR(5) NOT NULL,
+    translated_name VARCHAR(50) NOT NULL,
+    translated_description TEXT,
+    PRIMARY KEY (author_id, language_code),
+    FOREIGN KEY (author_id) REFERENCES authors (id) ON DELETE CASCADE
 );
 
 CREATE TABLE book_authors (

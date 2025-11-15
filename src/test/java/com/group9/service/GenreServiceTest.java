@@ -24,12 +24,12 @@ public class GenreServiceTest {
   @Test
   public void testGetAllGenres() throws SQLException {
     // Mock Dao response with empty list
-    when(genreDao.getAllGenres()).thenReturn(new ArrayList<Genre>());
+    when(genreDao.getAllGenres("en")).thenReturn(new ArrayList<Genre>());
     assertEquals(new ArrayList<Genre>(), genreService.getAllGenres());
-    verify(genreDao).getAllGenres();
+    verify(genreDao).getAllGenres("en");
 
     // Return null on exception
-    when(genreDao.getAllGenres()).thenThrow(new SQLException("DB error"));
+    when(genreDao.getAllGenres("en")).thenThrow(new SQLException("DB error"));
     assertNull(genreService.getAllGenres());
   }
 
@@ -44,7 +44,7 @@ public class GenreServiceTest {
     verify(genreDao).addGenre("New Genre", "desc");
 
     // Simulate Dao exception
-    doThrow(new SQLException("DB error")).when(genreDao).addGenre("New Genre", "desc");
+    doThrow(new RuntimeException("DB error")).when(genreDao).addGenre("New Genre", "desc");
     assertThrows(Exception.class, () -> genreService.addGenre("New Genre", "desc"));
   }
 

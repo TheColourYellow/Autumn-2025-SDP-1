@@ -2,83 +2,109 @@ package com.group9.service;
 
 import com.group9.dao.BookDao;
 import com.group9.model.Book;
+import com.group9.util.SessionManager;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class BookService {
-  private final BookDao bookDao;
+    private final BookDao bookDao;
+    private ResourceBundle rb;
 
-  public BookService(BookDao bookDao) {
+    public BookService(BookDao bookDao) {
     this.bookDao = bookDao;
   }
 
-  public List<Book> getAllBooks() {
+    public List<Book> getAllBooks() {
     return bookDao.getAllBooks();
   }
 
-  public Book getBookById(int id) {
-    if (id <= 0)
-      throw new IllegalArgumentException("Book ID must be positive");
+    public Book getBookById(int id) {
+        rb = SessionManager.getResourceBundle();
+        if (id <= 0) {
+            String message = rb.getString("bookIdError");
+            throw new IllegalArgumentException(message);
+        }
 
-    try {
-      return bookDao.getBookById(id);
-    } catch (Exception e) {
-      System.out.println("Error retrieving book by ID: " + e.getMessage());
-      return null;
+        try {
+            return bookDao.getBookById(id);
+        } catch (Exception e) {
+            String message =  rb.getString("errorRetrievingBookById");
+            System.out.println(message + ": " + e.getMessage());
+            return null;
+        }
     }
-  }
 
-  public List<Book> searchBooks(List<Integer> authorIds, List<Integer> genreIds) {
-    return bookDao.findBooks(authorIds, genreIds);
-  }
-
-  public int addBook(Book book) {
-    validateBook(book);
-
-    try {
-      return bookDao.addFullBook(book);
-    } catch (Exception e) {
-      System.out.println("Error adding book: " + e.getMessage());
-      return -1;
+    public List<Book> searchBooks(List<Integer> authorIds, List<Integer> genreIds) {
+        return bookDao.findBooks(authorIds, genreIds);
     }
-  }
 
-  public void updateBook(Book book) {
-    validateBook(book);
-    if (book.getId() <= 0)
-      throw new IllegalArgumentException("Book ID must be positive");
+    public int addBook(Book book) {
+        rb = SessionManager.getResourceBundle();
+        validateBook(book);
 
-    try {
-      bookDao.updateBook(book);
-    } catch (Exception e) {
-      System.out.println("Error updating book: " + e.getMessage());
-      throw new RuntimeException("Error updating book");
+        try {
+            return bookDao.addFullBook(book);
+        } catch (Exception e) {
+            String message =  rb.getString("errorAddingBook");
+            System.out.println(message + ": " + e.getMessage());
+            return -1;
+        }
     }
-  }
 
-  public void deleteBook(int bookId) throws Exception {
-    if (bookId <= 0)
-      throw new IllegalArgumentException("Book ID must be positive");
+    public void updateBook(Book book) {
+        rb = SessionManager.getResourceBundle();
+        validateBook(book);
+        if (book.getId() <= 0) {
+            String message = rb.getString("bookIdError");
+            throw new IllegalArgumentException(message);
+        }
 
-    try {
-      bookDao.inActivateBook(bookId); // Soft delete
-    } catch (Exception e) {
-      System.out.println("Error deleting book: " + e.getMessage());
-      throw new Exception("Error deleting book");
+        try {
+            bookDao.updateBook(book);
+        } catch (Exception e) {
+            String message =  rb.getString("errorUpdatingBook");
+            System.out.println(message + ": " + e.getMessage());
+            throw new RuntimeException(message);
+        }
     }
-  }
 
-  private void validateBook(Book book) {
-    if (book == null)
-      throw new IllegalArgumentException("Book cannot be null");
+    public void deleteBook(int bookId) throws Exception {
+        rb = SessionManager.getResourceBundle();
+        if (bookId <= 0) {
+            String message = rb.getString("bookIdError");
+            throw new IllegalArgumentException(message);
+        }
 
-    if (book.getTitle() == null || book.getTitle().isEmpty())
-      throw new IllegalArgumentException("Book title cannot be null or empty");
+        try {
+            bookDao.inActivateBook(bookId); // Soft delete
+        } catch (Exception e) {
+            String message = rb.getString("errorDeletingBook");
+            System.out.println(message + ": " + e.getMessage());
+            throw new Exception(message);
+        }
+    }
 
-    if (book.getPrice() < 0)
-      throw new IllegalArgumentException("Book price must be non-negative");
+    private void validateBook(Book book) {
+        rb = SessionManager.getResourceBundle();
+        if (book == null) {
+            String message = rb.getString("bookNull");
+            throw new IllegalArgumentException(message);
+        }
 
-    if (book.getYear() < 0)
-      throw new IllegalArgumentException("Book year must be non-negative");
-  }
+        if (book.getTitle() == null || book.getTitle().isEmpty()) {
+            String message = rb.getString("bookTitleNull");
+            throw new IllegalArgumentException(message);
+        }
+
+        if (book.getPrice() < 0) {
+            String message = rb.getString("bookPriceNegative");
+            throw new IllegalArgumentException(message);
+        }
+
+        if (book.getYear() < 0) {
+            String message = rb.getString("bookYearNegative");
+            throw new IllegalArgumentException(message);
+        }
+    }
 }

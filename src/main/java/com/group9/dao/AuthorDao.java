@@ -9,13 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorDao {
-  public List<Author> getAllAuthors() throws SQLException {
+  public List<Author> getAllAuthors(String languageCode) throws SQLException {
     Connection conn = null;
     List<Author> authors = new ArrayList<>();
+    // If language is English, fetch directly from genres table
+    String query;
+    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+    if (isEnglish) {
+      query = "SELECT id, name, description FROM authors";
+    } else {
+      query = "SELECT " +
+              "au.id, " +
+              "COALESCE(aut.translated_name, au.name) AS name, " +
+              "COALESCE(aut.translated_description, au.description) AS description " +
+              "FROM authors au " +
+              "LEFT JOIN author_translations aut " +
+              "ON au.id = aut.author_id " +
+              "AND aut.language_code = ?";
+    }
+
     try {
       conn = Database.getConnection();
-      String query = "SELECT id, name, description FROM authors";
       PreparedStatement ps = conn.prepareStatement(query);
+      if (!isEnglish) {
+        ps.setString(1, languageCode);
+      }
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Author author = new Author(
@@ -26,7 +44,7 @@ public class AuthorDao {
         authors.add(author);
       }
     } catch (SQLException e) {
-      throw new SQLException("Error fetching authors", e);
+      throw new SQLException("Error fetching genres", e);
     } finally {
       if (conn != null) conn.close();
     }

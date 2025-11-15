@@ -1,10 +1,12 @@
 package com.group9.controller;
 
 import com.group9.dao.OrderDao;
+import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.Order;
 import com.group9.model.OrderItem;
 import com.group9.service.OrderService;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -15,17 +17,24 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.group9.util.SessionManager.getLanguage;
 
 public class CheckoutController {
 
+    private LayoutOrienter orienter = new LayoutOrienter();
+    private static final Logger log = Logger.getLogger(CheckoutController.class.getName());
+
+    @FXML private AnchorPane checkoutAnchor;
     @FXML private Button orderButton;
     @FXML private Button returnButton; // return to shopping cart
     @FXML private TextField cardNumberField; // text field for card number
@@ -42,8 +51,8 @@ public class CheckoutController {
 
     // selected card
     private ImageView selectedCard = null;
-    private final String NORMAL_STYLE = "-fx-effect: dropshadow(gaussian, gray, 5, 0.3, 0, 0); -fx-cursor: hand;";
-    private final String SELECTED_STYLE = "-fx-effect: dropshadow(gaussian, blue, 15, 0.7, 0, 0); -fx-border-color: blue; -fx-border-width: 3; -fx-cursor: hand;";
+    private static final String NORMAL_STYLE = "-fx-effect: dropshadow(gaussian, gray, 5, 0.3, 0, 0); -fx-cursor: hand;";
+    private static final String SELECTED_STYLE = "-fx-effect: dropshadow(gaussian, blue, 15, 0.7, 0, 0); -fx-border-color: blue; -fx-border-width: 3; -fx-cursor: hand;";
 
     private ObservableList<Book> cart; // holds cart items
     private ResourceBundle rb;
@@ -51,6 +60,7 @@ public class CheckoutController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(checkoutAnchor);
         updateUI();
         // initial style and click handler
         visaImage.setStyle(NORMAL_STYLE);
@@ -59,10 +69,8 @@ public class CheckoutController {
         visaImage.setOnMouseClicked(e -> selectCard(visaImage));
         mastercardImage.setOnMouseClicked(e -> selectCard(mastercardImage));
 
-        Platform.runLater(() -> {
-            // move focus away
-            cardNumberField.getParent().requestFocus();
-        });
+        // move focus away
+        Platform.runLater(() -> cardNumberField.getParent().requestFocus());
     }
 
     public void updateUI() {
@@ -89,7 +97,7 @@ public class CheckoutController {
             // join author names
             String authors = book.getAuthors()
                     .stream()
-                    .map(author -> author.getName())
+                    .map(Author::getName)
                     .collect(Collectors.joining(", "));
             Label label = new Label(book.getTitle() + " by " + authors + " - " +  currencyPrice(book.getPrice()) + rb.getString("currencyLabel"));
             checkoutBox.getChildren().add(label);
@@ -110,9 +118,10 @@ public class CheckoutController {
             case "Arabic":
                 convertedPrice = price * 4.33; // 1 Euro = 4.33 SAR
                 break;
+            default:
+                break;
         }
-        String formatted = String.format("%.2f", convertedPrice).replace('.', ',');
-        return formatted;
+        return String.format("%.2f", convertedPrice).replace('.', ',');
     }
 
     // calculate total
@@ -132,6 +141,9 @@ public class CheckoutController {
                 total = total * 4.33; // 1 Euro = 4.33 SAR
                 totalLabel.setText(String.format("%.2f", total).replace('.', ','));
                 break;
+            default: // English
+                totalLabel.setText(String.format("%.2f", total).replace('.', ','));
+                break;
         }
     }
 
@@ -148,24 +160,24 @@ public class CheckoutController {
         boolean success = false;
 
         if (selectedCard == null) {
-            System.out.println("No card selected!");
+            log.info("No card selected!");
             return;
         }
 
         String cardNumber = cardNumberField.getText().trim();
         if (cardNumber.isEmpty()) {
-            System.out.println("Card number cannot be empty!");
+            log.info("Card number cannot be empty!");
             return;
         }
 
         cardNumber = cardNumber.replaceAll("\\s+", "");
         if (!cardNumber.matches("\\d{16}")) {
-            System.out.println("Card number must be 16 digits!");
+            log.info("Card number must be 16 digits!");
             return;
         }
 
         String selectedCardType = selectedCard == visaImage ? "Visa" : "MasterCard";
-        System.out.println("Placing order with " + selectedCardType + " card number: " + cardNumber);
+        log.log(Level.INFO, "Placing order with {0} card number: {1}", new Object[]{selectedCardType, cardNumber});
 
         // if the user is logged in, save the order
         if (SessionManager.isLoggedIn()) {
@@ -180,9 +192,9 @@ public class CheckoutController {
             // save Order to database
             OrderService orderService = new OrderService(new OrderDao());
             int orderId = orderService.createOrder(order);
-            System.out.println("Created order with ID: " + orderId);
+            log.log(Level.INFO, "Created order with ID: {0}", orderId);
         } else {
-            System.out.println("User not logged in, skipping database save.");
+            log.info("User not logged in, skipping database save.");
         }
 
         // Switch to accept view
@@ -199,13 +211,13 @@ public class CheckoutController {
 
         if (success && cart != null) {
             cart.clear(); // clear cart after successful order
-            System.out.println("Cart cleared after payment.");
+            log.info("Cart cleared after payment.");
         }
     }
 
     @FXML
     private void returnToCart() {
-        System.out.println("Return to cart...");
+        log.info("Return to cart...");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent cartRoot = loader.load();

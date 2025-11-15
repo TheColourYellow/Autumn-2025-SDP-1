@@ -8,6 +8,7 @@ import com.group9.model.Genre;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
@@ -34,6 +36,9 @@ import static com.group9.util.PopupUtils.showError;
 public class BookstoreController {
 
     private ResourceBundle rb;
+    private LayoutOrienter orienter = new LayoutOrienter();
+
+    @FXML private AnchorPane bookstoreAnchor;
 
     @FXML
     private Label homeLabel;
@@ -116,7 +121,8 @@ public class BookstoreController {
     private void openProfileWindow() {
         try {
             // Load the FXML file for the profile window
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
+            FXMLLoader loader;
+            loader = new FXMLLoader(getClass().getResource("/profile_view.fxml"));
             Parent root = loader.load();
 
             // login label is clicked, content of the window is replaced with the content of profile window
@@ -151,6 +157,7 @@ public class BookstoreController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(bookstoreAnchor);
         updateUI();
 
         // Initialize language selector
@@ -385,7 +392,33 @@ public class BookstoreController {
         bookListLabel.setText(rb.getString("bookListLabel"));
         bookStoreLabel.setText(rb.getString("bookStoreLabel"));
 
+        // Refresh genre checkboxes with translated names
+        refreshGenreCheckboxes();
         // Refresh table to update button texts when language changes
         bookTable.refresh();
+    }
+
+    private void refreshGenreCheckboxes() {
+        try {
+            // Reload genres in the newly selected language
+            List<Genre> updatedGenres = new GenreService(new GenreDao()).getAllGenres();
+
+            // A quick lookup: id -> Genre
+            Map<Integer, Genre> genreById = updatedGenres.stream()
+                    .collect(Collectors.toMap(Genre::getId, g -> g));
+
+            // Update each checkbox with the new translated name
+            for (Map.Entry<CheckBox, Genre> entry : genreCheckBoxMap.entrySet()) {
+                CheckBox cb = entry.getKey();
+                Genre original = entry.getValue();
+
+                Genre updated = genreById.get(original.getId());
+                if (updated != null) {
+                    cb.setText(updated.getName());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error refreshing genre checkboxes: " + e.getMessage());
+        }
     }
 }

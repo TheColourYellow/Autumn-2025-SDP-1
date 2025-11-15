@@ -10,6 +10,7 @@ import com.group9.service.AuthorService;
 import com.group9.service.BookService;
 import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
+import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
@@ -34,6 +36,9 @@ import static com.group9.util.PopupUtils.showError;
 public class BookManageController {
   private Book book;
   private Runnable onCloseCallback;
+  private LayoutOrienter orienter = new LayoutOrienter();
+
+  @FXML private AnchorPane bookmanageAnchor;
 
   @FXML
   private TextField titleTextField;
@@ -79,6 +84,7 @@ public class BookManageController {
   @FXML
   private void initialize() {
     rb = SessionManager.getResourceBundle();
+    orienter.orientLayout(bookmanageAnchor);
     titleLabel.setText(rb.getString("titleLabel"));
     isbnLabel.setText(rb.getString("isbnLabel"));
     yearLabel.setText(rb.getString("yearLabel"));
@@ -123,58 +129,79 @@ public class BookManageController {
     this.onCloseCallback = onCloseCallback;
   }
 
-  @FXML
-  private void handleSave() {
-    if (book != null && book.getId() != -1) {
-      // Update existing book
-      book.setTitle(titleTextField.getText().trim());
-      book.setIsbn(isbnTextField.getText().trim());
-      book.setYear(Integer.parseInt(yearTextField.getText().trim()));
-      book.setPrice(Double.parseDouble(priceTextField.getText().trim()));
-      book.setDescription(descTextArea.getText().trim());
-      book.setGenres(getSelectedGenres());
-      book.setAuthors(getSelectedAuthors());
+    @FXML
+    private void handleSave() {
+        try {
+            String title = titleTextField.getText().trim();
+            String isbn = isbnTextField.getText().trim();
+            String yearText = yearTextField.getText().trim();
+            String priceText = priceTextField.getText().trim();
+            String desc = descTextArea.getText().trim();
 
-      try {
-        bookService.updateBook(book);
+            // input validation
+            if (title.isEmpty()) {
+                showError(rb.getString("validationError"), rb.getString("bookTitleNull"));
+                return;
+            }
 
-        // Refresh the book list in the main controller
-        if (onCloseCallback != null) {
-          onCloseCallback.run();
+            if (yearText.isEmpty()) {
+                showError(rb.getString("validationError"), rb.getString("bookYearNull"));
+                return;
+            }
+
+            if (priceText.isEmpty()) {
+                showError(rb.getString("validationError"), rb.getString("bookPriceNull"));
+                return;
+            }
+
+            int year;
+            double price;
+            try {
+                year = Integer.parseInt(yearText);
+                price = Double.parseDouble(priceText);
+            } catch (NumberFormatException e) {
+                showError(rb.getString("validationError"), rb.getString("yearPriceValidationError"));
+                return;
+            }
+
+            if (book != null && book.getId() != -1) {
+                // Update existing book
+                book.setTitle(title);
+                book.setIsbn(isbn);
+                book.setYear(year);
+                book.setPrice(price);
+                book.setDescription(desc);
+                book.setGenres(getSelectedGenres());
+                book.setAuthors(getSelectedAuthors());
+
+                bookService.updateBook(book);
+
+            } else {
+                // Create new book
+                Book newBook = new Book(-1, title, isbn, year, price, desc);
+                newBook.setGenres(getSelectedGenres());
+                newBook.setAuthors(getSelectedAuthors());
+
+                if (bookService.addBook(newBook) == -1) {
+                    showError(rb.getString("error"), rb.getString("errorAddingBook"));
+                    return;
+                }
+            }
+
+            // Refresh list & close
+            if (onCloseCallback != null) {
+                onCloseCallback.run();
+            }
+            handleCancel();
+
+        } catch (Exception e) {
+            showError(rb.getString("error"), e.getMessage());
+            e.printStackTrace();
         }
-
-        // Close the dialog
-        handleCancel();
-      } catch (Exception e) {
-        showError("Error", "Could not update book: " + e.getMessage());
-      }
-    } else {
-      Book newBook = new Book(
-              -1,
-              titleTextField.getText().trim(),
-              isbnTextField.getText().trim(),
-              Integer.parseInt(yearTextField.getText().trim()),
-              Double.parseDouble(priceTextField.getText().trim()),
-              descTextArea.getText().trim()
-      );
-      newBook.setGenres(getSelectedGenres());
-      newBook.setAuthors(getSelectedAuthors());
-
-      if (bookService.addBook(newBook) != -1) { // Successfully added
-        // Refresh the book list in the main controller
-        if (onCloseCallback != null) {
-          onCloseCallback.run();
-        }
-
-        // Close the dialog
-        handleCancel();
-      } else {
-        showError("Error", "Could not add book. Please try again later.");
-      }
     }
-  }
 
-  @FXML
+
+    @FXML
   private void handleCancel() {
     Stage stage = (Stage) cancelBtn.getScene().getWindow();
     stage.close();
@@ -183,7 +210,7 @@ public class BookManageController {
   @FXML
   private void handleDelete() {
     if (book != null && book.getId() != -1) {
-      if (showConfirmation("Delete Book: " + book.getTitle(), "Are you sure you want to delete this book?")) {
+      if (showConfirmation(rb.getString("deleteBookConfirmationTitle") + book.getTitle(), rb.getString("deleteBookConfirmationMessage"))) {
         try {
           bookService.deleteBook(book.getId());
 
@@ -195,7 +222,7 @@ public class BookManageController {
           // Close the dialog
           handleCancel();
         } catch (Exception e) {
-          showError("Error", "Could not delete book: " + e.getMessage());
+          showError(rb.getString("error"), e.getMessage());
         }
       }
     }
@@ -253,7 +280,7 @@ public class BookManageController {
           }
         });
       } catch (Exception e) {
-        Platform.runLater(() -> showError("Error", "Could not load data. Please try again later."));
+        Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
       }
     });
   }
