@@ -19,7 +19,7 @@ public class AuthorService {
     public List<Author> getAllAuthors() {
         rb = SessionManager.getResourceBundle();
         try {
-            return authorDao.getAllAuthors();
+            return authorDao.getAllAuthors(SessionManager.getLocale().getLanguage());
         } catch (Exception e) {
             String message = rb.getString("errorRetrievingAuthors");
             System.out.println(message + ": " + e.getMessage());

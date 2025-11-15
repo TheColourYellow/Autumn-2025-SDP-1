@@ -173,43 +173,6 @@ public class BookAttributeController {
         );
       }
     });
-
-    /*
-    bookAttribute.setName(name);
-    bookAttribute.setDescription(desc);
-
-    boolean isUpdate = bookAttribute.getId() != -1;
-
-    AppExecutors.databaseExecutor.execute(() -> {
-      try {
-        if (bookAttribute instanceof Author) {
-          if (isUpdate)
-            authorService.updateAuthor((Author) bookAttribute);
-          else
-            authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
-        } else if (bookAttribute instanceof Genre) {
-          if (isUpdate)
-            genreService.updateGenre((Genre) bookAttribute);
-          else
-            genreService.addGenre(bookAttribute.getName(), bookAttribute.getDescription());
-        } else {
-          throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
-        }
-
-        // Run UI updates on the JavaFX Application Thread
-        Platform.runLater(() -> {
-          if (onCloseCallback != null) onCloseCallback.run();
-          handleClose();
-        });
-
-      } catch (Exception e) {
-        Platform.runLater(() ->
-                showError(rb.getString("error"), e.getMessage())
-        );
-      }
-    });
-
-     */
   }
 
   @FXML
