@@ -26,7 +26,7 @@ import static com.group9.util.PopupUtils.showError;
 
 public class RegisterController {
 
-    private static final Logger logger = Logger.getLogger(LoginController.class.getName());
+    private static final Logger logger = Logger.getLogger(RegisterController.class.getName());
 
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
