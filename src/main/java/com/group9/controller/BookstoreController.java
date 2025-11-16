@@ -35,6 +35,12 @@ import static com.group9.util.PopupUtils.showError;
 
 public class BookstoreController {
 
+    private static final String LANG_JAPANESE = "Japanese";
+    private static final String LANG_ENGLISH = "English";
+    private static final String LANG_ARABIC = "Arabic";
+
+    private static final String ERROR_TITLE = "Error";
+
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
 
@@ -114,7 +120,7 @@ public class BookstoreController {
             stage.setTitle(rb.getString("loginPageText"));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open login window.");
+            showError(ERROR_TITLE, "Could not open login window.");
         }
     }
 
@@ -134,7 +140,7 @@ public class BookstoreController {
             stage.setTitle("Profile");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open profile window.");
+            showError(ERROR_TITLE, "Could not open profile window.");
         }
     }
 
@@ -150,7 +156,7 @@ public class BookstoreController {
             stage.setTitle("Management");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open management window.");
+            showError(ERROR_TITLE, "Could not open management window.");
         }
     }
 
@@ -161,7 +167,7 @@ public class BookstoreController {
         updateUI();
 
         // Initialize language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English", "Arabic"));
+        languageSelector.setItems(FXCollections.observableArrayList(LANG_JAPANESE, LANG_ENGLISH, LANG_ARABIC));
         languageSelector.setValue(SessionManager.getLanguage()); // Get current language
         languageSelector.setOnAction(event -> handleLanguageChange());
 
@@ -328,7 +334,7 @@ public class BookstoreController {
                 }
                 Platform.runLater(() -> bookData.setAll(books));
             } catch (Exception e) {
-                Platform.runLater(() -> showError("Error", "Could not sort books. Please try again later."));
+                Platform.runLater(() -> showError(ERROR_TITLE, "Could not sort books. Please try again later."));
             }
         });
     }
@@ -341,7 +347,7 @@ public class BookstoreController {
                 List<Book> books = bookService.getAllBooks();
                 Platform.runLater(() -> bookData.setAll(books));
             } catch (Exception e) {
-                Platform.runLater(() -> showError("Error", "Could not load books. Please try again later."));
+                Platform.runLater(() -> showError(ERROR_TITLE, "Could not load books. Please try again later."));
             }
         });
     }
@@ -352,19 +358,19 @@ public class BookstoreController {
         if (selectedLanguage == null) return;
 
         switch (selectedLanguage) {
-            case "Japanese":
+            case LANG_JAPANESE:
                 loadLanguage("ja", "JP");
-                SessionManager.setLanguage("Japanese");
+                SessionManager.setLanguage(LANG_JAPANESE);
                 System.out.println("Language changed to Japanese");
                 break;
-            case "English":
+            case LANG_ENGLISH:
                 loadLanguage("en", "US");
-                SessionManager.setLanguage("English");
+                SessionManager.setLanguage(LANG_ENGLISH);
                 System.out.println("Language changed to English");
                 break;
-            case "Arabic":
+            case LANG_ARABIC:
                 loadLanguage("ar", "SA");
-                SessionManager.setLanguage("Arabic");
+                SessionManager.setLanguage(LANG_ARABIC);
                 System.out.println("Language changed to Arabic");
         }
     }
@@ -418,7 +424,7 @@ public class BookstoreController {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error refreshing genre checkboxes: " + e.getMessage());
+            System.err.println(ERROR_TITLE + "Error refreshing genre checkboxes: " + e.getMessage());
         }
     }
 }
