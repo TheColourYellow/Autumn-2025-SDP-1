@@ -29,11 +29,14 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showError;
 
 public class BookstoreController {
+
+    private static final Logger logger = Logger.getLogger(BookstoreController.class.getName());
 
     private static final String LANG_JAPANESE = "Japanese";
     private static final String LANG_ENGLISH = "English";
@@ -224,7 +227,7 @@ public class BookstoreController {
         actionColumn.setCellFactory(new Callback<TableColumn<Book, Void>, TableCell<Book, Void>>() {
             @Override
             public TableCell<Book, Void> call(final TableColumn<Book, Void> param) {
-                final TableCell<Book, Void> cell = new TableCell<Book, Void>() {
+                return new TableCell<Book, Void>() {
 
                     private final Button btn = new Button();
 
@@ -232,7 +235,7 @@ public class BookstoreController {
                         btn.setOnAction(event -> {
                             Book book = getTableView().getItems().get(getIndex());
                             cart.add(book);
-                            System.out.println("Clicked Add to Cart for: " + book.getTitle());
+                            logger.info("Clicked Add to Cart for: " + book.getTitle());
                         });
                     }
 
@@ -243,11 +246,10 @@ public class BookstoreController {
                             setGraphic(null); // No button in empty rows
                         } else {
                             btn.setText(rb.getString("addToCartButton"));
-                            setGraphic(btn);  // Show button in data rows
+                            setGraphic(btn); // Show button in data rows
                         }
                     }
                 };
-                return cell;
             }
         });
 
@@ -288,7 +290,7 @@ public class BookstoreController {
     // Method for opening shopping cart window (new window)
     @FXML
     private void openShoppingCart() {
-        System.out.println("Shopping cart clicked!");
+        logger.info("Shopping cart clicked!");
         rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -361,17 +363,20 @@ public class BookstoreController {
             case LANG_JAPANESE:
                 loadLanguage("ja", "JP");
                 SessionManager.setLanguage(LANG_JAPANESE);
-                System.out.println("Language changed to Japanese");
+                logger.info("Language changed to Japanese");
                 break;
             case LANG_ENGLISH:
                 loadLanguage("en", "US");
                 SessionManager.setLanguage(LANG_ENGLISH);
-                System.out.println("Language changed to English");
+                logger.info("Language changed to English");
                 break;
             case LANG_ARABIC:
                 loadLanguage("ar", "SA");
                 SessionManager.setLanguage(LANG_ARABIC);
-                System.out.println("Language changed to Arabic");
+                logger.info("Language changed to Arabic");
+                break;
+            default:
+                logger.warning("Unsupported language selected");
         }
     }
 
