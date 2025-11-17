@@ -429,7 +429,7 @@ public class BookstoreController {
                 }
             }
         } catch (Exception e) {
-            System.err.println(ERROR_TITLE + ": refreshing genre checkboxes: " + e.getMessage());
+            logger.severe("Error refreshing genre checkboxes" + e.getMessage());
         }
     }
 }
