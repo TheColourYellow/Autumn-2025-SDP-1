@@ -2,6 +2,7 @@ package com.group9.dao;
 
 import com.group9.model.Author;
 import com.group9.model.Book;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
 import com.group9.util.Database;
 
@@ -15,15 +16,33 @@ public class BookDao {
   GenreDao genreDao = new GenreDao();
   AuthorDao authorDao = new AuthorDao();
 
-  public List<Book> getAllBooks() {
+  public List<Book> getAllBooks(String languageCode) {
     List<Book> books = new ArrayList<>();
 
+    String sql;
+    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+    if (isEnglish) {
+      sql = "SELECT * FROM books WHERE active = TRUE";
+    } else {
+      sql ="SELECT b.id, " +
+              "COALESCE(bt.translated_title, b.title) AS title, " +
+              "COALESCE(bt.translated_description, b.description) AS description, " +
+              "b.isbn, b.published_year, b.price, b.created_at, b.active " +
+              "FROM books b " +
+              "LEFT JOIN book_translations bt " +
+              "ON bt.book_id = b.id " +
+              "AND bt.language_code = ? " +
+              "WHERE b.active = TRUE";
+    }
+
     try (Connection conn = Database.getConnection()) {
-      String bookSql = "SELECT * FROM books WHERE active = TRUE";
-      PreparedStatement ps = conn.prepareStatement(bookSql);
+      PreparedStatement ps = conn.prepareStatement(sql);
+      if (!isEnglish) {
+        ps.setString(1, languageCode);
+      }
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
-        books.add(resultSetToBook(rs));
+        books.add(resultSetToBook(rs, languageCode));
       }
 
     } catch (SQLException e) {
@@ -70,7 +89,7 @@ public class BookDao {
       List<Book> books = new ArrayList<>();
 
       while (rs.next()) {
-        books.add(resultSetToBook(rs));
+        books.add(resultSetToBook(rs, "en"));
       }
 
       return books;
@@ -91,7 +110,7 @@ public class BookDao {
       ps.setInt(1, id);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
-        book = resultSetToBook(rs);
+        book = resultSetToBook(rs, "en");
       } else {
         return null; // Book not found
       }
@@ -104,7 +123,7 @@ public class BookDao {
     return book;
   }
 
-  private Book resultSetToBook(ResultSet rs) throws SQLException {
+  private Book resultSetToBook(ResultSet rs, String langCode) throws SQLException {
     Book book = new Book(
             rs.getInt("id"),
             rs.getString("title"),
@@ -113,8 +132,8 @@ public class BookDao {
             rs.getBigDecimal("price").doubleValue(),
             rs.getString("description")
     );
-    book.setAuthors(authorDao.getAuthorsByBookId(book.getId()));
-    book.setGenres(genreDao.getGenresByBookId(book.getId()));
+    book.setAuthors(authorDao.getAuthorsByBookId(book.getId(), langCode));
+    book.setGenres(genreDao.getGenresByBookId(book.getId(), langCode));
 
     return book;
   }
@@ -352,6 +371,56 @@ public class BookDao {
       ps.setInt(1, bookId);
       ps.setInt(2, genreId);
       ps.executeUpdate();
+    }
+  }
+
+  public List<BookAttributeTranslation> getTranslations(int bookId) {
+    String sql = "SELECT language_code, translated_title, translated_description " +
+            "FROM book_translations " +
+            "WHERE book_id = ?";
+    List<BookAttributeTranslation> translations = new ArrayList<>();
+
+    try (Connection conn = Database.getConnection();
+    PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, bookId);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        translations.add(new BookAttributeTranslation(
+                rs.getString("language_code"),
+                rs.getString("translated_title"),
+                rs.getString("translated_description")
+        ));
+      }
+    } catch (SQLException e) {
+      System.err.println("Error fetching book translations: " + e.getMessage());
+      throw new RuntimeException("Error fetching book translations");
+    }
+
+    return translations;
+  }
+
+  public void upsertTranslations(int bookId, List<BookAttributeTranslation> translations) {
+    String sql = "INSERT INTO book_translations (book_id, language_code, translated_title, translated_description) " +
+            "VALUES (?, ?, ?, ?) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "translated_title = VALUES(translated_title), " +
+            "translated_description = VALUES(translated_description)";
+
+    try (Connection conn = Database.getConnection();
+          PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      for (BookAttributeTranslation t : translations) {
+        ps.setInt(1, bookId);
+        ps.setString(2, t.languageCode);
+        ps.setString(3, t.translatedName);
+        ps.setString(4, t.translatedDescription);
+        ps.addBatch();
+      }
+
+      ps.executeBatch();
+    } catch (SQLException e) {
+      System.err.println("Error upserting book translations: " + e.getMessage());
+      throw new RuntimeException("Error upserting book translations");
     }
   }
 }

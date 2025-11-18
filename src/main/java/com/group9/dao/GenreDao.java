@@ -53,16 +53,43 @@ public class GenreDao {
     return genres;
   }
 
-  public List<Genre> getGenresByBookId(int bookId) throws SQLException {
+  public List<Genre> getGenresByBookId(int bookId, String languageCode) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();
+
     try {
       conn = Database.getConnection();
-      String query = "SELECT g.id, g.name, g.description FROM genres g " +
-              "JOIN book_genres bg ON g.id = bg.genre_id " +
-              "WHERE bg.book_id = ?";
+
+      boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+
+      String query;
+      if (isEnglish) {
+        query =
+                "SELECT g.id, g.name, g.description " +
+                        "FROM genres g " +
+                        "JOIN book_genres bg ON g.id = bg.genre_id " +
+                        "WHERE bg.book_id = ?";
+      } else {
+        query =
+                "SELECT g.id, " +
+                        "       COALESCE(gt.translated_name, g.name) AS name, " +
+                        "       COALESCE(gt.translated_description, g.description) AS description " +
+                        "FROM genres g " +
+                        "JOIN book_genres bg ON g.id = bg.genre_id " +
+                        "LEFT JOIN genre_translations gt ON gt.genre_id = g.id " +
+                        "     AND gt.language_code = ? " +
+                        "WHERE bg.book_id = ?";
+      }
+
       PreparedStatement ps = conn.prepareStatement(query);
-      ps.setInt(1, bookId);
+
+      if (isEnglish) {
+        ps.setInt(1, bookId);
+      } else {
+        ps.setString(1, languageCode);
+        ps.setInt(2, bookId);
+      }
+
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Genre genre = new Genre(
@@ -72,6 +99,7 @@ public class GenreDao {
         );
         genres.add(genre);
       }
+
     } catch (SQLException e) {
       throw new SQLException("Error fetching genres for book ID " + bookId, e);
     } finally {
@@ -80,7 +108,6 @@ public class GenreDao {
 
     return genres;
   }
-
 
   public static int addOrGetGenre(String name) throws SQLException {
     String select = "SELECT id FROM genres WHERE name = ?";
@@ -191,7 +218,7 @@ public class GenreDao {
     return translations;
   }
 
-  public void upsertTranslations(int genreId, List<BookAttributeTranslation> list) {
+  public void upsertTranslations(int genreId, List<BookAttributeTranslation> translations) {
     String sql = "INSERT INTO genre_translations (genre_id, language_code, translated_name, translated_description) " +
         "VALUES (?, ?, ?, ?) " +
         "ON DUPLICATE KEY UPDATE " +
@@ -201,7 +228,7 @@ public class GenreDao {
     try (Connection conn = Database.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
-      for (BookAttributeTranslation t : list) {
+      for (BookAttributeTranslation t : translations) {
         ps.setInt(1, genreId);
         ps.setString(2, t.languageCode);
         ps.setString(3, t.translatedName);

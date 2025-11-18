@@ -5,6 +5,7 @@ import com.group9.dao.BookDao;
 import com.group9.dao.GenreDao;
 import com.group9.model.Author;
 import com.group9.model.Book;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
 import com.group9.service.AuthorService;
 import com.group9.service.BookService;
@@ -24,10 +25,7 @@ import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showConfirmation;
@@ -38,10 +36,23 @@ public class BookManageController {
   private Runnable onCloseCallback;
   private LayoutOrienter orienter = new LayoutOrienter();
 
-  @FXML private AnchorPane bookmanageAnchor;
+  @FXML
+  private AnchorPane bookmanageAnchor;
 
   @FXML
-  private TextField titleTextField;
+  private TextField titleTextField_en;
+  @FXML
+  private TextField titleTextField_ja;
+  @FXML
+  private TextField titleTextField_ar;
+
+  @FXML
+  private TextArea descTextArea_en;
+  @FXML
+  private TextArea descTextArea_ja;
+  @FXML
+  private TextArea descTextArea_ar;
+
   @FXML
   private TextField isbnTextField;
   @FXML
@@ -53,21 +64,26 @@ public class BookManageController {
   @FXML
   private ListView<Author> authorListView;
   @FXML
-  private TextArea descTextArea;
-  @FXML
   private Button cancelBtn;
   @FXML
   private Button addBtn;
   @FXML
   private Button deleteBtn;
 
-  @FXML private Label titleLabel;
-  @FXML private Label isbnLabel;
-  @FXML private Label yearLabel;
-  @FXML private Label priceLabel;
-  @FXML private Label descLabel;
-  @FXML private Label genresLabel;
-  @FXML private Label authorsLabel;
+  @FXML
+  private Label titleLabel;
+  @FXML
+  private Label isbnLabel;
+  @FXML
+  private Label yearLabel;
+  @FXML
+  private Label priceLabel;
+  @FXML
+  private Label descLabel;
+  @FXML
+  private Label genresLabel;
+  @FXML
+  private Label authorsLabel;
 
   private final BookService bookService = new BookService(new BookDao());
   private final GenreService genreService = new GenreService(new GenreDao());
@@ -79,7 +95,10 @@ public class BookManageController {
   private final Map<Genre, BooleanProperty> genreSelections = new HashMap<>();
   private final Map<Author, BooleanProperty> authorSelections = new HashMap<>();
 
+  // Translations
   private ResourceBundle rb;
+  private HashMap<String, TextField> titleFields;
+  private HashMap<String, TextArea> descFields;
 
   @FXML
   private void initialize() {
@@ -105,6 +124,15 @@ public class BookManageController {
     genreListView.setCellFactory(CheckBoxListCell.forListView(genreSelections::get));
     authorListView.setCellFactory(CheckBoxListCell.forListView(authorSelections::get));
 
+    titleFields = new HashMap<>();
+    titleFields.put("en", titleTextField_en);
+    titleFields.put("ja", titleTextField_ja);
+    titleFields.put("ar", titleTextField_ar);
+    descFields = new HashMap<>();
+    descFields.put("en", descTextArea_en);
+    descFields.put("ja", descTextArea_ja);
+    descFields.put("ar", descTextArea_ar);
+
     loadData();
   }
 
@@ -112,96 +140,124 @@ public class BookManageController {
     deleteBtn.setVisible(true); // Show delete button for existing books
 
     this.book = book;
-    titleTextField.setText(book.getTitle());
+
+    titleTextField_en.setText(book.getTitle());
+    descTextArea_en.setText(book.getDescription());
+
     isbnTextField.setText(book.getIsbn());
     yearTextField.setText(String.valueOf(book.getYear()));
     priceTextField.setText(String.valueOf(book.getPrice()));
-    descTextArea.setText(book.getDescription());
     addBtn.setText(rb.getString("updateButton"));
 
     // Apply selections if data is already loaded
     if (!genreData.isEmpty() && !authorData.isEmpty()) {
       applyBookSelections();
     }
+
+    loadTranslations();
+  }
+
+  private void loadTranslations() {
+    if (book == null) return;
+
+    AppExecutors.databaseExecutor.execute(() -> {
+      try {
+        List<BookAttributeTranslation> translations = bookService.getTranslations(book.getId());
+        Platform.runLater(() -> {
+          for (BookAttributeTranslation translation : translations) {
+            String langCode = translation.languageCode;
+            if (titleFields.containsKey(langCode)) {
+              titleFields.get(langCode).setText(translation.translatedName);
+            }
+            if (descFields.containsKey(langCode)) {
+              descFields.get(langCode).setText(translation.translatedDescription);
+            }
+          }
+        });
+      } catch (Exception e) {
+        Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
+      }
+    });
   }
 
   public void setOnCloseCallback(Runnable onCloseCallback) {
     this.onCloseCallback = onCloseCallback;
   }
 
-    @FXML
-    private void handleSave() {
-        try {
-            String title = titleTextField.getText().trim();
-            String isbn = isbnTextField.getText().trim();
-            String yearText = yearTextField.getText().trim();
-            String priceText = priceTextField.getText().trim();
-            String desc = descTextArea.getText().trim();
+  @FXML
+  private void handleSave() {
+    String title = titleTextField_en.getText().trim();
+    String isbn = isbnTextField.getText().trim();
+    String yearText = yearTextField.getText().trim();
+    String priceText = priceTextField.getText().trim();
+    String desc = descTextArea_en.getText().trim();
 
-            // input validation
-            if (title.isEmpty()) {
-                showError(rb.getString("validationError"), rb.getString("bookTitleNull"));
-                return;
-            }
-
-            if (yearText.isEmpty()) {
-                showError(rb.getString("validationError"), rb.getString("bookYearNull"));
-                return;
-            }
-
-            if (priceText.isEmpty()) {
-                showError(rb.getString("validationError"), rb.getString("bookPriceNull"));
-                return;
-            }
-
-            int year;
-            double price;
-            try {
-                year = Integer.parseInt(yearText);
-                price = Double.parseDouble(priceText);
-            } catch (NumberFormatException e) {
-                showError(rb.getString("validationError"), rb.getString("yearPriceValidationError"));
-                return;
-            }
-
-            if (book != null && book.getId() != -1) {
-                // Update existing book
-                book.setTitle(title);
-                book.setIsbn(isbn);
-                book.setYear(year);
-                book.setPrice(price);
-                book.setDescription(desc);
-                book.setGenres(getSelectedGenres());
-                book.setAuthors(getSelectedAuthors());
-
-                bookService.updateBook(book);
-
-            } else {
-                // Create new book
-                Book newBook = new Book(-1, title, isbn, year, price, desc);
-                newBook.setGenres(getSelectedGenres());
-                newBook.setAuthors(getSelectedAuthors());
-
-                if (bookService.addBook(newBook) == -1) {
-                    showError(rb.getString("error"), rb.getString("errorAddingBook"));
-                    return;
-                }
-            }
-
-            // Refresh list & close
-            if (onCloseCallback != null) {
-                onCloseCallback.run();
-            }
-            handleCancel();
-
-        } catch (Exception e) {
-            showError(rb.getString("error"), e.getMessage());
-            e.printStackTrace();
-        }
+    // input validation
+    if (titleTextField_en.getText().trim().isEmpty()) {
+      showError(rb.getString("validationError"), rb.getString("bookTitleNull"));
+      return;
     }
 
+    if (yearText.isEmpty()) {
+      showError(rb.getString("validationError"), rb.getString("bookYearNull"));
+      return;
+    }
 
-    @FXML
+    if (priceText.isEmpty()) {
+      showError(rb.getString("validationError"), rb.getString("bookPriceNull"));
+      return;
+    }
+
+    int year;
+    double price;
+    try {
+      year = Integer.parseInt(yearText);
+      price = Double.parseDouble(priceText);
+    } catch (NumberFormatException e) {
+      showError(rb.getString("validationError"), rb.getString("yearPriceValidationError"));
+      return;
+    }
+
+    List<BookAttributeTranslation> translationsToSave = new ArrayList<>();
+    for (String langCode : titleFields.keySet()) {
+      if (langCode.equals("en")) continue; // Skip default language
+      String titleText = titleFields.get(langCode).getText().trim();
+      String descText = descFields.get(langCode).getText().trim();
+      if (!titleText.isEmpty() || !descText.isEmpty()) {
+        translationsToSave.add(new BookAttributeTranslation(langCode, titleText, descText));
+      }
+    }
+
+    if (book != null && book.getId() != -1) {
+      // Update existing book
+      book.setTitle(title);
+      book.setIsbn(isbn);
+      book.setYear(year);
+      book.setPrice(price);
+      book.setDescription(desc);
+    } else {
+      // Create new book
+      book = new Book(-1, title, isbn, year, price, desc);
+    }
+    book.setGenres(getSelectedGenres());
+    book.setAuthors(getSelectedAuthors());
+
+    AppExecutors.databaseExecutor.execute(() -> {
+      try {
+        bookService.saveBookWithTranslations(book, translationsToSave);
+
+        // Refresh list & close
+        Platform.runLater(() -> {
+          if (onCloseCallback != null) onCloseCallback.run();
+          handleCancel();
+        });
+      } catch (Exception e) {
+        Platform.runLater(() -> showError(rb.getString("error"), e.getMessage()));
+      }
+    });
+  }
+
+  @FXML
   private void handleCancel() {
     Stage stage = (Stage) cancelBtn.getScene().getWindow();
     stage.close();

@@ -97,19 +97,15 @@ public class BookAttributeController {
   }
 
   private void loadTranslations() {
-    System.out.println("Loading translations...");
     if (bookAttribute == null) return;
-
-    System.out.println("Loading translations for attribute ID: " + bookAttribute.getId());
 
     List<BookAttributeTranslation> translations = new ArrayList<>();
 
     if (bookAttribute instanceof Genre) {
       translations = genreService.getTranslationsForGenre(bookAttribute.getId());
-      System.out.println("Loaded " + translations.size() + " translations for genre.");
     }
     else if (bookAttribute instanceof Author) {
-      //translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
+      translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
     } else {
       throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
     }
@@ -155,22 +151,20 @@ public class BookAttributeController {
     AppExecutors.databaseExecutor.execute(() -> {
       try {
         if (bookAttribute instanceof Author) {
-            //authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
+            authorService.saveAuthorWithTranslations((Author) bookAttribute, translationsToSave);
         } else if (bookAttribute instanceof Genre) {
             genreService.saveGenreWithTranslations((Genre) bookAttribute, translationsToSave);
         } else {
           throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
         }
 
-        // Run UI updates on the JavaFX Application Thread
+        // Refresh list & close
         Platform.runLater(() -> {
           if (onCloseCallback != null) onCloseCallback.run();
           handleClose();
         });
       } catch (Exception e) {
-        Platform.runLater(() ->
-                showError(rb.getString("error"), e.getMessage())
-        );
+        Platform.runLater(() -> showError(rb.getString("error"), e.getMessage()));
       }
     });
   }

@@ -10,8 +10,11 @@ import com.group9.service.OrderService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OrderTesti {
+    private static final Logger log = Logger.getLogger(OrderTesti.class.getName());
   public static void main(String[] args) {
     // Vaatii tietokannan jossa on 1 kirja ja 1 käyttäjä (id=1)
     // Ajamalla MockData luokan saa luotua 1 kirjan, admin käyttäjä tulee jo automaattisesti
@@ -44,16 +47,16 @@ public class OrderTesti {
 
     // Tallennetaan order tietokantaan
     int orderId = orderService.createOrder(order);
-    System.out.println("Created order with ID: " + orderId);
+    log.log(Level.INFO, "Created order with ID: {0}", new Object[]{orderId});
 
     // Haetaan käyttäjän 1 orderit
     List<Order> orders = orderService.getOrdersByUserId(1);
 
     // Tulostetaan orderit
     for (Order o : orders) {
-      System.out.println("Order ID: " + o.getId());
+      log.log(Level.INFO, "Order ID: {0}", new Object[]{o.getId()});
       for (OrderItem item : o.getOrderItems()) {
-        System.out.println("  Book: " + item.getBook().getTitle() + ", Quantity: " + item.getQuantity() + ", Price: " + (item.getBook().getPrice() * item.getQuantity()) + "€");
+        log.log(Level.INFO, "  Book: {0}, Quantity: {1}, Price: {2}$", new Object[]{item.getBook().getTitle(), item.getQuantity(), (item.getBook().getPrice() * item.getQuantity())});
       }
     }
   }
