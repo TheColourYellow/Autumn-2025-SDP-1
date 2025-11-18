@@ -170,7 +170,7 @@ public class AuthorDao {
           throw new RuntimeException("Creating author failed, no ID obtained.");
       }
     } catch (SQLException e) {
-      log.log(Level.INFO, "Error adding author: {0}", new Object[]{e.getMessage()});
+      //removed print
       throw new RuntimeException("Error adding author", e);
     }
   }
@@ -184,7 +184,7 @@ public class AuthorDao {
       ps.setInt(3, author.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      log.log(Level.INFO, "Error updating author: {0}", new Object[]{e.getMessage()});
+      //removed print
       throw new RuntimeException("Error updating author", e);
     }
   }
