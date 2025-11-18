@@ -16,43 +16,46 @@ public class BookDao {
   GenreDao genreDao = new GenreDao();
   AuthorDao authorDao = new AuthorDao();
 
-  public List<Book> getAllBooks(String languageCode) {
-    List<Book> books = new ArrayList<>();
+    public List<Book> getAllBooks(String languageCode) throws SQLException {
+        List<Book> books = new ArrayList<>();
 
-    String sql;
-    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
-    if (isEnglish) {
-      sql = "SELECT * FROM books WHERE active = TRUE";
-    } else {
-      sql ="SELECT b.id, " +
-              "COALESCE(bt.translated_title, b.title) AS title, " +
-              "COALESCE(bt.translated_description, b.description) AS description, " +
-              "b.isbn, b.published_year, b.price, b.created_at, b.active " +
-              "FROM books b " +
-              "LEFT JOIN book_translations bt " +
-              "ON bt.book_id = b.id " +
-              "AND bt.language_code = ? " +
-              "WHERE b.active = TRUE";
+        String sql;
+        boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+        if (isEnglish) {
+            sql = "SELECT * FROM books WHERE active = TRUE";
+        } else {
+            sql = "SELECT b.id, " +
+                    "COALESCE(bt.translated_title, b.title) AS title, " +
+                    "COALESCE(bt.translated_description, b.description) AS description, " +
+                    "b.isbn, b.published_year, b.price, b.created_at, b.active " +
+                    "FROM books b " +
+                    "LEFT JOIN book_translations bt " +
+                    "ON bt.book_id = b.id " +
+                    "AND bt.language_code = ? " +
+                    "WHERE b.active = TRUE";
+        }
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (!isEnglish) {
+                ps.setString(1, languageCode);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    books.add(resultSetToBook(rs, languageCode));
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching all books", e);
+        }
+
+        return books;
     }
 
-    try (Connection conn = Database.getConnection()) {
-      PreparedStatement ps = conn.prepareStatement(sql);
-      if (!isEnglish) {
-        ps.setString(1, languageCode);
-      }
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        books.add(resultSetToBook(rs, languageCode));
-      }
 
-    } catch (SQLException e) {
-      throw new RuntimeException("Error fetching all books:" + e.getMessage(), e);
-    }
-
-    return books;
-  }
-
-  public List<Book> findBooks(List<Integer> authorIds, List<Integer> genreIds) {
+    public List<Book> findBooks(List<Integer> authorIds, List<Integer> genreIds) {
     StringBuilder sql = new StringBuilder(
             "SELECT DISTINCT b.* " +
             "FROM books b " +
@@ -98,32 +101,28 @@ public class BookDao {
     }
   }
 
-  public Book getBookById(int id) throws SQLException {
-    Book book;
-    Connection conn = null;
+    public Book getBookById(int id) throws SQLException {
+        String bookSql = "SELECT id, title, isbn, published_year, price, description FROM books WHERE id = ?";
 
-    try {
-      conn = Database.getConnection();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(bookSql)) {
 
-      String bookSql = "SELECT id, title, isbn, published_year, price, description FROM books WHERE id = ?";
-      PreparedStatement ps = conn.prepareStatement(bookSql);
-      ps.setInt(1, id);
-      ResultSet rs = ps.executeQuery();
-      if (rs.next()) {
-        book = resultSetToBook(rs, "en");
-      } else {
-        return null; // Book not found
-      }
-    } catch (SQLException e) {
-      throw new SQLException("Error fetching book by ID", e);
-    } finally {
-      if (conn != null) conn.close();
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return resultSetToBook(rs, "en");
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching book by ID " + id, e);
+        }
     }
 
-    return book;
-  }
 
-  private Book resultSetToBook(ResultSet rs, String langCode) throws SQLException {
+    private Book resultSetToBook(ResultSet rs, String langCode) throws SQLException {
     Book book = new Book(
             rs.getInt("id"),
             rs.getString("title"),
@@ -138,147 +137,179 @@ public class BookDao {
     return book;
   }
 
-  public int addBook(Book book) throws SQLException {
+public int addBook(Book book) throws SQLException {
     int bookId;
     Connection conn = null;
 
+    String insertBookSql = "INSERT INTO books (title, isbn, published_year, price, description) VALUES (?, ?, ?, ?, ?)";
+
     try {
-      conn = Database.getConnection();
-      conn.setAutoCommit(false);
+        conn = Database.getConnection();
+        conn.setAutoCommit(false);
 
-      String insertBookSql = "INSERT INTO books (title, isbn, published_year, price, description) VALUES (?, ?, ?, ?, ?)";
-      PreparedStatement stmt = conn.prepareStatement(insertBookSql, Statement.RETURN_GENERATED_KEYS);
-      stmt.setString(1, book.getTitle());
-      stmt.setString(2, book.getIsbn());
-      stmt.setInt(3, book.getYear());
-      stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
-      stmt.setString(5, book.getDescription());
-      stmt.executeUpdate();
+        try (PreparedStatement stmt = conn.prepareStatement(insertBookSql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getIsbn());
+            stmt.setInt(3, book.getYear());
+            stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
+            stmt.setString(5, book.getDescription());
+            stmt.executeUpdate();
 
-      ResultSet rs = stmt.getGeneratedKeys();
-      if (rs.next()) {
-        bookId = rs.getInt(1);
-      } else {
-        throw new SQLException("Failed to retrieve generated book ID");
-      }
-      conn.commit();
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    bookId = rs.getInt(1);
+                } else {
+                    throw new SQLException("Failed to retrieve generated book ID");
+                }
+            }
+        }
+
+        conn.commit();
     } catch (SQLException e) {
-      if (conn != null) {
-        conn.rollback();
-      }
-      throw e;
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                // suppressed: rollback failure
+            }
+        }
+        throw new SQLException("Error adding book", e);
     } finally {
-      if (conn != null) {
-        conn.setAutoCommit(true);
-        conn.close();
-      }
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException ignored) {}
+        }
     }
 
     return bookId;
+}
+
+
+public void updateBook(Book book) {
+Connection conn = null;
+try {
+  conn = Database.getConnection();
+  conn.setAutoCommit(false);
+
+  // Update book details
+  String updateBookSql = "UPDATE books SET title = ?, isbn = ?, published_year = ?, price = ?, description = ? WHERE id = ?";
+  PreparedStatement stmt = conn.prepareStatement(updateBookSql);
+  stmt.setString(1, book.getTitle());
+  stmt.setString(2, book.getIsbn());
+  stmt.setInt(3, book.getYear());
+  stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
+  stmt.setString(5, book.getDescription());
+  stmt.setInt(6, book.getId());
+  stmt.executeUpdate();
+
+  // Update authors and genres associations
+  // Clear existing associations
+  String deleteAuthorsSql = "DELETE FROM book_authors WHERE book_id = ?";
+  PreparedStatement deleteAuthorsStmt = conn.prepareStatement(deleteAuthorsSql);
+  deleteAuthorsStmt.setInt(1, book.getId());
+  deleteAuthorsStmt.executeUpdate();
+
+  String deleteGenresSql = "DELETE FROM book_genres WHERE book_id = ?";
+  PreparedStatement deleteGenresStmt = conn.prepareStatement(deleteGenresSql);
+  deleteGenresStmt.setInt(1, book.getId());
+  deleteGenresStmt.executeUpdate();
+
+  // Re-establish associations
+  for (Author author : book.getAuthors()) {
+    linkBookAuthor(conn, book.getId(), author.getId()); // Use existing connection
+  }
+  for (Genre genre : book.getGenres()) {
+    linkBookGenre(conn, book.getId(), genre.getId()); // Use existing connection
   }
 
-  public void updateBook(Book book) {
+  conn.commit();
+} catch (SQLException e) {
+  if (conn != null) {
+    try {
+      conn.rollback();
+    } catch (SQLException ex) {
+      throw new RuntimeException("Error rolling back transaction", ex);
+    }
+  }
+  throw new RuntimeException("Error updating book", e);
+} finally {
+  if (conn != null) {
+    try {
+      conn.setAutoCommit(true);
+      conn.close();
+    } catch (SQLException ignored) {}
+  }
+}
+}
+
+public void inActivateBook(Integer id) throws SQLException {
     Connection conn = null;
     try {
-      conn = Database.getConnection();
-      conn.setAutoCommit(false);
+        conn = Database.getConnection();
+        conn.setAutoCommit(false);
 
-      // Update book details
-      String updateBookSql = "UPDATE books SET title = ?, isbn = ?, published_year = ?, price = ?, description = ? WHERE id = ?";
-      PreparedStatement stmt = conn.prepareStatement(updateBookSql);
-      stmt.setString(1, book.getTitle());
-      stmt.setString(2, book.getIsbn());
-      stmt.setInt(3, book.getYear());
-      stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
-      stmt.setString(5, book.getDescription());
-      stmt.setInt(6, book.getId());
-      stmt.executeUpdate();
-
-      // Update authors and genres associations
-      // Clear existing associations
-      String deleteAuthorsSql = "DELETE FROM book_authors WHERE book_id = ?";
-      PreparedStatement deleteAuthorsStmt = conn.prepareStatement(deleteAuthorsSql);
-      deleteAuthorsStmt.setInt(1, book.getId());
-      deleteAuthorsStmt.executeUpdate();
-
-      String deleteGenresSql = "DELETE FROM book_genres WHERE book_id = ?";
-      PreparedStatement deleteGenresStmt = conn.prepareStatement(deleteGenresSql);
-      deleteGenresStmt.setInt(1, book.getId());
-      deleteGenresStmt.executeUpdate();
-
-      // Re-establish associations
-      for (Author author : book.getAuthors()) {
-        linkBookAuthor(conn, book.getId(), author.getId()); // Use existing connection
-      }
-      for (Genre genre : book.getGenres()) {
-        linkBookGenre(conn, book.getId(), genre.getId()); // Use existing connection
-      }
-
-      conn.commit();
-    } catch (SQLException e) {
-      if (conn != null) {
-        try {
-          conn.rollback();
-        } catch (SQLException ex) {
-          throw new RuntimeException("Error rolling back transaction", ex);
+        String inActivateBookSql = "UPDATE books SET active = FALSE WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(inActivateBookSql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         }
-      }
-      throw new RuntimeException("Error updating book", e);
-    } finally {
-      if (conn != null) {
-        try {
-          conn.setAutoCommit(true);
-          conn.close();
-        } catch (SQLException ignored) {}
-      }
-    }
-  }
 
-  public void inActivateBook(Integer id) throws SQLException {
+        conn.commit();
+    } catch (SQLException e) {
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                // suppressed: rollback failure
+            }
+        }
+        throw new SQLException("Error inactivating book with ID " + id, e);
+    } finally {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException ignored) {}
+        }
+    }
+}
+
+public void deleteBook(Integer id) throws SQLException {
     Connection conn = null;
     try {
-      conn = Database.getConnection();
-      String inActivateBookSql = "UPDATE books SET active = FALSE WHERE id = ?";
-      PreparedStatement stmt = conn.prepareStatement(inActivateBookSql);
-      stmt.setInt(1, id);
-      stmt.executeUpdate();
-      conn.commit();
-    } catch (SQLException e) {
-      if (conn != null) {
-        conn.rollback();
-      }
-      throw e;
-    } finally {
-      if (conn != null) {
-        conn.setAutoCommit(true);
-        conn.close();
-      }
-    }
-  }
+        conn = Database.getConnection();
+        conn.setAutoCommit(false);
 
-  public void deleteBook(Integer id) throws SQLException {
-    Connection conn = null;
-    try {
-      conn = Database.getConnection();
-      String deleteBookSql = "DELETE FROM books WHERE id = ?";
-      PreparedStatement stmt = conn.prepareStatement(deleteBookSql);
-      stmt.setInt(1, id);
-      stmt.executeUpdate();
-      conn.commit();
-    } catch (SQLException e) {
-      if (conn != null) {
-        conn.rollback();
-      }
-      throw e;
-    } finally {
-      if (conn != null) {
-        conn.setAutoCommit(true);
-        conn.close();
-      }
-    }
-  }
+        String deleteBookSql = "DELETE FROM books WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(deleteBookSql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
 
-  public int addFullBook(Book book) throws SQLException {
+        conn.commit();
+    } catch (SQLException e) {
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                // suppressed: rollback failure
+            }
+        }
+        throw new SQLException("Error deleting book with ID " + id, e);
+    } finally {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException ignored) {}
+        }
+    }
+}
+
+
+    public int addFullBook(Book book) throws SQLException {
     int bookId = addBook(book);
     for (Author author : book.getAuthors()) {
       linkBookAuthor(bookId, author.getId());
