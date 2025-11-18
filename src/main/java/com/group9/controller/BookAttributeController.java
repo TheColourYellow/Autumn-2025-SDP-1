@@ -60,6 +60,7 @@ public class BookAttributeController {
   // Services
   private final AuthorService authorService = new AuthorService(new AuthorDao());
   private final GenreService genreService = new GenreService(new GenreDao());
+  private static final String UNKNOWN_ERROR = "unknownAttributeTypeError";
 
   public void setBookAttribute(BookAttribute bookAttribute) {
     this.bookAttribute = bookAttribute;
@@ -107,7 +108,7 @@ public class BookAttributeController {
     else if (bookAttribute instanceof Author) {
       translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
     } else {
-      throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
+      throw new IllegalArgumentException(rb.getString(UNKNOWN_ERROR));
     }
 
     for (BookAttributeTranslation t : translations) {
@@ -155,7 +156,7 @@ public class BookAttributeController {
         } else if (bookAttribute instanceof Genre) {
             genreService.saveGenreWithTranslations((Genre) bookAttribute, translationsToSave);
         } else {
-          throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
+          throw new IllegalArgumentException(rb.getString(UNKNOWN_ERROR));
         }
 
         // Refresh list & close
@@ -187,7 +188,7 @@ public class BookAttributeController {
         } else if (bookAttribute instanceof Genre) {
           genreService.deleteGenre(bookAttribute.getName());
         } else {
-          throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
+          throw new IllegalArgumentException(rb.getString(UNKNOWN_ERROR));
         }
 
         Platform.runLater(() -> {
