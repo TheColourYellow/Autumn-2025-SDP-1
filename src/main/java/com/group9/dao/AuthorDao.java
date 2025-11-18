@@ -1,6 +1,5 @@
 package com.group9.dao;
 
-import com.group9.controller.CheckoutController;
 import com.group9.model.Author;
 import com.group9.model.BookAttributeTranslation;
 import com.group9.util.Database;
@@ -171,7 +170,7 @@ public class AuthorDao {
           throw new RuntimeException("Creating author failed, no ID obtained.");
       }
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error adding author: " + e.getMessage(), e);
+      log.log(Level.INFO, "Error adding author: {0}", new Object[]{e.getMessage()});
       throw new RuntimeException("Error adding author", e);
     }
   }
@@ -185,7 +184,7 @@ public class AuthorDao {
       ps.setInt(3, author.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error updating author: " + e.getMessage(), e);
+      log.log(Level.INFO, "Error updating author: {0}", new Object[]{e.getMessage()});
       throw new RuntimeException("Error updating author", e);
     }
   }
@@ -244,7 +243,7 @@ public class AuthorDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error upserting author translations: " + e.getMessage(), e);
+      log.log(Level.INFO, "Error upserting author translations: {0}", new Object[]{e.getMessage()});
       throw new SQLException("Error upserting author translations", e);
     }
   }
