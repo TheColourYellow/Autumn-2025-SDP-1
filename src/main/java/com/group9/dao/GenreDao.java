@@ -12,51 +12,48 @@ public class GenreDao {
     private static final String DESCRIPTION = "description";
     private static final String NAME = "name";
     private static final String ID = "id";
-  public List<Genre> getAllGenres(String languageCode) throws SQLException {
-    Connection conn = null;
-    List<Genre> genres = new ArrayList<>();
+    public List<Genre> getAllGenres(String languageCode) throws SQLException {
+        List<Genre> genres = new ArrayList<>();
+        boolean isEnglish = "en".equalsIgnoreCase(languageCode);
 
-    // If language is English, fetch directly from genres table
-    String query;
-    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
-    if (isEnglish) {
-      query = "SELECT id, name, description FROM genres";
-    } else {
-      query = "SELECT " +
-              "g.id, " +
-              "COALESCE(gt.translated_name, g.name) AS name, " +
-              "COALESCE(gt.translated_description, g.description) AS description " +
-              "FROM genres g " +
-              "LEFT JOIN genre_translations gt " +
-              "ON g.id = gt.genre_id " +
-              "AND gt.language_code = ?";
+        String query;
+        if (isEnglish) {
+            query = "SELECT id, name, description FROM genres";
+        } else {
+            query = "SELECT g.id, " +
+                    "COALESCE(gt.translated_name, g.name) AS name, " +
+                    "COALESCE(gt.translated_description, g.description) AS description " +
+                    "FROM genres g " +
+                    "LEFT JOIN genre_translations gt " +
+                    "ON g.id = gt.genre_id " +
+                    "AND gt.language_code = ?";
+        }
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            if (!isEnglish) {
+                ps.setString(1, languageCode);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    genres.add(new Genre(
+                            rs.getInt(ID),
+                            rs.getString(NAME),
+                            rs.getString(DESCRIPTION)
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching genres", e);
+        }
+
+        return genres;
     }
 
-    try {
-      conn = Database.getConnection();
-      PreparedStatement ps = conn.prepareStatement(query);
-      if (!isEnglish) {
-        ps.setString(1, languageCode);
-      }
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        Genre genre = new Genre(
-                rs.getInt(ID),
-                rs.getString(NAME),
-                rs.getString(DESCRIPTION)
-        );
-        genres.add(genre);
-      }
-    } catch (SQLException e) {
-      throw new SQLException("Error fetching genres", e);
-    } finally {
-      if (conn != null) conn.close();
-    }
 
-    return genres;
-  }
-
-  public List<Genre> getGenresByBookId(int bookId, String languageCode) throws SQLException {
+    public List<Genre> getGenresByBookId(int bookId, String languageCode) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();
 
@@ -187,41 +184,44 @@ public class GenreDao {
     }
   }
 
-  public void deleteGenreByName(String genreName) throws SQLException {
-    String delete = "DELETE FROM genres WHERE name = ?";
-    try (Connection conn = Database.getConnection()) {
-      PreparedStatement ps = conn.prepareStatement(delete);
-      ps.setString(1, genreName);
-      ps.executeUpdate();
-    }
-  }
-
-  public List<BookAttributeTranslation> getTranslations(int genreId) {
-    String sql = "SELECT language_code, translated_name, translated_description " +
-            "FROM genre_translations " +
-            "WHERE genre_id = ?";
-    List<BookAttributeTranslation> translations = new ArrayList<>();
-
-    try (Connection conn = Database.getConnection()) {
-      PreparedStatement ps = conn.prepareStatement(sql);
-      ps.setInt(1, genreId);
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        translations.add(new BookAttributeTranslation(
-                rs.getString("language_code"),
-                rs.getString("translated_name"),
-                rs.getString("translated_description")
-        ));
-      }
-    } catch (SQLException e) {
-      System.err.println("Error fetching genre translations: " + e.getMessage());
-      throw new RuntimeException("Error fetching genre translations");
+    // java
+    public void deleteGenreByName(String genreName) throws SQLException {
+        String delete = "DELETE FROM genres WHERE name = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(delete)) {
+            ps.setString(1, genreName);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error deleting genre with name " + genreName, e);
+        }
     }
 
-    return translations;
-  }
 
-  public void upsertTranslations(int genreId, List<BookAttributeTranslation> translations) {
+    public List<BookAttributeTranslation> getTranslations(int genreId) throws SQLException {
+        String sql = "SELECT language_code, translated_name, translated_description " +
+                "FROM genre_translations " +
+                "WHERE genre_id = ?";
+        List<BookAttributeTranslation> translations = new ArrayList<>();
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, genreId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    translations.add(new BookAttributeTranslation(
+                            rs.getString("language_code"),
+                            rs.getString("translated_name"),
+                            rs.getString("translated_description")
+                    ));
+                }
+            }
+        }
+
+        return translations;
+    }
+
+
+    public void upsertTranslations(int genreId, List<BookAttributeTranslation> translations) {
     String sql = "INSERT INTO genre_translations (genre_id, language_code, translated_name, translated_description) " +
         "VALUES (?, ?, ?, ?) " +
         "ON DUPLICATE KEY UPDATE " +
