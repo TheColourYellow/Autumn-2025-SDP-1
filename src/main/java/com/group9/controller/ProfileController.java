@@ -30,7 +30,7 @@ import static com.group9.util.PopupUtils.showError;
 public class ProfileController {
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
-    private static final Logger log = Logger.getLogger(ShoppingCartController.class.getName());
+    private static final Logger log = Logger.getLogger(ProfileController.class.getName());
 
     @FXML private AnchorPane profileAnchor;
 

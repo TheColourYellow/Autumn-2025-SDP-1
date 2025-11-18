@@ -37,7 +37,7 @@ import static com.group9.util.PopupUtils.showError;
 public class ManagementController {
 
     private LayoutOrienter orienter = new LayoutOrienter();
-    private static final Logger log = Logger.getLogger(ShoppingCartController.class.getName());
+    private static final Logger log = Logger.getLogger(ManagementController.class.getName());
     private static final String ERROR = "error";
 
     @FXML private AnchorPane managementAnchor;
