@@ -9,7 +9,6 @@ import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -134,6 +133,5 @@ public class ProfileController {
         profileTextLabel.setText(rb.getString("profileLabel"));
         accountDetailsLabel.setText(rb.getString("accountDetailsLabel"));
         orderHistoryLabel.setText(rb.getString("orderHistoryLabel"));
-
     }
 }
