@@ -243,7 +243,7 @@ public class AuthorDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      log.log(Level.INFO, "Error upserting author translations: {0}", new Object[]{e.getMessage()});
+      log.log(Level.SEVERE, "Error upserting author translations: ", e);
       throw new SQLException("Error upserting author translations", e);
     }
   }
