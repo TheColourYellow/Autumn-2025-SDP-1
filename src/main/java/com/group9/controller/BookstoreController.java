@@ -231,27 +231,28 @@ public class BookstoreController {
 
                     private final Button btn = new Button();
 
-                    {
-                        btn.setOnAction(event -> {
-                            Book book = getTableView().getItems().get(getIndex());
-                            cart.add(book);
-                            logger.info("Clicked Add to Cart for: " + book.getTitle());
-                        });
-                    }
-
                     @Override
                     protected void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
+
                         if (empty) {
-                            setGraphic(null); // No button in empty rows
+                            setGraphic(null);
                         } else {
+                            btn.setOnAction(event -> {
+                                Book book = getTableView().getItems().get(getIndex());
+                                cart.add(book);
+                                logger.info("Clicked Add to Cart for: " + book.getTitle());
+                            });
+
                             btn.setText(rb.getString("addToCartButton"));
-                            setGraphic(btn); // Show button in data rows
+                            setGraphic(btn);
                         }
                     }
                 };
             }
         });
+
+
 
         // Bind data to table
         bookTable.setItems(bookData);
