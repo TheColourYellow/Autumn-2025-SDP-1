@@ -14,6 +14,10 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
   private UserDao userDao;
   private UserService userService;
+  private static final String PASSWORD = "password123";
+  private static final String TEST_USER = "testUser";
+  private static final String NON_EXISTENT_USER = "nonExistentUser";
+  private static final String EMAIL = "test@email.com";
 
   @BeforeEach
   public void setUp() {
@@ -24,26 +28,26 @@ public class UserServiceTest {
   @Test
   public void testLoginUser() {
     // Invalid inputs
-    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("", "password123"));
-    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(null, "password123"));
-    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("testUser", ""));
-    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("testUser", null));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("", PASSWORD));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(null, PASSWORD));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(TEST_USER, ""));
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(TEST_USER, null));
 
     // Non-existent user
-    when(userDao.getUserByUsername("nonExistentUser")).thenReturn(null);
-    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("nonExistentUser", "password123"));
-    verify(userDao).getUserByUsername("nonExistentUser");
+    when(userDao.getUserByUsername(NON_EXISTENT_USER)).thenReturn(null);
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(NON_EXISTENT_USER, PASSWORD));
+    verify(userDao).getUserByUsername(NON_EXISTENT_USER);
 
     // Wrong password
-    String rawPassword = "password123";
+    String rawPassword = PASSWORD;
     String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
-    User existingUser = new User("testUser", hashedPassword, "test@email.com");
-    when(userDao.getUserByUsername("testUser")).thenReturn(existingUser);
-    assertThrows(IllegalArgumentException.class, () -> userService.loginUser("testUser", "wrongPassword"));
-    verify(userDao).getUserByUsername("testUser");
+    User existingUser = new User(TEST_USER, hashedPassword, EMAIL);
+    when(userDao.getUserByUsername(TEST_USER)).thenReturn(existingUser);
+    assertThrows(IllegalArgumentException.class, () -> userService.loginUser(TEST_USER, "wrongPassword"));
+    verify(userDao).getUserByUsername(TEST_USER);
 
     // Successful login
-    User result = userService.loginUser("testUser", rawPassword);
+    User result = userService.loginUser(TEST_USER, rawPassword);
     assertEquals(existingUser, result);
   }
 
@@ -51,9 +55,9 @@ public class UserServiceTest {
   @Test
   public void testRegisterUser() {
     // Test data
-    String username = "testUser";
-    String rawPassword = "password123";
-    String email = "test@email.com";
+    String username = TEST_USER;
+    String rawPassword = PASSWORD;
+    String email = EMAIL;
 
     // Mock Dao response, returning the user passed to addUser
     when(userDao.addUser(any(User.class)))
@@ -92,20 +96,20 @@ public class UserServiceTest {
   @Test
   public void validateUser_EmptyUsername_ThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
-            userService.registerUser("", "password123", "test@email.com"));
+            userService.registerUser("", PASSWORD, EMAIL));
   }
 
   @Test
   public void validateUser_ShortPassword_ThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
-            userService.registerUser("testUser", "123", "test@email.com"));
+            userService.registerUser(TEST_USER, "123", EMAIL));
     assertThrows(IllegalArgumentException.class, () ->
-            userService.registerUser("testUser", null, "test@email.com"));
+            userService.registerUser(TEST_USER, null, EMAIL));
   }
 
   @Test
   public void validateUser_InvalidEmail_ThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
-            userService.registerUser("testUser", "password123", "invalidEmail"));
+            userService.registerUser(TEST_USER, PASSWORD, "invalidEmail"));
   }
 }
