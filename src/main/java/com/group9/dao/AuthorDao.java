@@ -1,5 +1,6 @@
 package com.group9.dao;
 
+import com.group9.controller.CheckoutController;
 import com.group9.model.Author;
 import com.group9.model.BookAttributeTranslation;
 import com.group9.util.Database;
@@ -7,8 +8,15 @@ import com.group9.util.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuthorDao {
+    private static final Logger log = Logger.getLogger(AuthorDao.class.getName());
+    private static final String DESCRIPTION = "description";
+    private static final String NAME = "name";
+    private static final String ID = "id";
+
   public List<Author> getAllAuthors(String languageCode) throws SQLException {
     Connection conn = null;
     List<Author> authors = new ArrayList<>();
@@ -37,9 +45,9 @@ public class AuthorDao {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Author author = new Author(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("description")
+                rs.getInt(ID),
+                rs.getString(NAME),
+                rs.getString(DESCRIPTION)
         );
         authors.add(author);
       }
@@ -92,9 +100,9 @@ public class AuthorDao {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Author author = new Author(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("description")
+                rs.getInt(ID),
+                rs.getString(NAME),
+                rs.getString(DESCRIPTION)
         );
         authors.add(author);
       }
@@ -114,7 +122,7 @@ public class AuthorDao {
          PreparedStatement ps = conn.prepareStatement(select)) {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
-      if (rs.next()) return rs.getInt("id");
+      if (rs.next()) return rs.getInt(ID);
     }
 
     // If not found, insert
@@ -137,9 +145,9 @@ public class AuthorDao {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
-        author = new Author(rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("description"));
+        author = new Author(rs.getInt(ID),
+                rs.getString(NAME),
+                rs.getString(DESCRIPTION));
         return author;
       } else {
         return null;
@@ -163,7 +171,7 @@ public class AuthorDao {
           throw new RuntimeException("Creating author failed, no ID obtained.");
       }
     } catch (SQLException e) {
-      System.err.println("Error adding author: " + e.getMessage());
+      log.log(Level.SEVERE, "Error adding author: {0}", new Object[]{e.getMessage()});
       throw new RuntimeException("Error adding author", e);
     }
   }
@@ -177,7 +185,7 @@ public class AuthorDao {
       ps.setInt(3, author.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("Error updating author: " + e.getMessage());
+      log.log(Level.SEVERE, "Error updating author: {0}", new Object[]{e.getMessage()});
       throw new RuntimeException("Error updating author", e);
     }
   }
@@ -209,7 +217,7 @@ public class AuthorDao {
         ));
       }
     } catch (SQLException e) {
-      System.err.println("Error fetching author translations: " + e.getMessage());
+      log.log(Level.SEVERE, "Error fetching author translations: {0}", new Object[]{e.getMessage()});
       throw new RuntimeException("Error fetching author translations", e);
     }
 
@@ -236,7 +244,7 @@ public class AuthorDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      System.err.println("Error upserting author translations: " + e.getMessage());
+      log.log(Level.SEVERE, "Error upserting author translations: {0}", new Object[]{e.getMessage()});
       throw new SQLException("Error upserting author translations", e);
     }
   }
