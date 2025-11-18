@@ -105,7 +105,7 @@ public class BookAttributeController {
       translations = genreService.getTranslationsForGenre(bookAttribute.getId());
     }
     else if (bookAttribute instanceof Author) {
-      //translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
+      translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
     } else {
       throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
     }
@@ -151,7 +151,7 @@ public class BookAttributeController {
     AppExecutors.databaseExecutor.execute(() -> {
       try {
         if (bookAttribute instanceof Author) {
-            //authorService.addAuthor(bookAttribute.getName(), bookAttribute.getDescription());
+            authorService.saveAuthorWithTranslations((Author) bookAttribute, translationsToSave);
         } else if (bookAttribute instanceof Genre) {
             genreService.saveGenreWithTranslations((Genre) bookAttribute, translationsToSave);
         } else {

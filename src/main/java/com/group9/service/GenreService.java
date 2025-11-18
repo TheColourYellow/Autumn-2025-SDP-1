@@ -136,9 +136,9 @@ public class GenreService {
     try {
       return genreDao.getTranslations(genreId);
     } catch (Exception e) {
-      //String message = rb.getString("errorRetrievingTranslations");
-      System.out.println("message" + " " + e.getMessage());
-      throw new RuntimeException("message");
+      String message = rb.getString("errorRetrievingTranslations");
+      System.out.println(message + " " + e.getMessage());
+      throw new RuntimeException(message);
     }
   }
 }

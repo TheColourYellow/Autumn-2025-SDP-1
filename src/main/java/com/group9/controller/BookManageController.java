@@ -203,7 +203,7 @@ public class BookManageController {
       }
     }
 
-    if (book != null && book.getId() != -1) {
+    if (book != null) {
       // Update existing book
       book.setTitle(title);
       book.setIsbn(isbn);

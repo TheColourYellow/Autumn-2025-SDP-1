@@ -1,7 +1,7 @@
 package com.group9.dao;
 
 import com.group9.model.Author;
-import com.group9.model.Genre;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.util.Database;
 
 import java.sql.*;
@@ -12,7 +12,7 @@ public class AuthorDao {
   public List<Author> getAllAuthors(String languageCode) throws SQLException {
     Connection conn = null;
     List<Author> authors = new ArrayList<>();
-    // If language is English, fetch directly from genres table
+    // If language is English, fetch directly from authors table
     String query;
     boolean isEnglish = "en".equalsIgnoreCase(languageCode);
     if (isEnglish) {
@@ -44,7 +44,7 @@ public class AuthorDao {
         authors.add(author);
       }
     } catch (SQLException e) {
-      throw new SQLException("Error fetching genres", e);
+      throw new SQLException("Error fetching authors", e);
     } finally {
       if (conn != null) conn.close();
     }
@@ -121,13 +121,22 @@ public class AuthorDao {
     }
   }
 
-  public void addAuthor(String name, String description) throws SQLException {
+  public int addAuthor(String name, String description) {
     String insert = "INSERT INTO authors (name, description) VALUES (?, ?)";
     try (Connection conn = Database.getConnection();
-         PreparedStatement ps = conn.prepareStatement(insert)) {
+         PreparedStatement ps = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, name);
       ps.setString(2, description);
       ps.executeUpdate();
+      try (ResultSet keys = ps.getGeneratedKeys()) {
+        if (keys.next())
+          return keys.getInt(1);
+        else
+          throw new RuntimeException("Creating author failed, no ID obtained.");
+      }
+    } catch (SQLException e) {
+      System.err.println("Error adding author: " + e.getMessage());
+      throw new RuntimeException("Error adding author", e);
     }
   }
 
@@ -151,6 +160,56 @@ public class AuthorDao {
       PreparedStatement ps = conn.prepareStatement(delete);
       ps.setString(1, authorName);
       ps.executeUpdate();
+    }
+  }
+
+  public List<BookAttributeTranslation> getTranslations(int authorId) {
+    String sql = "SELECT language_code, translated_name, translated_description " +
+            "FROM author_translations " +
+            "WHERE author_id = ?";
+    List<BookAttributeTranslation> translations = new ArrayList<>();
+
+    try (Connection conn = Database.getConnection();
+    PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setInt(1, authorId);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        translations.add(new BookAttributeTranslation(
+                rs.getString("language_code"),
+                rs.getString("translated_name"),
+                rs.getString("translated_description")
+        ));
+      }
+    } catch (SQLException e) {
+      System.err.println("Error fetching author translations: " + e.getMessage());
+      throw new RuntimeException("Error fetching author translations", e);
+    }
+
+    return translations;
+  }
+
+  public void upsertTranslations(int authorId, List<BookAttributeTranslation> translations) throws SQLException {
+    String insertOrUpdate = "INSERT INTO author_translations (author_id, language_code, translated_name, translated_description) " +
+            "VALUES (?, ?, ?, ?) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "translated_name = VALUES(translated_name), " +
+            "translated_description = VALUES(translated_description)";
+
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(insertOrUpdate)) {
+
+      for (BookAttributeTranslation t : translations) {
+        ps.setInt(1, authorId);
+        ps.setString(2, t.languageCode);
+        ps.setString(3, t.translatedName);
+        ps.setString(4, t.translatedDescription);
+        ps.addBatch();
+      }
+
+      ps.executeBatch();
+    } catch (SQLException e) {
+      System.err.println("Error upserting author translations: " + e.getMessage());
+      throw new SQLException("Error upserting author translations", e);
     }
   }
 }
