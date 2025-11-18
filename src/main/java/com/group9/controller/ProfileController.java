@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
@@ -29,6 +31,7 @@ import static com.group9.util.PopupUtils.showError;
 public class ProfileController {
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
+    private static final Logger log = Logger.getLogger(ShoppingCartController.class.getName());
 
     @FXML private AnchorPane profileAnchor;
 
@@ -64,7 +67,7 @@ public class ProfileController {
 
     @FXML
     private void openShoppingCart() {
-        System.out.println("Shopping cart clicked!");
+        log.info("Shopping cart clicked!");
         rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -108,31 +111,16 @@ public class ProfileController {
 
         // Show account details
         orienter.orientLayout(profileAnchor);
-        /*
-        if (SessionManager.getLanguage().equals("Arabic")) {
-            profileAnchor.nodeOrientationProperty().set(NodeOrientation.RIGHT_TO_LEFT);
-        }
-        else {
-            profileAnchor.nodeOrientationProperty().set(NodeOrientation.LEFT_TO_RIGHT);
-
-        }*/
         updateUI(currentUser);
-        /*
-        nameLabel.setText(rb.getString("nameLabel")+ ": " + currentUser.getUsername());
-        emailLabel.setText(rb.getString("emailPrompt")+ ": " + currentUser.getEmail());
-        homeLabel.setText(rb.getString("homeLabel"));
-        logoutLabel.setText("logoutWindowTitle");
-        accountDetailsLabel.setText(rb.getString("accountDetailsLabel"));
-        orderHistoryLabel.setText(rb.getString("orderHistoryLabel"));*/
 
-        System.out.println("POPULATING HISTORY ");
+        log.info("POPULATING HISTORY ");
         OrderService orderService = new OrderService(new OrderDao());
         List<Order> orders = orderService.getOrdersByUserId(SessionManager.getCurrentUser().getId());
 
         for (Order o : orders) {
-            System.out.println("Order ID: " + o.getId());
+            log.log(Level.INFO, "Order ID: {0}", new Object[]{o.getId()});
             for (OrderItem item : o.getOrderItems()) {
-                System.out.println(item.getBook().getTitle());
+                log.log(Level.INFO, "{0}", new Object[]{item.getBook().getTitle()});
                 orderListView.getItems().add(item.getBook().getTitle());
             }
         }

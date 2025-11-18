@@ -15,7 +15,6 @@ import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import static com.group9.util.PopupUtils.showError;
 
 public class ManagementController {
