@@ -54,62 +54,54 @@ public class GenreDao {
 
 
     public List<Genre> getGenresByBookId(int bookId, String languageCode) throws SQLException {
-    Connection conn = null;
-    List<Genre> genres = new ArrayList<>();
+        List<Genre> genres = new ArrayList<>();
+        boolean isEnglish = "en".equalsIgnoreCase(languageCode);
 
-    try {
-      conn = Database.getConnection();
+        String query;
+        if (isEnglish) {
+            query = "SELECT g.id, g.name, g.description " +
+                    "FROM genres g " +
+                    "JOIN book_genres bg ON g.id = bg.genre_id " +
+                    "WHERE bg.book_id = ?";
+        } else {
+            query = "SELECT g.id, " +
+                    "       COALESCE(gt.translated_name, g.name) AS name, " +
+                    "       COALESCE(gt.translated_description, g.description) AS description " +
+                    "FROM genres g " +
+                    "JOIN book_genres bg ON g.id = bg.genre_id " +
+                    "LEFT JOIN genre_translations gt ON gt.genre_id = g.id " +
+                    "     AND gt.language_code = ? " +
+                    "WHERE bg.book_id = ?";
+        }
 
-      boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
-      String query;
-      if (isEnglish) {
-        query =
-                "SELECT g.id, g.name, g.description " +
-                        "FROM genres g " +
-                        "JOIN book_genres bg ON g.id = bg.genre_id " +
-                        "WHERE bg.book_id = ?";
-      } else {
-        query =
-                "SELECT g.id, " +
-                        "       COALESCE(gt.translated_name, g.name) AS name, " +
-                        "       COALESCE(gt.translated_description, g.description) AS description " +
-                        "FROM genres g " +
-                        "JOIN book_genres bg ON g.id = bg.genre_id " +
-                        "LEFT JOIN genre_translations gt ON gt.genre_id = g.id " +
-                        "     AND gt.language_code = ? " +
-                        "WHERE bg.book_id = ?";
-      }
+            if (isEnglish) {
+                ps.setInt(1, bookId);
+            } else {
+                ps.setString(1, languageCode);
+                ps.setInt(2, bookId);
+            }
 
-      PreparedStatement ps = conn.prepareStatement(query);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    genres.add(new Genre(
+                            rs.getInt(ID),
+                            rs.getString(NAME),
+                            rs.getString(DESCRIPTION)
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching genres for book ID " + bookId, e);
+        }
 
-      if (isEnglish) {
-        ps.setInt(1, bookId);
-      } else {
-        ps.setString(1, languageCode);
-        ps.setInt(2, bookId);
-      }
-
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        Genre genre = new Genre(
-                rs.getInt(ID),
-                rs.getString(NAME),
-                rs.getString(DESCRIPTION)
-        );
-        genres.add(genre);
-      }
-
-    } catch (SQLException e) {
-      throw new SQLException("Error fetching genres for book ID " + bookId, e);
-    } finally {
-      if (conn != null) conn.close();
+        return genres;
     }
 
-    return genres;
-  }
 
-  public static int addOrGetGenre(String name) throws SQLException {
+    public static int addOrGetGenre(String name) throws SQLException {
     String select = "SELECT id FROM genres WHERE name = ?";
     try (Connection conn = Database.getConnection();
          PreparedStatement ps = conn.prepareStatement(select)) {
