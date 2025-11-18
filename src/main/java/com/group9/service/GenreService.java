@@ -14,6 +14,7 @@ public class GenreService {
   private GenreDao genreDao;
   private ResourceBundle rb;
 
+
   public GenreService(GenreDao genreDao) {
     this.genreDao = genreDao;
   }

@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AuthorDao {
-    private static final Logger log = Logger.getLogger(AuthorDao.class.getName());
     private static final String DESCRIPTION = "description";
     private static final String NAME = "name";
     private static final String ID = "id";
