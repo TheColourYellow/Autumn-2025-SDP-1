@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDao {
+    private static final String DESCRIPTION = "description";
+    private static final String NAME = "name";
+    private static final String ID = "id";
   public List<Genre> getAllGenres(String languageCode) throws SQLException {
     Connection conn = null;
     List<Genre> genres = new ArrayList<>();
@@ -38,9 +41,9 @@ public class GenreDao {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Genre genre = new Genre(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("description")
+                rs.getInt(ID),
+                rs.getString(NAME),
+                rs.getString(DESCRIPTION)
         );
         genres.add(genre);
       }
@@ -93,9 +96,9 @@ public class GenreDao {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Genre genre = new Genre(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("description")
+                rs.getInt(ID),
+                rs.getString(NAME),
+                rs.getString(DESCRIPTION)
         );
         genres.add(genre);
       }
@@ -115,7 +118,7 @@ public class GenreDao {
          PreparedStatement ps = conn.prepareStatement(select)) {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
-      if (rs.next()) return rs.getInt("id");
+      if (rs.next()) return rs.getInt(ID);
     }
 
     String insert = "INSERT INTO genres (name) VALUES (?)";
@@ -138,9 +141,9 @@ public class GenreDao {
       ps.setString(1, name);
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
-        genre = new Genre(rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("description"));
+        genre = new Genre(rs.getInt(ID),
+                rs.getString(NAME),
+                rs.getString(DESCRIPTION));
         return genre;
       } else {
         return null;
