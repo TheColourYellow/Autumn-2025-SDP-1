@@ -6,8 +6,12 @@ public class Cart {
     private List<CartItem> items;
 
     public List<CartItem> getItems() { return items; }
-    public void addItem(Book book) { }
-    public void removeItem(Book book) {}
+    public void addItem(Book book) {
+        // not in use yet
+    }
+    public void removeItem(Book book) {
+        // not in use yet
+    }
     public void clear() { items.clear(); }
 }
 
