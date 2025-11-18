@@ -1,5 +1,6 @@
 package com.group9.controller;
 
+import java.util.logging.Logger;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
 import com.group9.service.UserService;
@@ -25,10 +26,12 @@ import static com.group9.util.PopupUtils.showError;
 
 public class RegisterController {
 
+    private static final Logger logger = Logger.getLogger(RegisterController.class.getName());
+
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
 
-    @FXML private AnchorPane profileAnchor;
+    @FXML private AnchorPane registerAnchor;
 
     @FXML private Label homeLabel;
 
@@ -61,6 +64,7 @@ public class RegisterController {
     @FXML
     public void initialize() {
         rb = SessionManager.getResourceBundle();
+        orienter.orientLayout(registerAnchor);
         updateUI();
     }
 
@@ -82,7 +86,7 @@ public class RegisterController {
 
     @FXML
     private void openShoppingCart() {
-        System.out.println("Shopping cart clicked!");
+        logger.info("Shopping cart clicked!"); // Replaced system.out with logger
         rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));

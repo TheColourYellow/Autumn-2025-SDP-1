@@ -1,5 +1,6 @@
 package com.group9.controller;
 
+import java.util.logging.Logger;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
 import com.group9.service.UserService;
@@ -25,6 +26,8 @@ import static com.group9.util.PopupUtils.showError;
 import static com.group9.util.SessionManager.getLanguage;
 
 public class LoginController {
+
+    private static final Logger logger = Logger.getLogger(LoginController.class.getName());
 
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
@@ -107,7 +110,7 @@ public class LoginController {
 
     @FXML
     private void openShoppingCart() {
-        System.out.println("Shopping cart clicked!");
+        logger.info("Shopping cart clicked!"); // Replaced system.out with logger
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
             Parent root = loader.load();
