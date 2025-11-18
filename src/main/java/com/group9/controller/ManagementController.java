@@ -15,7 +15,6 @@ import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
 import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,12 +30,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static com.group9.util.PopupUtils.showError;
 
 public class ManagementController {
 
     private LayoutOrienter orienter = new LayoutOrienter();
+    private static final Logger log = Logger.getLogger(ShoppingCartController.class.getName());
+    private static final String ERROR = "error";
 
     @FXML private AnchorPane managementAnchor;
 
@@ -79,7 +81,7 @@ public class ManagementController {
             stage.setTitle(rb.getString("registerText"));
             stage.show();
         } catch (Exception e) {
-            showError(rb.getString("error"), rb.getString("couldNotOpenRegister"));
+            showError(rb.getString(ERROR), rb.getString("couldNotOpenRegister"));
         }
     }
 
@@ -98,7 +100,7 @@ public class ManagementController {
             stage.setTitle("Bookstore Management System");
             stage.show();
         } catch (Exception e) {
-            showError(rb.getString("error"), rb.getString("couldNotOpenHome"));
+            showError(rb.getString(ERROR), rb.getString("couldNotOpenHome"));
         }
     }
 
@@ -118,13 +120,13 @@ public class ManagementController {
             stage.setTitle(rb.getString("profileLabel"));
             stage.show();
         } catch (Exception e) {
-            showError(rb.getString("error"), rb.getString("couldNotOpenProfile"));
+            showError(rb.getString(ERROR), rb.getString("couldNotOpenProfile"));
         }
     }
 
     @FXML
     private void openShoppingCart() {
-        System.out.println("Shopping cart clicked!");
+        log.info("Shopping cart clicked!");
         rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -156,15 +158,15 @@ public class ManagementController {
         authorListView.setItems(authorData);
 
         genreListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
-            System.out.println("Genre clicked: " + item);
+            log.log(Level.INFO, "Genre clicked: {0}", new Object[]{item});
             openBookAttributeWindow(rb.getString("editGenreTitle"), item, true);
         }));
         bookListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
-            System.out.println("Book clicked: " + item);
+            log.log(Level.INFO,"Book clicked: {0}", new Object[]{item});
             openBookManageWindow(rb.getString("editBookTitle"), item);
         }));
         authorListView.setCellFactory(lv -> new SimpleListCell<>(item -> {
-            System.out.println("Author clicked: " + item);
+            log.log(Level.INFO, "Author clicked: {0}", new Object[]{item});
             openBookAttributeWindow(rb.getString("editAuthorTitle"), item, false);
         }));
 
@@ -262,7 +264,7 @@ public class ManagementController {
                     authorData.setAll(authors);
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
+                Platform.runLater(() -> showError(rb.getString(ERROR), rb.getString("dataLoadError")));
             }
         });
     }

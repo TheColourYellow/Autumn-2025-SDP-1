@@ -29,11 +29,20 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showError;
 
 public class BookstoreController {
+
+    private static final Logger logger = Logger.getLogger(BookstoreController.class.getName());
+
+    private static final String LANG_JAPANESE = "Japanese";
+    private static final String LANG_ENGLISH = "English";
+    private static final String LANG_ARABIC = "Arabic";
+
+    private static final String ERROR_TITLE = "Error";
 
     private ResourceBundle rb;
     private LayoutOrienter orienter = new LayoutOrienter();
@@ -114,7 +123,7 @@ public class BookstoreController {
             stage.setTitle(rb.getString("loginPageText"));
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open login window.");
+            showError(ERROR_TITLE, "Could not open login window.");
         }
     }
 
@@ -134,7 +143,7 @@ public class BookstoreController {
             stage.setTitle("Profile");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open profile window.");
+            showError(ERROR_TITLE, "Could not open profile window.");
         }
     }
 
@@ -150,7 +159,7 @@ public class BookstoreController {
             stage.setTitle("Management");
             stage.show();
         } catch (Exception e) {
-            showError("Error", "Could not open management window.");
+            showError(ERROR_TITLE, "Could not open management window.");
         }
     }
 
@@ -161,7 +170,7 @@ public class BookstoreController {
         updateUI();
 
         // Initialize language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Japanese", "English", "Arabic"));
+        languageSelector.setItems(FXCollections.observableArrayList(LANG_JAPANESE, LANG_ENGLISH, LANG_ARABIC));
         languageSelector.setValue(SessionManager.getLanguage()); // Get current language
         languageSelector.setOnAction(event -> handleLanguageChange());
 
@@ -218,32 +227,32 @@ public class BookstoreController {
         actionColumn.setCellFactory(new Callback<TableColumn<Book, Void>, TableCell<Book, Void>>() {
             @Override
             public TableCell<Book, Void> call(final TableColumn<Book, Void> param) {
-                final TableCell<Book, Void> cell = new TableCell<Book, Void>() {
+                return new TableCell<Book, Void>() {
 
                     private final Button btn = new Button();
-
-                    {
-                        btn.setOnAction(event -> {
-                            Book book = getTableView().getItems().get(getIndex());
-                            cart.add(book);
-                            System.out.println("Clicked Add to Cart for: " + book.getTitle());
-                        });
-                    }
 
                     @Override
                     protected void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
+
                         if (empty) {
-                            setGraphic(null); // No button in empty rows
+                            setGraphic(null);
                         } else {
+                            btn.setOnAction(event -> {
+                                Book book = getTableView().getItems().get(getIndex());
+                                cart.add(book);
+                                logger.info("Clicked Add to Cart for: " + book.getTitle());
+                            });
+
                             btn.setText(rb.getString("addToCartButton"));
-                            setGraphic(btn);  // Show button in data rows
+                            setGraphic(btn);
                         }
                     }
                 };
-                return cell;
             }
         });
+
+
 
         // Bind data to table
         bookTable.setItems(bookData);
@@ -282,7 +291,7 @@ public class BookstoreController {
     // Method for opening shopping cart window (new window)
     @FXML
     private void openShoppingCart() {
-        System.out.println("Shopping cart clicked!");
+        logger.info("Shopping cart clicked!");
         rb = SessionManager.getResourceBundle();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/shopping_cart_view.fxml"));
@@ -328,7 +337,7 @@ public class BookstoreController {
                 }
                 Platform.runLater(() -> bookData.setAll(books));
             } catch (Exception e) {
-                Platform.runLater(() -> showError("Error", "Could not sort books. Please try again later."));
+                Platform.runLater(() -> showError(ERROR_TITLE, "Could not sort books. Please try again later."));
             }
         });
     }
@@ -341,7 +350,7 @@ public class BookstoreController {
                 List<Book> books = bookService.getAllBooks();
                 Platform.runLater(() -> bookData.setAll(books));
             } catch (Exception e) {
-                Platform.runLater(() -> showError("Error", "Could not load books. Please try again later."));
+                Platform.runLater(() -> showError(ERROR_TITLE, "Could not load books. Please try again later."));
             }
         });
     }
@@ -352,20 +361,23 @@ public class BookstoreController {
         if (selectedLanguage == null) return;
 
         switch (selectedLanguage) {
-            case "Japanese":
+            case LANG_JAPANESE:
                 loadLanguage("ja", "JP");
-                SessionManager.setLanguage("Japanese");
-                System.out.println("Language changed to Japanese");
+                SessionManager.setLanguage(LANG_JAPANESE);
+                logger.info("Language changed to Japanese");
                 break;
-            case "English":
+            case LANG_ENGLISH:
                 loadLanguage("en", "US");
-                SessionManager.setLanguage("English");
-                System.out.println("Language changed to English");
+                SessionManager.setLanguage(LANG_ENGLISH);
+                logger.info("Language changed to English");
                 break;
-            case "Arabic":
+            case LANG_ARABIC:
                 loadLanguage("ar", "SA");
-                SessionManager.setLanguage("Arabic");
-                System.out.println("Language changed to Arabic");
+                SessionManager.setLanguage(LANG_ARABIC);
+                logger.info("Language changed to Arabic");
+                break;
+            default:
+                logger.warning("Unsupported language selected");
         }
     }
 
@@ -418,7 +430,7 @@ public class BookstoreController {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error refreshing genre checkboxes: " + e.getMessage());
+            logger.severe("Error refreshing genre checkboxes" + e.getMessage());
         }
     }
 }
