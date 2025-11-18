@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS books, users, orders, order_items, authors, genres, book_authors, book_genres;
+DROP TABLE IF EXISTS books, book_translations, users, orders, order_items, authors, genres, genre_translations, author_translations, book_authors, book_genres;
 
 CREATE TABLE users (
     id            INT PRIMARY KEY AUTO_INCREMENT,
@@ -19,6 +19,15 @@ CREATE TABLE books (
     price          DECIMAL(8, 2) NOT NULL,
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     active         BOOLEAN   DEFAULT TRUE
+);
+
+CREATE TABLE book_translations (
+    book_id INT NOT NULL,
+    language_code VARCHAR(5) NOT NULL,
+    translated_title VARCHAR(255) NOT NULL,
+    translated_description TEXT,
+    PRIMARY KEY (book_id, language_code),
+    FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE
 );
 
 CREATE TABLE orders (

@@ -2,6 +2,7 @@ package com.group9.service;
 
 import com.group9.dao.AuthorDao;
 import com.group9.model.Author;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.util.SessionManager;
 
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class AuthorService {
         }
     }
 
-    public void addAuthor(String name, String desc) throws Exception {
+    public int addAuthor(String name, String desc) throws Exception {
         rb = SessionManager.getResourceBundle();
         if (name == null || name.isEmpty()) {
             String message = rb.getString("authorNull");
@@ -35,7 +36,7 @@ public class AuthorService {
         }
 
         try {
-            authorDao.addAuthor(name, desc);
+            return authorDao.addAuthor(name, desc);
         } catch (Exception e) {
             String message = rb.getString("errorAddingAuthor");
             System.out.println(message + ": " + e.getMessage());
@@ -98,6 +99,47 @@ public class AuthorService {
             String message = rb.getString("errorDeletingAuthor");
             System.out.println(message + ": " + e.getMessage());
             throw new Exception(message);
+        }
+    }
+
+    public void saveAuthorWithTranslations(Author author, List<BookAttributeTranslation> translations) {
+        rb = SessionManager.getResourceBundle();
+        int authorId = author.getId();
+
+        // Save new or update existing author
+        if (authorId <= 0) {
+            try {
+                authorId = addAuthor(author.getName(), author.getDescription());
+            } catch (Exception e) {
+                String message = rb.getString("errorAddingAuthor");
+                System.out.println(message + ": " + e.getMessage());
+                throw new RuntimeException(message);
+            }
+        } else {
+            try {
+                updateAuthor(author);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // Save translations
+        try {
+            authorDao.upsertTranslations(authorId, translations);
+        } catch (Exception e) {
+            String message = rb.getString("errorSavingTranslations");
+            System.err.println(message + ": " + e.getMessage());
+            throw new RuntimeException(message);
+        }
+    }
+
+    public List<BookAttributeTranslation> getTranslationsForAuthor(int authorId) {
+        try {
+            return authorDao.getTranslations(authorId);
+        } catch (Exception e) {
+            String message = rb.getString("errorRetrievingTranslations");
+            System.err.println(message + ": " + e.getMessage());
+            throw new RuntimeException(message);
         }
     }
 }
