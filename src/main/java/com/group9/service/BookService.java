@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 public class BookService {
   private final BookDao bookDao;
   private ResourceBundle rb;
+  private static final String BOOK_ID_ERROR = "bookIdError";
 
   public BookService(BookDao bookDao) {
     this.bookDao = bookDao;
@@ -30,7 +31,7 @@ public class BookService {
   public Book getBookById(int id) {
     rb = SessionManager.getResourceBundle();
     if (id <= 0) {
-      String message = rb.getString("bookIdError");
+      String message = rb.getString(BOOK_ID_ERROR);
       throw new IllegalArgumentException(message);
     }
 
@@ -64,7 +65,7 @@ public class BookService {
     rb = SessionManager.getResourceBundle();
     validateBook(book);
     if (book.getId() <= 0) {
-      String message = rb.getString("bookIdError");
+      String message = rb.getString(BOOK_ID_ERROR);
       throw new IllegalArgumentException(message);
     }
 
@@ -101,7 +102,7 @@ public class BookService {
   public void deleteBook(int bookId) throws Exception {
     rb = SessionManager.getResourceBundle();
     if (bookId <= 0) {
-      String message = rb.getString("bookIdError");
+      String message = rb.getString(BOOK_ID_ERROR);
       throw new IllegalArgumentException(message);
     }
 
