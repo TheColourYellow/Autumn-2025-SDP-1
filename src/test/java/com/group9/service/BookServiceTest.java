@@ -14,8 +14,15 @@ import static org.mockito.Mockito.*;
 public class BookServiceTest {
   private BookDao bookDao;
   private BookService bookService;
+  private static final String TEST_BOOK = "Test Book";
+  private static final String BOOK_FOR_TESTING = "A book for testing";
+  private static final String DB_ERROR = "DB error";
+  private static final String ERROR_ISBN = "¨1234-5678-9012";
+  private static final String ISBN = "1234-5678-9012";
+  private static final String ANOTHER_BOOK_FOR_TESTING = "Another book for testing";
 
   @BeforeEach
+
   public void setUp() {
     bookDao = mock(BookDao.class);
     bookService = new BookService(bookDao);
@@ -36,11 +43,11 @@ public class BookServiceTest {
     int bookId = 1;
     Book testBook = new Book(
             bookId,
-            "Test Book",
-            "¨1234-5678-9012",
+            TEST_BOOK,
+            ERROR_ISBN,
             2025,
             10.00,
-            "A book for testing"
+            BOOK_FOR_TESTING
     );
 
     // Mock Dao response
@@ -57,7 +64,7 @@ public class BookServiceTest {
 
     // Simulate DB error on retrieval
     when(bookDao.getBookById(2))
-            .thenThrow(new SQLException("DB error"));
+            .thenThrow(new SQLException(DB_ERROR));
     assertNull(bookService.getBookById(2));
   }
 
@@ -81,11 +88,11 @@ public class BookServiceTest {
   public void testAddBook() throws SQLException {
     Book testBook = new Book(
             1,
-            "Test Book",
-            "¨1234-5678-9012",
+            TEST_BOOK,
+            ERROR_ISBN,
             2025,
             10.00,
-            "A book for testing"
+            BOOK_FOR_TESTING
     );
 
     // Mock Dao response
@@ -99,15 +106,15 @@ public class BookServiceTest {
     Book testBookInvalidTitle = new Book(
             2,
             null,
-            "1234-5678-9012",
+            ISBN,
             2025,
             10.00,
-            "Another book for testing"
+            ANOTHER_BOOK_FOR_TESTING
     );
     Book testBookInvalidPrice = new Book(
             3,
             "Invalid Price Book",
-            "1234-5678-9012",
+            ISBN,
             2025,
             -5.00,
             "Book with invalid price"
@@ -115,7 +122,7 @@ public class BookServiceTest {
     Book testBookInvalidYear = new Book(
             4,
             "Invalid Year Book",
-            "1234-5678-9012",
+            ISBN,
             -2025,
             10.00,
             "Book with invalid year"
@@ -129,7 +136,7 @@ public class BookServiceTest {
 
     // Simulate DB error on add
     when(bookDao.addFullBook(any(Book.class)))
-            .thenThrow(new SQLException("DB error"));
+            .thenThrow(new SQLException(DB_ERROR));
     assertEquals(-1, bookService.addBook(testBook));
   }
 
@@ -137,11 +144,11 @@ public class BookServiceTest {
   public void testUpdateBook() {
     Book testBook = new Book(
             1,
-            "Test Book",
-            "1234-5678-9012",
+            TEST_BOOK,
+            ISBN,
             2025,
             10.00,
-            "A book for testing"
+            BOOK_FOR_TESTING
     );
 
     // Valid book update
@@ -151,7 +158,7 @@ public class BookServiceTest {
     Book testBookInvalidId = new Book(
             -1,
             "Invalid ID Book",
-            "1234-5678-9012",
+            ISBN,
             2025,
             10.00,
             "Book with invalid ID"
@@ -159,23 +166,23 @@ public class BookServiceTest {
     Book testBookInvalidTitle = new Book(
             2,
             null,
-            "1234-5678-9012",
+            ISBN,
             2025,
             10.00,
-            "Another book for testing"
+            ANOTHER_BOOK_FOR_TESTING
     );
     Book testBookInvalidTitle2 = new Book(
             2,
             "",
-            "1234-5678-9012",
+            ISBN,
             2025,
             10.00,
-            "Another book for testing"
+            ANOTHER_BOOK_FOR_TESTING
     );
     Book testBookInvalidPrice = new Book(
             3,
             "Invalid Price Book",
-            "1234-5678-9012",
+            ISBN,
             2025,
             -5.00,
             "Book with invalid price"
@@ -183,7 +190,7 @@ public class BookServiceTest {
     Book testBookInvalidYear = new Book(
             4,
             "Invalid Year Book",
-            "1234-5678-9012",
+            ISBN,
             -2025,
             10.00,
             "Book with invalid year"
@@ -198,7 +205,7 @@ public class BookServiceTest {
     assertThrows(IllegalArgumentException.class, () -> bookService.updateBook(testBookInvalidYear));
 
     // Simulate DB error on update
-    doThrow(new RuntimeException("DB error")).when(bookDao).updateBook(any(Book.class));
+    doThrow(new RuntimeException(DB_ERROR)).when(bookDao).updateBook(any(Book.class));
     assertThrows(Exception.class, () -> bookService.updateBook(testBook));
   }
 
@@ -215,7 +222,7 @@ public class BookServiceTest {
     assertThrows(IllegalArgumentException.class, () -> bookService.deleteBook(invalidBookId));
 
     // Simulate DB error on delete
-    doThrow(new SQLException("DB error")).when(bookDao).inActivateBook(2);
+    doThrow(new SQLException(DB_ERROR)).when(bookDao).inActivateBook(2);
     assertThrows(Exception.class, () -> bookService.deleteBook(2));
   }
 }
