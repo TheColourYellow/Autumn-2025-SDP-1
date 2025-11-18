@@ -179,7 +179,7 @@ public class BookManageController {
           }
         });
       } catch (Exception e) {
-        Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
+        Platform.runLater(() -> showError(rb.getString(ERROR), rb.getString("dataLoadError")));
       }
     });
   }
