@@ -30,7 +30,7 @@ public class GenreServiceTest {
 
     // Return null on exception
     when(genreDao.getAllGenres("en")).thenThrow(new SQLException("DB error"));
-    assertNull(genreService.getAllGenres());
+    assertThrows(RuntimeException.class, () -> genreService.getAllGenres());
   }
 
   @Test
