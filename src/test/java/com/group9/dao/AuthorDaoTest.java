@@ -21,6 +21,7 @@ class AuthorDaoTest {
     private static AuthorDao dao;
     private static Author author;
     private static Book book;
+    private static final String TEST_AUTHOR = "Test Author";
 
     @BeforeAll
     static void setUp() {
@@ -41,25 +42,25 @@ class AuthorDaoTest {
 
     @Test
     void addAuthorTest() throws SQLException {
-        dao.addAuthor("Test Author", "This is a test author");
-        verify(dao).addAuthor("Test Author", "This is a test author");
+        dao.addAuthor(TEST_AUTHOR, "This is a test author");
+        verify(dao).addAuthor(TEST_AUTHOR, "This is a test author");
     }
 
     //Wanted but not invoked
     //Zero interactions with this mock
     @Test
     void getAuthorByNameTest() throws SQLException {
-        when(dao.getAuthorByName("Test Author")).thenReturn(author);
-        assertEquals(author, dao.getAuthorByName("Test Author"));
+        when(dao.getAuthorByName(TEST_AUTHOR)).thenReturn(author);
+        assertEquals(author, dao.getAuthorByName(TEST_AUTHOR));
     }
 
     @Test
     void deleteAuthorByNameTest() throws SQLException {
 
-        dao.deleteAuthorByName("Test Author");
-        when(dao.getAuthorByName("Test Author")).thenReturn(null);
-        verify(dao).deleteAuthorByName("Test Author");
-        assertNull(dao.getAuthorByName("Test Author"));
+        dao.deleteAuthorByName(TEST_AUTHOR);
+        when(dao.getAuthorByName(TEST_AUTHOR)).thenReturn(null);
+        verify(dao).deleteAuthorByName(TEST_AUTHOR);
+        assertNull(dao.getAuthorByName(TEST_AUTHOR));
 
     }
 
