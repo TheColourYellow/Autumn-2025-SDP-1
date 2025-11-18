@@ -12,7 +12,6 @@ import com.group9.service.GenreService;
 import com.group9.util.AppExecutors;
 import com.group9.util.LayoutOrienter;
 import com.group9.util.SessionManager;
-import com.group9.util.SimpleListCell;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -28,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.group9.util.PopupUtils.showConfirmation;
@@ -37,6 +38,7 @@ public class BookManageController {
   private Book book;
   private Runnable onCloseCallback;
   private LayoutOrienter orienter = new LayoutOrienter();
+  private static final Logger log = Logger.getLogger(BookManageController.class.getName());
 
   @FXML private AnchorPane bookmanageAnchor;
 
@@ -80,6 +82,8 @@ public class BookManageController {
   private final Map<Author, BooleanProperty> authorSelections = new HashMap<>();
 
   private ResourceBundle rb;
+  private static final String VALID_ERROR = "validationError";
+  private static final String ERROR = "error";
 
   @FXML
   private void initialize() {
@@ -140,17 +144,17 @@ public class BookManageController {
 
             // input validation
             if (title.isEmpty()) {
-                showError(rb.getString("validationError"), rb.getString("bookTitleNull"));
+                showError(rb.getString(VALID_ERROR), rb.getString("bookTitleNull"));
                 return;
             }
 
             if (yearText.isEmpty()) {
-                showError(rb.getString("validationError"), rb.getString("bookYearNull"));
+                showError(rb.getString(VALID_ERROR), rb.getString("bookYearNull"));
                 return;
             }
 
             if (priceText.isEmpty()) {
-                showError(rb.getString("validationError"), rb.getString("bookPriceNull"));
+                showError(rb.getString(VALID_ERROR), rb.getString("bookPriceNull"));
                 return;
             }
 
@@ -160,7 +164,7 @@ public class BookManageController {
                 year = Integer.parseInt(yearText);
                 price = Double.parseDouble(priceText);
             } catch (NumberFormatException e) {
-                showError(rb.getString("validationError"), rb.getString("yearPriceValidationError"));
+                showError(rb.getString(VALID_ERROR), rb.getString("yearPriceValidationError"));
                 return;
             }
 
@@ -183,7 +187,7 @@ public class BookManageController {
                 newBook.setAuthors(getSelectedAuthors());
 
                 if (bookService.addBook(newBook) == -1) {
-                    showError(rb.getString("error"), rb.getString("errorAddingBook"));
+                    showError(rb.getString(ERROR), rb.getString("errorAddingBook"));
                     return;
                 }
             }
@@ -195,7 +199,7 @@ public class BookManageController {
             handleCancel();
 
         } catch (Exception e) {
-            showError(rb.getString("error"), e.getMessage());
+            showError(rb.getString(ERROR), e.getMessage());
             e.printStackTrace();
         }
     }
@@ -209,23 +213,20 @@ public class BookManageController {
 
   @FXML
   private void handleDelete() {
-    if (book != null && book.getId() != -1) {
-      if (showConfirmation(rb.getString("deleteBookConfirmationTitle") + book.getTitle(), rb.getString("deleteBookConfirmationMessage"))) {
-        try {
-          bookService.deleteBook(book.getId());
-
-          // Refresh the author list in the main controller
-          if (onCloseCallback != null) {
-            onCloseCallback.run();
-          }
-
-          // Close the dialog
-          handleCancel();
-        } catch (Exception e) {
-          showError(rb.getString("error"), e.getMessage());
-        }
+      if (book != null && book.getId() != -1
+          && showConfirmation(rb.getString("deleteBookConfirmationTitle") + book.getTitle(), rb.getString("deleteBookConfirmationMessage"))) {
+              try {
+                  bookService.deleteBook(book.getId());
+                  // Refresh the author list in the main controller
+                  if (onCloseCallback != null) {
+                      onCloseCallback.run();
+                  }
+                  // Close the dialog
+                  handleCancel();
+              } catch (Exception e) {
+                  showError(rb.getString(ERROR), e.getMessage());
+              }
       }
-    }
   }
 
   private List<Genre> getSelectedGenres() {
@@ -243,21 +244,21 @@ public class BookManageController {
   }
 
   private void applyBookSelections() {
-    System.out.println("Applying selections for book: " + book.getTitle());
+    log.log(Level.INFO, "Applying selections for book: {0}", new Object[]{book.getTitle()});
     // reset all checkboxes
     genreSelections.values().forEach(prop -> prop.set(false));
     authorSelections.values().forEach(prop -> prop.set(false));
 
     // select the book's genres
     for (Genre genre : book.getGenres()) {
-      System.out.println("Selecting genre: " + genre.getName());
+      log.log(Level.INFO, "Selecting genre: {0}", new Object[]{genre.getName()});
       BooleanProperty prop = genreSelections.get(genre);
       if (prop != null) prop.set(true);
     }
 
     // select the book's authors
     for (Author author : book.getAuthors()) {
-      System.out.println("Selecting author: " + author.getName());
+      log.log(Level.INFO, "Selecting author: {0}", new Object[]{author.getName()});
       BooleanProperty prop = authorSelections.get(author);
       if (prop != null) prop.set(true);
     }
@@ -280,7 +281,7 @@ public class BookManageController {
           }
         });
       } catch (Exception e) {
-        Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
+        Platform.runLater(() -> showError(rb.getString(ERROR), rb.getString("dataLoadError")));
       }
     });
   }
