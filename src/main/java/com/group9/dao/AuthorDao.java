@@ -171,7 +171,7 @@ public class AuthorDao {
           throw new RuntimeException("Creating author failed, no ID obtained.");
       }
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error adding author: {0}", new Object[]{e.getMessage()});
+      log.log(Level.SEVERE, "Error adding author: " + e.getMessage(), e);
       throw new RuntimeException("Error adding author", e);
     }
   }
@@ -185,7 +185,7 @@ public class AuthorDao {
       ps.setInt(3, author.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error updating author: {0}", new Object[]{e.getMessage()});
+      log.log(Level.SEVERE, "Error updating author: " + e.getMessage(), e);
       throw new RuntimeException("Error updating author", e);
     }
   }
@@ -217,7 +217,7 @@ public class AuthorDao {
         ));
       }
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error fetching author translations: {0}", new Object[]{e.getMessage()});
+      log.log(Level.SEVERE, "Error fetching author translations: " + e.getMessage(), e);
       throw new RuntimeException("Error fetching author translations", e);
     }
 
@@ -244,7 +244,7 @@ public class AuthorDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error upserting author translations: {0}", new Object[]{e.getMessage()});
+      log.log(Level.SEVERE, "Error upserting author translations: " + e.getMessage(), e);
       throw new SQLException("Error upserting author translations", e);
     }
   }
