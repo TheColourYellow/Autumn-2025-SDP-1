@@ -14,6 +14,13 @@ import static org.mockito.Mockito.*;
 public class GenreServiceTest {
   private GenreDao genreDao;
   private GenreService genreService;
+  private static final String DB_ERROR = "DB error";
+  private static final String GENRE = "Genre";
+  private static final String NEW_GENRE = "New Genre";
+  private static final String NON_EXISTENT = "NonExistent";
+  private static final String EXISTING_GENRE = "Existing Genre";
+  private static final String DESC = "desc";
+  private static final String EN = "en";
 
   @BeforeEach
   public void setUp() {
@@ -24,65 +31,65 @@ public class GenreServiceTest {
   @Test
   public void testGetAllGenres() throws SQLException {
     // Mock Dao response with empty list
-    when(genreDao.getAllGenres("en")).thenReturn(new ArrayList<Genre>());
+    when(genreDao.getAllGenres(EN)).thenReturn(new ArrayList<Genre>());
     assertEquals(new ArrayList<Genre>(), genreService.getAllGenres());
-    verify(genreDao).getAllGenres("en");
+    verify(genreDao).getAllGenres(EN);
 
     // Return null on exception
-    when(genreDao.getAllGenres("en")).thenThrow(new SQLException("DB error"));
+    when(genreDao.getAllGenres(EN)).thenThrow(new SQLException(DB_ERROR));
     assertThrows(RuntimeException.class, () -> genreService.getAllGenres());
   }
 
   @Test
   public void testAddGenre() throws Exception {
     // Invalid inputs
-    assertThrows(IllegalArgumentException.class, () -> genreService.addGenre("", "desc"));
-    assertThrows(IllegalArgumentException.class, () -> genreService.addGenre(null, "desc"));
+    assertThrows(IllegalArgumentException.class, () -> genreService.addGenre("", DESC));
+    assertThrows(IllegalArgumentException.class, () -> genreService.addGenre(null, DESC));
 
     // Valid input should call Dao method
-    genreService.addGenre("New Genre", "desc");
-    verify(genreDao).addGenre("New Genre", "desc");
+    genreService.addGenre(NEW_GENRE, DESC);
+    verify(genreDao).addGenre(NEW_GENRE, DESC);
 
     // Simulate Dao exception
-    doThrow(new RuntimeException("DB error")).when(genreDao).addGenre("New Genre", "desc");
-    assertThrows(Exception.class, () -> genreService.addGenre("New Genre", "desc"));
+    doThrow(new RuntimeException(DB_ERROR)).when(genreDao).addGenre(NEW_GENRE, DESC);
+    assertThrows(Exception.class, () -> genreService.addGenre(NEW_GENRE, DESC));
   }
 
   @Test
   public void testUpdateGenre() throws SQLException {
-    Genre existingGenre = new Genre(1, "Genre", "desc");
+    Genre existingGenre = new Genre(1, GENRE, DESC);
 
     // Invalid inputs
-    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(-1, "Name", "desc")));
-    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, "", "desc")));
-    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, null, "desc")));
+    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(-1, "Name", DESC)));
+    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, "", DESC)));
+    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, null, DESC)));
 
     // Genre does not exist
-    when(genreDao.getGenreByName("NonExistent")).thenReturn(null);
-    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, "NonExistent", "desc")));
-    verify(genreDao).getGenreByName("NonExistent");
+    when(genreDao.getGenreByName(NON_EXISTENT)).thenReturn(null);
+    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, NON_EXISTENT, DESC)));
+    verify(genreDao).getGenreByName(NON_EXISTENT);
 
     // Another genre with same name exists
-    when(genreDao.getGenreByName("Existing Genre")).thenReturn(new Genre(2, "Existing Genre", "desc"));
-    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, "Existing Genre", "desc")));
-    verify(genreDao).getGenreByName("Existing Genre");
+    when(genreDao.getGenreByName(EXISTING_GENRE)).thenReturn(new Genre(2, EXISTING_GENRE, DESC));
+    assertThrows(IllegalArgumentException.class, () -> genreService.updateGenre(new Genre(1, EXISTING_GENRE, DESC)));
+    verify(genreDao).getGenreByName(EXISTING_GENRE);
 
     // Valid update should call Dao method
-    when(genreDao.getGenreByName("Genre")).thenReturn(existingGenre);
+    when(genreDao.getGenreByName(GENRE)).thenReturn(existingGenre);
     genreService.updateGenre(existingGenre);
-    verify(genreDao).getGenreByName("Genre");
+    verify(genreDao).getGenreByName(GENRE);
     verify(genreDao).updateGenre(existingGenre);
 
     // Simulate Dao exception on update
-    when(genreDao.getGenreByName("Genre")).thenReturn(existingGenre);
-    doThrow(new RuntimeException("DB error")).when(genreDao).updateGenre(existingGenre);
+    when(genreDao.getGenreByName(GENRE)).thenReturn(existingGenre);
+    doThrow(new RuntimeException(DB_ERROR)).when(genreDao).updateGenre(existingGenre);
     assertThrows(RuntimeException.class, () -> genreService.updateGenre(existingGenre));
     verify(genreDao, times(2)).updateGenre(existingGenre);
 
     // Simulate Dao exception on get
-    when(genreDao.getGenreByName("Genre")).thenThrow(new SQLException("DB error"));
-    assertThrows(RuntimeException.class, () -> genreService.updateGenre(new Genre(1, "Genre", "desc")));
-    verify(genreDao, times(3)).getGenreByName("Genre");
+    when(genreDao.getGenreByName(GENRE)).thenThrow(new SQLException(DB_ERROR));
+    assertThrows(RuntimeException.class, () -> genreService.updateGenre(new Genre(1, GENRE, DESC)));
+    verify(genreDao, times(3)).getGenreByName(GENRE);
   }
 
   @Test
@@ -91,11 +98,11 @@ public class GenreServiceTest {
     assertThrows(IllegalArgumentException.class, () -> genreService.deleteGenre(""));
 
     // Valid input should call Dao method
-    genreService.deleteGenre("Genre");
-    verify(genreDao).deleteGenreByName("Genre");
+    genreService.deleteGenre(GENRE);
+    verify(genreDao).deleteGenreByName(GENRE);
 
     // Simulate Dao exception
-    doThrow(new SQLException("DB error")).when(genreDao).deleteGenreByName("Genre");
-    assertThrows(Exception.class, () -> genreService.deleteGenre("Genre"));
+    doThrow(new SQLException(DB_ERROR)).when(genreDao).deleteGenreByName(GENRE);
+    assertThrows(Exception.class, () -> genreService.deleteGenre(GENRE));
   }
 }
