@@ -153,6 +153,31 @@ public class BookManageController {
     if (!genreData.isEmpty() && !authorData.isEmpty()) {
       applyBookSelections();
     }
+
+    loadTranslations();
+  }
+
+  private void loadTranslations() {
+    if (book == null) return;
+
+    AppExecutors.databaseExecutor.execute(() -> {
+      try {
+        List<BookAttributeTranslation> translations = bookService.getTranslations(book.getId());
+        Platform.runLater(() -> {
+          for (BookAttributeTranslation translation : translations) {
+            String langCode = translation.languageCode;
+            if (titleFields.containsKey(langCode)) {
+              titleFields.get(langCode).setText(translation.translatedName);
+            }
+            if (descFields.containsKey(langCode)) {
+              descFields.get(langCode).setText(translation.translatedDescription);
+            }
+          }
+        });
+      } catch (Exception e) {
+        Platform.runLater(() -> showError(rb.getString("error"), rb.getString("dataLoadError")));
+      }
+    });
   }
 
   public void setOnCloseCallback(Runnable onCloseCallback) {
@@ -203,29 +228,29 @@ public class BookManageController {
       }
     }
 
-    if (book != null) {
+    if (book != null && book.getId() != -1) {
       // Update existing book
       book.setTitle(title);
       book.setIsbn(isbn);
       book.setYear(year);
       book.setPrice(price);
       book.setDescription(desc);
-      book.setGenres(getSelectedGenres());
-      book.setAuthors(getSelectedAuthors());
     } else {
       // Create new book
-      Book newBook = new Book(-1, title, isbn, year, price, desc);
-      newBook.setGenres(getSelectedGenres());
-      newBook.setAuthors(getSelectedAuthors());
+      book = new Book(-1, title, isbn, year, price, desc);
     }
+    book.setGenres(getSelectedGenres());
+    book.setAuthors(getSelectedAuthors());
 
     AppExecutors.databaseExecutor.execute(() -> {
       try {
         bookService.saveBookWithTranslations(book, translationsToSave);
 
         // Refresh list & close
-        if (onCloseCallback != null) onCloseCallback.run();
-        handleCancel();
+        Platform.runLater(() -> {
+          if (onCloseCallback != null) onCloseCallback.run();
+          handleCancel();
+        });
       } catch (Exception e) {
         Platform.runLater(() -> showError(rb.getString("error"), e.getMessage()));
       }
