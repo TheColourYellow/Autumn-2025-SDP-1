@@ -229,17 +229,7 @@ public class BookstoreController {
             public TableCell<Book, Void> call(final TableColumn<Book, Void> param) {
                 return new TableCell<Book, Void>() {
 
-                    private final Button btn;
-
-                    {
-                        // Standard constructor-like initialization for Java 8
-                        btn = new Button();
-                        btn.setOnAction(event -> {
-                            Book book = getTableView().getItems().get(getIndex());
-                            cart.add(book);
-                            logger.info("Clicked Add to Cart for: " + book.getTitle());
-                        });
-                    }
+                    private final Button btn = new Button();
 
                     @Override
                     protected void updateItem(Void item, boolean empty) {
@@ -248,6 +238,12 @@ public class BookstoreController {
                         if (empty) {
                             setGraphic(null);
                         } else {
+                            btn.setOnAction(event -> {
+                                Book book = getTableView().getItems().get(getIndex());
+                                cart.add(book);
+                                logger.info("Clicked Add to Cart for: " + book.getTitle());
+                            });
+
                             btn.setText(rb.getString("addToCartButton"));
                             setGraphic(btn);
                         }
@@ -255,6 +251,7 @@ public class BookstoreController {
                 };
             }
         });
+
 
 
         // Bind data to table
