@@ -2,6 +2,7 @@ package com.group9.dao;
 
 import com.group9.model.Author;
 import com.group9.model.Book;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.model.Genre;
 import com.group9.util.Database;
 
@@ -352,6 +353,31 @@ public class BookDao {
       ps.setInt(1, bookId);
       ps.setInt(2, genreId);
       ps.executeUpdate();
+    }
+  }
+
+  public void upsertTranslations(int bookId, List<BookAttributeTranslation> translations) {
+    String sql = "INSERT INTO book_translations (book_id, language_code, translated_title, translated_description) " +
+            "VALUES (?, ?, ?, ?) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "translated_title = VALUES(translated_title), " +
+            "translated_description = VALUES(translated_description)";
+
+    try (Connection conn = Database.getConnection();
+          PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      for (BookAttributeTranslation t : translations) {
+        ps.setInt(1, bookId);
+        ps.setString(2, t.languageCode);
+        ps.setString(3, t.translatedName);
+        ps.setString(4, t.translatedDescription);
+        ps.addBatch();
+      }
+
+      ps.executeBatch();
+    } catch (SQLException e) {
+      System.err.println("Error upserting book translations: " + e.getMessage());
+      throw new RuntimeException("Error upserting book translations");
     }
   }
 }

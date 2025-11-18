@@ -2,6 +2,7 @@ package com.group9.service;
 
 import com.group9.dao.BookDao;
 import com.group9.model.Book;
+import com.group9.model.BookAttributeTranslation;
 import com.group9.util.SessionManager;
 
 import java.util.List;
@@ -65,6 +66,27 @@ public class BookService {
         } catch (Exception e) {
             String message =  rb.getString("errorUpdatingBook");
             System.out.println(message + ": " + e.getMessage());
+            throw new RuntimeException(message);
+        }
+    }
+
+    public void saveBookWithTranslations(Book book, List<BookAttributeTranslation> translations) {
+        rb = SessionManager.getResourceBundle();
+        int bookId = book.getId();
+
+        // Save new or update existing book
+        if (bookId <= 0) {
+            bookId = addBook(book);
+        } else {
+            updateBook(book);
+        }
+
+        // Save translations
+        try {
+            bookDao.upsertTranslations(bookId, translations);
+        } catch (Exception e) {
+            String message = rb.getString("errorSavingTranslations");
+            System.err.println(message + ": " + e.getMessage());
             throw new RuntimeException(message);
         }
     }

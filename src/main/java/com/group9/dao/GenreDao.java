@@ -191,7 +191,7 @@ public class GenreDao {
     return translations;
   }
 
-  public void upsertTranslations(int genreId, List<BookAttributeTranslation> list) {
+  public void upsertTranslations(int genreId, List<BookAttributeTranslation> translations) {
     String sql = "INSERT INTO genre_translations (genre_id, language_code, translated_name, translated_description) " +
         "VALUES (?, ?, ?, ?) " +
         "ON DUPLICATE KEY UPDATE " +
@@ -201,7 +201,7 @@ public class GenreDao {
     try (Connection conn = Database.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
-      for (BookAttributeTranslation t : list) {
+      for (BookAttributeTranslation t : translations) {
         ps.setInt(1, genreId);
         ps.setString(2, t.languageCode);
         ps.setString(3, t.translatedName);

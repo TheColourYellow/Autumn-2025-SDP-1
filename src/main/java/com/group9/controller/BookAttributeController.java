@@ -97,16 +97,12 @@ public class BookAttributeController {
   }
 
   private void loadTranslations() {
-    System.out.println("Loading translations...");
     if (bookAttribute == null) return;
-
-    System.out.println("Loading translations for attribute ID: " + bookAttribute.getId());
 
     List<BookAttributeTranslation> translations = new ArrayList<>();
 
     if (bookAttribute instanceof Genre) {
       translations = genreService.getTranslationsForGenre(bookAttribute.getId());
-      System.out.println("Loaded " + translations.size() + " translations for genre.");
     }
     else if (bookAttribute instanceof Author) {
       //translations = authorService.getTranslationsForAuthor(bookAttribute.getId());
@@ -162,15 +158,13 @@ public class BookAttributeController {
           throw new IllegalArgumentException(rb.getString("unknownAttributeTypeError"));
         }
 
-        // Run UI updates on the JavaFX Application Thread
+        // Refresh list & close
         Platform.runLater(() -> {
           if (onCloseCallback != null) onCloseCallback.run();
           handleClose();
         });
       } catch (Exception e) {
-        Platform.runLater(() ->
-                showError(rb.getString("error"), e.getMessage())
-        );
+        Platform.runLater(() -> showError(rb.getString("error"), e.getMessage()));
       }
     });
   }
