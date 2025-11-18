@@ -65,53 +65,60 @@ public class OrderDao {
     }
 
     public int insertOrder(Order order) throws SQLException {
-        Connection conn = null;
         String insertOrderSql = "INSERT INTO orders (user_id) VALUES (?)";
         String insertItemSql = "INSERT INTO order_items (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)";
 
-        try {
-            conn = Database.getConnection();
-            conn.setAutoCommit(false); // start transaction
+        try (Connection conn = Database.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
 
-            PreparedStatement orderStmt = conn.prepareStatement(insertOrderSql, java.sql.Statement.RETURN_GENERATED_KEYS);
-            PreparedStatement itemStmt = conn.prepareStatement(insertItemSql);
+                try (PreparedStatement orderStmt = conn.prepareStatement(insertOrderSql, java.sql.Statement.RETURN_GENERATED_KEYS);
+                     PreparedStatement itemStmt = conn.prepareStatement(insertItemSql)) {
 
-            // Insert order
-            orderStmt.setInt(1, order.getUserId());
-            orderStmt.executeUpdate();
+                    // Insert order
+                    orderStmt.setInt(1, order.getUserId());
+                    orderStmt.executeUpdate();
 
-            // Get generated order id
-            int orderId;
-            try (ResultSet rs = orderStmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    orderId = rs.getInt(1);
-                } else {
-                    throw new SQLException("Failed to retrieve order ID.");
+                    // Get generated order id
+                    int orderId;
+                    try (ResultSet rs = orderStmt.getGeneratedKeys()) {
+                        if (rs.next()) {
+                            orderId = rs.getInt(1);
+                        } else {
+                            throw new SQLException("Failed to retrieve order ID.");
+                        }
+                    }
+
+                    // Insert order items
+                    for (OrderItem item : order.getOrderItems()) {
+                        itemStmt.setInt(1, orderId);
+                        itemStmt.setInt(2, item.getBook().getId());
+                        itemStmt.setInt(3, item.getQuantity());
+                        itemStmt.setDouble(4, item.getBook().getPrice());
+                        itemStmt.addBatch();
+                    }
+                    itemStmt.executeBatch();
+
+                    conn.commit();
+                    return orderId;
                 }
-            }
-
-            // Insert order items
-            for (OrderItem item : order.getOrderItems()) {
-                itemStmt.setInt(1, orderId);
-                itemStmt.setInt(2, item.getBook().getId());
-                itemStmt.setInt(3, item.getQuantity());
-                itemStmt.setDouble(4, item.getBook().getPrice());
-                itemStmt.addBatch();
-            }
-            itemStmt.executeBatch();
-
-            conn.commit();
-            conn.setAutoCommit(true);
-            return orderId;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error inserting order: " + order, e);
-        } finally {
-            if (conn != null) {
-                conn.setAutoCommit(true);
-                conn.close();
+            } catch (SQLException e) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    e.addSuppressed(ex);
+                }
+                throw new SQLException("Error inserting order: " + order, e);
+            } finally {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    // ignore
+                }
             }
         }
     }
+
 
     private Order resultSetToOrder(ResultSet rs) throws SQLException {
         return new Order(
