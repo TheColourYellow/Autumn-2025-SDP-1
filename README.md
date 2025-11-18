@@ -48,3 +48,7 @@ The application supports following languages:
 - English
 - Japanese
 - Arabic
+
+The database uses seperate translation tables for genres, authors and book names, so that management
+of the book catalogue is possible in each supported language.  
+User selected langauge settings are saved to the user table through row-based localisation.
