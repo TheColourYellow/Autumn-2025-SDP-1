@@ -44,7 +44,7 @@ public class AuthorServiceTest {
     verify(authorDao).addAuthor("New Author", "desc");
 
     // Simulate Dao exception
-    doThrow(new SQLException("DB error")).when(authorDao).addAuthor("New Author", "desc");
+    doThrow(new RuntimeException("DB error")).when(authorDao).addAuthor("New Author", "desc");
     assertThrows(Exception.class, () -> authorService.addAuthor("New Author", "desc"));
   }
 

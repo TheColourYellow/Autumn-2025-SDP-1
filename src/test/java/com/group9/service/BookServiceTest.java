@@ -24,11 +24,11 @@ public class BookServiceTest {
   @Test
   public void testGetAllBooks() {
     // Mock Dao response
-    when(bookDao.getAllBooks()).thenReturn(Collections.emptyList());
+    when(bookDao.getAllBooks("en")).thenReturn(Collections.emptyList());
 
     // BookService should call the Dao method and return the same empty list
     assertEquals(Collections.emptyList(), bookService.getAllBooks());
-    verify(bookDao).getAllBooks();
+    verify(bookDao).getAllBooks("en");
   }
 
   @Test

@@ -40,10 +40,10 @@ class BookDaoTest {
 
     @Test
     void getAllBooks() {
-        List<Book> books = bookDao.getAllBooks();
-        when(bookDao.getAllBooks()).thenReturn(books);
-        verify(bookDao).getAllBooks();
-        assertEquals(books, bookDao.getAllBooks());
+        List<Book> books = bookDao.getAllBooks("en");
+        when(bookDao.getAllBooks("en")).thenReturn(books);
+        verify(bookDao).getAllBooks("en");
+        assertEquals(books, bookDao.getAllBooks("en"));
         //assertTrue(!books.isEmpty());
     }
 

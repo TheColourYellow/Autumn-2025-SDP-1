@@ -52,16 +52,43 @@ public class AuthorDao {
     return authors;
   }
 
-  public List<Author> getAuthorsByBookId(int bookId) throws SQLException {
+  public List<Author> getAuthorsByBookId(int bookId, String languageCode) throws SQLException {
     Connection conn = null;
     List<Author> authors = new ArrayList<>();
+
     try {
       conn = Database.getConnection();
-      String query = "SELECT a.id, a.name, a.description FROM authors a " +
-              "JOIN book_authors ba ON a.id = ba.author_id " +
-              "WHERE ba.book_id = ?";
+
+      boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+
+      String query;
+      if (isEnglish) {
+        query =
+                "SELECT a.id, a.name, a.description " +
+                        "FROM authors a " +
+                        "JOIN book_authors ba ON a.id = ba.author_id " +
+                        "WHERE ba.book_id = ?";
+      } else {
+        query =
+                "SELECT a.id, " +
+                        "       COALESCE(at.translated_name, a.name) AS name, " +
+                        "       COALESCE(at.translated_description, a.description) AS description " +
+                        "FROM authors a " +
+                        "JOIN book_authors ba ON a.id = ba.author_id " +
+                        "LEFT JOIN author_translations at ON at.author_id = a.id " +
+                        "     AND at.language_code = ? " +
+                        "WHERE ba.book_id = ?";
+      }
+
       PreparedStatement ps = conn.prepareStatement(query);
-      ps.setInt(1, bookId);
+
+      if (isEnglish) {
+        ps.setInt(1, bookId);
+      } else {
+        ps.setString(1, languageCode);
+        ps.setInt(2, bookId);
+      }
+
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         Author author = new Author(
@@ -71,6 +98,7 @@ public class AuthorDao {
         );
         authors.add(author);
       }
+
     } catch (SQLException e) {
       throw new SQLException("Error fetching authors for book ID " + bookId, e);
     } finally {
