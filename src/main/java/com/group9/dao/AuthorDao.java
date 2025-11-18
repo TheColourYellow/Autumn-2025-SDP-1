@@ -216,7 +216,7 @@ public class AuthorDao {
         ));
       }
     } catch (SQLException e) {
-      log.log(Level.INFO, "Error fetching author translations: {0}", new Object[]{e.getMessage()});
+      //removed print
       throw new RuntimeException("Error fetching author translations", e);
     }
 
@@ -243,7 +243,7 @@ public class AuthorDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error upserting author translations: ", e);
+      //removed print
       throw new SQLException("Error upserting author translations", e);
     }
   }
