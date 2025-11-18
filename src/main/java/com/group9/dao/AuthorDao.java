@@ -217,7 +217,7 @@ public class AuthorDao {
         ));
       }
     } catch (SQLException e) {
-      log.log(Level.SEVERE, "Error fetching author translations: " + e.getMessage(), e);
+      log.log(Level.INFO, "Error fetching author translations: {0}", new Object[]{e.getMessage()});
       throw new RuntimeException("Error fetching author translations", e);
     }
 
