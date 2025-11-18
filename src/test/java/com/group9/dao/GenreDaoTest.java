@@ -18,11 +18,12 @@ class GenreDaoTest {
 
     private GenreDao genreDao;
     private Genre genre;
+    private static final String TEST_GENRE = "Test Genre";
 
     @BeforeEach
     void setUp() {
         genreDao = mock(GenreDao.class);
-        genre = new Genre(1, "Test Genre", "Test Genre Description");
+        genre = new Genre(1, TEST_GENRE, "Test Genre Description");
     }
 /*
     @Test
@@ -35,8 +36,8 @@ class GenreDaoTest {
 
     @Test
     void addGenre() throws SQLException {
-        genreDao.addGenre("Test Genre", "This is a test genre");
-        verify(genreDao).addGenre("Test Genre", "This is a test genre");
+        genreDao.addGenre(TEST_GENRE, "This is a test genre");
+        verify(genreDao).addGenre(TEST_GENRE, "This is a test genre");
     }
 /*
 //Wanted but not invoked.
@@ -55,10 +56,10 @@ class GenreDaoTest {
 
     @Test
     void deleteGenreTest() throws SQLException {
-        genreDao.deleteGenreByName("Test Genre");
-        when(genreDao.getGenreByName("Test Genre")).thenReturn(null);
-        verify(genreDao).deleteGenreByName("Test Genre");
-        assertNull(genreDao.getGenreByName("Test Genre"));
+        genreDao.deleteGenreByName(TEST_GENRE);
+        when(genreDao.getGenreByName(TEST_GENRE)).thenReturn(null);
+        verify(genreDao).deleteGenreByName(TEST_GENRE);
+        assertNull(genreDao.getGenreByName(TEST_GENRE));
     }
     /*
     //Dummy Test
