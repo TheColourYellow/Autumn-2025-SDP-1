@@ -116,6 +116,7 @@ public class BookService {
   }
 
   public List<BookAttributeTranslation> getTranslations(int bookId) {
+      rb = SessionManager.getResourceBundle();
     try {
       return bookDao.getTranslations(bookId);
     } catch (Exception e) {
