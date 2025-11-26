@@ -388,7 +388,11 @@ public class BookstoreController {
 
         // Update UI texts
         updateUI();
+
+        // Reload books with the new language
+        loadBooks();
     }
+
 
     private void updateUI() {
         sidebarButton.setText(rb.getString("sidebarButtonShow"));

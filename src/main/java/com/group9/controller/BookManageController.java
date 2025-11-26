@@ -169,12 +169,12 @@ public class BookManageController {
         List<BookAttributeTranslation> translations = bookService.getTranslations(book.getId());
         Platform.runLater(() -> {
           for (BookAttributeTranslation translation : translations) {
-            String langCode = translation.languageCode;
+            String langCode = translation.getLanguageCode();
             if (titleFields.containsKey(langCode)) {
-              titleFields.get(langCode).setText(translation.translatedName);
+              titleFields.get(langCode).setText(translation.getTranslatedName());
             }
             if (descFields.containsKey(langCode)) {
-              descFields.get(langCode).setText(translation.translatedDescription);
+              descFields.get(langCode).setText(translation.getTranslatedDescription());
             }
           }
         });

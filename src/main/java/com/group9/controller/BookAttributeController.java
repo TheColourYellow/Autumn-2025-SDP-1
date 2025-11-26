@@ -112,13 +112,13 @@ public class BookAttributeController {
     }
 
     for (BookAttributeTranslation t : translations) {
-      TextField nameField = nameFields.get(t.languageCode);
+      TextField nameField = nameFields.get(t.getLanguageCode());
       if (nameField != null) {
-        nameField.setText(t.translatedName);
+        nameField.setText(t.getTranslatedName());
       }
-      TextField descField = descFields.get(t.languageCode);
+      TextField descField = descFields.get(t.getLanguageCode());
       if (descField != null) {
-        descField.setText(t.translatedDescription);
+        descField.setText(t.getTranslatedDescription());
       }
     }
   }

@@ -227,9 +227,9 @@ public class AuthorDao {
 
       for (BookAttributeTranslation t : translations) {
         ps.setInt(1, authorId);
-        ps.setString(2, t.languageCode);
-        ps.setString(3, t.translatedName);
-        ps.setString(4, t.translatedDescription);
+        ps.setString(2, t.getLanguageCode());
+        ps.setString(3, t.getTranslatedName());
+        ps.setString(4, t.getTranslatedDescription());
         ps.addBatch();
       }
 
