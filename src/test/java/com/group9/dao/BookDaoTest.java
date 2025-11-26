@@ -5,6 +5,7 @@ import com.group9.service.BookService;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import com.group9.util.MockData;
 
@@ -39,12 +40,15 @@ class BookDaoTest {
     }*/
 
     @Test
-    void getAllBooks() {
+    void getAllBooks() throws SQLException {
+        // stub before calling
+        List<Book> expected = Arrays.asList(book);
+        when(bookDao.getAllBooks("en")).thenReturn(expected);
+
         List<Book> books = bookDao.getAllBooks("en");
-        when(bookDao.getAllBooks("en")).thenReturn(books);
+
         verify(bookDao).getAllBooks("en");
-        assertEquals(books, bookDao.getAllBooks("en"));
-        //assertTrue(!books.isEmpty());
+        assertEquals(expected, books);
     }
 
     //Wanted but not invoked.

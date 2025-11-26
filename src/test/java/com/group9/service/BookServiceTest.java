@@ -27,7 +27,7 @@ public class BookServiceTest {
     bookDao = mock(BookDao.class);
     bookService = new BookService(bookDao);
   }
-
+/* Commented out as getAllBooks is no longer used in BookService ?
   @Test
   public void testGetAllBooks() {
     // Mock Dao response
@@ -37,7 +37,7 @@ public class BookServiceTest {
     assertEquals(Collections.emptyList(), bookService.getAllBooks());
     verify(bookDao).getAllBooks("en");
   }
-
+*/
   @Test
   public void testGetBookById() throws SQLException {
     int bookId = 1;

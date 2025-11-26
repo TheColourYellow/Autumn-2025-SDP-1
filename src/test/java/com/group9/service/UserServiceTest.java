@@ -94,13 +94,13 @@ public class UserServiceTest {
 
   // Tests for validateUser through registerUser
   @Test
-  public void validateUser_EmptyUsername_ThrowsException() {
+  public void validateUserEmptyUsernameThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
             userService.registerUser("", PASSWORD, EMAIL));
   }
 
   @Test
-  public void validateUser_ShortPassword_ThrowsException() {
+  public void validateUserShortPasswordThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
             userService.registerUser(TEST_USER, "123", EMAIL));
     assertThrows(IllegalArgumentException.class, () ->
@@ -108,7 +108,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void validateUser_InvalidEmail_ThrowsException() {
+  public void validateUserInvalidEmailThrowsException() {
     assertThrows(IllegalArgumentException.class, () ->
             userService.registerUser(TEST_USER, PASSWORD, "invalidEmail"));
   }
