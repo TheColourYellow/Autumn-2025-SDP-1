@@ -42,18 +42,18 @@ public class BookManageController {
   private AnchorPane bookmanageAnchor;
 
   @FXML
-  private TextField titleTextField_en;
+  private TextField titleTextFieldEn;
   @FXML
-  private TextField titleTextField_ja;
+  private TextField titleTextFieldJa;
   @FXML
-  private TextField titleTextField_ar;
+  private TextField titleTextFieldAr;
 
   @FXML
-  private TextArea descTextArea_en;
+  private TextArea descTextAreaEn;
   @FXML
-  private TextArea descTextArea_ja;
+  private TextArea descTextAreaJa;
   @FXML
-  private TextArea descTextArea_ar;
+  private TextArea descTextAreaAr;
 
   @FXML
   private TextField isbnTextField;
@@ -129,13 +129,13 @@ public class BookManageController {
     authorListView.setCellFactory(CheckBoxListCell.forListView(authorSelections::get));
 
     titleFields = new HashMap<>();
-    titleFields.put("en", titleTextField_en);
-    titleFields.put("ja", titleTextField_ja);
-    titleFields.put("ar", titleTextField_ar);
+    titleFields.put("en", titleTextFieldEn);
+    titleFields.put("ja", titleTextFieldJa);
+    titleFields.put("ar", titleTextFieldAr);
     descFields = new HashMap<>();
-    descFields.put("en", descTextArea_en);
-    descFields.put("ja", descTextArea_ja);
-    descFields.put("ar", descTextArea_ar);
+    descFields.put("en", descTextAreaEn);
+    descFields.put("ja", descTextAreaJa);
+    descFields.put("ar", descTextAreaAr);
 
     loadData();
   }
@@ -145,8 +145,8 @@ public class BookManageController {
 
     this.book = book;
 
-    titleTextField_en.setText(book.getTitle());
-    descTextArea_en.setText(book.getDescription());
+    titleTextFieldEn.setText(book.getTitle());
+    descTextAreaEn.setText(book.getDescription());
 
     isbnTextField.setText(book.getIsbn());
     yearTextField.setText(String.valueOf(book.getYear()));
@@ -190,14 +190,14 @@ public class BookManageController {
 
   @FXML
   private void handleSave() {
-    String title = titleTextField_en.getText().trim();
+    String title = titleTextFieldEn.getText().trim();
     String isbn = isbnTextField.getText().trim();
     String yearText = yearTextField.getText().trim();
     String priceText = priceTextField.getText().trim();
-    String desc = descTextArea_en.getText().trim();
+    String desc = descTextAreaEn.getText().trim();
 
     // input validation
-    if (titleTextField_en.getText().trim().isEmpty()) {
+    if (titleTextFieldEn.getText().trim().isEmpty()) {
       showError(rb.getString(VALID_ERROR), rb.getString("bookTitleNull"));
       return;
     }

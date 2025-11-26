@@ -17,8 +17,8 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="titleTextField_en" layoutX="73.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" />
-                        <TextArea fx:id="descTextArea_en" layoutX="37.0" layoutY="291.0" prefHeight="144.0" prefWidth="234.0" />
+                        <TextField fx:id="titleTextFieldEn" layoutX="73.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" />
+                        <TextArea fx:id="descTextAreaEn" layoutX="37.0" layoutY="291.0" prefHeight="144.0" prefWidth="234.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -27,8 +27,8 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="titleTextField_ja" layoutX="73.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" />
-                        <TextArea fx:id="descTextArea_ja" layoutX="37.0" layoutY="291.0" prefHeight="144.0" prefWidth="234.0" />
+                        <TextField fx:id="titleTextFieldJa" layoutX="73.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" />
+                        <TextArea fx:id="descTextAreaJa" layoutX="37.0" layoutY="291.0" prefHeight="144.0" prefWidth="234.0" />
                      </children>
                   </AnchorPane>
                </content>
@@ -37,8 +37,8 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="titleTextField_ar" layoutX="73.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" />
-                        <TextArea fx:id="descTextArea_ar" layoutX="37.0" layoutY="291.0" prefHeight="144.0" prefWidth="234.0" />
+                        <TextField fx:id="titleTextFieldAr" layoutX="73.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" />
+                        <TextArea fx:id="descTextAreaAr" layoutX="37.0" layoutY="291.0" prefHeight="144.0" prefWidth="234.0" />
                      </children>
                   </AnchorPane>
                </content>
