@@ -14,8 +14,8 @@
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <TextField fx:id="nameTextField_en" layoutX="26.0" layoutY="31.0" />
-                     <TextField fx:id="descTextField_en" layoutX="24.0" layoutY="86.0" />
+                     <TextField fx:id="nameTextFieldEn" layoutX="26.0" layoutY="31.0" />
+                     <TextField fx:id="descTextFieldEn" layoutX="24.0" layoutY="86.0" />
                   </children>
                </AnchorPane>
             </content>
@@ -24,8 +24,8 @@
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <TextField fx:id="nameTextField_ja" layoutX="26.0" layoutY="31.0" />
-                     <TextField fx:id="descTextField_ja" layoutX="24.0" layoutY="86.0" />
+                     <TextField fx:id="nameTextFieldJa" layoutX="26.0" layoutY="31.0" />
+                     <TextField fx:id="descTextFieldJa" layoutX="24.0" layoutY="86.0" />
                   </children>
                </AnchorPane>
             </content>
@@ -34,8 +34,8 @@
             <content>
                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <TextField fx:id="nameTextField_ar" layoutX="26.0" layoutY="31.0" />
-                     <TextField fx:id="descTextField_ar" layoutX="24.0" layoutY="86.0" />
+                     <TextField fx:id="nameTextFieldAr" layoutX="26.0" layoutY="31.0" />
+                     <TextField fx:id="descTextFieldAr" layoutX="24.0" layoutY="86.0" />
                   </children>
                </AnchorPane>
             </content>

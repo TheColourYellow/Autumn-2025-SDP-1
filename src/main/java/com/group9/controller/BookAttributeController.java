@@ -34,13 +34,13 @@ public class BookAttributeController {
 
   @FXML private AnchorPane bookattributeAnchor;
 
-  @FXML private TextField nameTextField_en;
-  @FXML private TextField nameTextField_ja;
-  @FXML private TextField nameTextField_ar;
+  @FXML private TextField nameTextFieldEn;
+  @FXML private TextField nameTextFieldJa;
+  @FXML private TextField nameTextFieldAr;
 
-  @FXML private TextField descTextField_en;
-  @FXML private TextField descTextField_ja;
-  @FXML private TextField descTextField_ar;
+  @FXML private TextField descTextFieldEn;
+  @FXML private TextField descTextFieldJa;
+  @FXML private TextField descTextFieldAr;
 
   @FXML
   private Button addBtn;
@@ -64,8 +64,8 @@ public class BookAttributeController {
 
   public void setBookAttribute(BookAttribute bookAttribute) {
     this.bookAttribute = bookAttribute;
-    nameTextField_en.setText(bookAttribute.getName());
-    descTextField_en.setText(bookAttribute.getDescription());
+    nameTextFieldEn.setText(bookAttribute.getName());
+    descTextFieldEn.setText(bookAttribute.getDescription());
 
     if (bookAttribute.getId() != -1) {
       deleteBtn.setVisible(true);
@@ -88,19 +88,19 @@ public class BookAttributeController {
     deleteBtn.setText(rb.getString("deleteButton"));
 
     nameFields = new HashMap<>();
-    nameFields.put("en", nameTextField_en);
-    nameFields.put("ja", nameTextField_ja);
-    nameFields.put("ar", nameTextField_ar);
+    nameFields.put("en", nameTextFieldEn);
+    nameFields.put("ja", nameTextFieldJa);
+    nameFields.put("ar", nameTextFieldAr);
     descFields = new HashMap<>();
-    descFields.put("en", descTextField_en);
-    descFields.put("ja", descTextField_ja);
-    descFields.put("ar", descTextField_ar);
+    descFields.put("en", descTextFieldEn);
+    descFields.put("ja", descTextFieldJa);
+    descFields.put("ar", descTextFieldAr);
   }
 
   private void loadTranslations() {
     if (bookAttribute == null) return;
 
-    List<BookAttributeTranslation> translations = new ArrayList<>();
+    List<BookAttributeTranslation> translations;
 
     if (bookAttribute instanceof Genre) {
       translations = genreService.getTranslationsForGenre(bookAttribute.getId());
@@ -130,13 +130,13 @@ public class BookAttributeController {
   @FXML
   private void handleSave() {
     // Make sure the name field for the default language (English) is not empty
-    if (nameTextField_en.getText().trim().isEmpty()) {
+    if (nameTextFieldEn.getText().trim().isEmpty()) {
       showError(rb.getString("validationError"), rb.getString("nameEmptyError"));
       return;
     }
 
-    bookAttribute.setName(nameTextField_en.getText().trim());
-    bookAttribute.setDescription(descTextField_en.getText().trim());
+    bookAttribute.setName(nameTextFieldEn.getText().trim());
+    bookAttribute.setDescription(descTextFieldEn.getText().trim());
 
     // Gather translations
     List<BookAttributeTranslation> translationsToSave = new ArrayList<>();
