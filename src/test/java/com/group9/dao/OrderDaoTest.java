@@ -13,7 +13,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
 class OrderDaoTest {
     private static OrderDao orderDao;
     private static User user;
@@ -37,27 +36,27 @@ class OrderDaoTest {
 
     @Test
     void findOrdersByUserId() {
-        List<Order> orders = orderDao.findOrdersByUserId(user.getId());
-        when(orderDao.findOrdersByUserId(user.getId())).thenReturn(orders);
-        verify(orderDao).findOrdersByUserId(user.getId());
-        assertEquals(orders, orderDao.findOrdersByUserId(user.getId()));
+        // Act
+        List<Order> foundOrders = orderDao.findOrdersByUserId(user.getId());
+
+        // Assert
+        assertNotNull(foundOrders);
+        assertFalse(foundOrders.isEmpty());
     }
 
+
     @Test
-    void getOrderItemsByOrderId() {
+    void getOrderItemsByOrderId() throws SQLException {
+        // Arrange
         orders.add(order);
         when(orderDao.getOrderItemsByOrderId(order.getId())).thenReturn(orderItems);
-        List<OrderItem> orderItems = orderDao.getOrderItemsByOrderId(order.getId());
+
+        // Act
+        List<OrderItem> items = orderDao.getOrderItemsByOrderId(order.getId()); // renamed variable
+
+        // Assert
         verify(orderDao).getOrderItemsByOrderId(order.getId());
-        assertTrue(!orderItems.isEmpty());
+        assertFalse(items.isEmpty()); // cleaner than !items.isEmpty()
     }
-    /*
-    //Faulty Test
-    @Test
-    void insertOrder() throws SQLException {
-        when(orderDao.insertOrder(order)).thenReturn(order.getId());
-        verify(orderDao).insertOrder(order);
-        assertTrue(orders.size() > 0);
-    }
-    */
+
 }
