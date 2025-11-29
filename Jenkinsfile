@@ -5,6 +5,12 @@ pipeline {
     }
     environment {
         PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
+
+        SONARQUBE_SERVER = 'SonarQubeServer'
+        SONAR_TOKEN = 'squ_ce4bae748802340e4d224893eafa16ba7e382c46'
+
+        JMETER_HOME = 'C:\\Program Files\\tools\\apache-jmeter-5.6.3'
+
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
         DOCKERHUB_REPO = 'bookstore'
         DOCKER_IMAGE = 'sdp1-project'
@@ -50,6 +56,26 @@ pipeline {
                 jacoco()
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') {
+                    bat """
+                        ${tool 'SonarScanner'}\\bin\\sonar-scanner ^
+                        -Dsonar.projectKey=devops-demo ^
+                        -Dsonar.sources=src ^
+                        -Dsonar.projectName=DevOps-Demo ^
+                        -Dsonar.host.url=http://localhost:9000 ^
+                        -Dsonar.login=${env.SONAR_TOKEN} ^
+                        -Dsonar.java.binaries=target/classes
+                    """
+                }
+            }
+        }
+        stage('Non-Functional Test') {
+            steps {
+                bat 'jmeter -n -t tests/performance/demo.jmx -l result.jtl'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -65,6 +91,12 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'result.jtl', allowEmptyArchive: true
+            perfReport sourceDataFiles: 'result.jtl'
         }
     }
 }
