@@ -9,6 +9,7 @@ pipeline {
         SONARQUBE_SERVER = 'SonarQubeServer'
         SONAR_TOKEN = 'squ_ce4bae748802340e4d224893eafa16ba7e382c46'
 
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
         JMETER_HOME = 'C:\\Program Files\\tools\\apache-jmeter-5.6.3'
 
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
