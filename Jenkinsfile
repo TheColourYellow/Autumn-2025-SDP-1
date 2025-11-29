@@ -4,7 +4,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
+        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${JMETER_HOME}\\bin;${env.PATH}"
 
         SONARQUBE_SERVER = 'SonarQubeServer'
         SONAR_TOKEN = 'squ_ce4bae748802340e4d224893eafa16ba7e382c46'
