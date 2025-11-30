@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -152,7 +153,7 @@ public class ShoppingCartController {
             stage.setScene(scene);
             stage.setTitle(rb.getString("checkoutLabel"));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "Open Checkout Window", e);
         }
     }
 }

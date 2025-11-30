@@ -83,7 +83,7 @@ public class ProfileController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "Open Shopping Cart - Profile", e);
         }
     }
 

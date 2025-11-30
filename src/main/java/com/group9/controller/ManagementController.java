@@ -143,7 +143,7 @@ public class ManagementController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "Open Shopping Cart - Management", e);
         }
     }
 
@@ -223,7 +223,7 @@ public class ManagementController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "BookAttribute Window", e);
         }
     }
 
@@ -246,7 +246,7 @@ public class ManagementController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "Book Manage Window", e);
         }
     }
 
