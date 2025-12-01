@@ -29,6 +29,7 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -312,7 +313,8 @@ public class BookstoreController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "Shopping Cart", e);
+
         }
     }
 

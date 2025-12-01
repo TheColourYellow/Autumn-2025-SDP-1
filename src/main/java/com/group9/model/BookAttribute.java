@@ -1,9 +1,17 @@
 package com.group9.model;
 
+import com.group9.controller.ShoppingCartController;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public abstract class BookAttribute {
   private int id;
   private String name;
   private String description;
+
+  private static final Logger logger = Logger.getLogger(BookAttribute.class.getName());
+
 
   protected BookAttribute(int id, String name, String description) {
     this.id = id;
@@ -17,7 +25,7 @@ public abstract class BookAttribute {
                  .getConstructor(int.class, String.class, String.class)
                  .newInstance(this.id, this.name, this.description);
     } catch (Exception e) {
-      e.printStackTrace();
+        logger.log(Level.INFO, "Copy BookAttribute", e);
       return null;
     }
   }

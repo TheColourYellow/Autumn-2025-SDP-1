@@ -1,5 +1,6 @@
 package com.group9.controller;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.group9.dao.UserDao;
 import com.group9.model.User;
@@ -124,7 +125,7 @@ public class LoginController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "Open Shopping Cart - Log in", e);
         }
     }
 

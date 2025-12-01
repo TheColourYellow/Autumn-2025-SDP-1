@@ -206,7 +206,7 @@ public class CheckoutController {
             stage.sizeToScene();
             success = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "Place Order", e);
         }
 
         if (success && cart != null) {
@@ -233,7 +233,7 @@ public class CheckoutController {
             stage.setScene(new javafx.scene.Scene(cartRoot));
             stage.setTitle("Shopping Cart");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, "Return to cart", e);
         }
     }
 }

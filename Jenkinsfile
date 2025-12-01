@@ -4,11 +4,12 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
+        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${JMETER_HOME}\\bin;${env.PATH}"
 
         SONARQUBE_SERVER = 'SonarQubeServer'
         SONAR_TOKEN = 'squ_ce4bae748802340e4d224893eafa16ba7e382c46'
 
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
         JMETER_HOME = 'C:\\Program Files\\tools\\apache-jmeter-5.6.3'
 
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
@@ -61,9 +62,9 @@ pipeline {
                 withSonarQubeEnv('SonarQubeServer') {
                     bat """
                         ${tool 'SonarScanner'}\\bin\\sonar-scanner ^
-                        -Dsonar.projectKey=devops-demo ^
+                        -Dsonar.projectKey=bookstore ^
                         -Dsonar.sources=src ^
-                        -Dsonar.projectName=DevOps-Demo ^
+                        -Dsonar.projectName=BookstoreApp ^
                         -Dsonar.host.url=http://localhost:9000 ^
                         -Dsonar.login=${env.SONAR_TOKEN} ^
                         -Dsonar.java.binaries=target/classes
