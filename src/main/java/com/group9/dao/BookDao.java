@@ -1,5 +1,6 @@
 package com.group9.dao;
 
+import com.group9.controller.BookstoreController;
 import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.BookAttributeTranslation;
@@ -9,9 +10,12 @@ import com.group9.util.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class BookDao {
+
+    private static final Logger logger = Logger.getLogger(BookDao.class.getName());
 
   GenreDao genreDao = new GenreDao();
   AuthorDao authorDao = new AuthorDao();
@@ -246,7 +250,7 @@ public class BookDao {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException e) {
-                    System.err.println("Error closing connection: " + e.getMessage());
+                    logger.warning("Error closing connection: " + e.getMessage());
                 }
             }
         }
