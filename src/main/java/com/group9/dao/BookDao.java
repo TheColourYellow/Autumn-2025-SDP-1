@@ -223,7 +223,7 @@ public class BookDao {
             for (Author author : book.getAuthors()) {
                 linkBookAuthor(conn, book.getId(), author.getId());
             }
-            
+
             for (Genre genre : book.getGenres()) {
                 linkBookGenre(conn, book.getId(), genre.getId());
             }
@@ -245,7 +245,8 @@ public class BookDao {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                } catch (SQLException ignored) {
+                } catch (SQLException e) {
+                    System.err.println("Error closing connection: " + e.getMessage());
                 }
             }
         }
