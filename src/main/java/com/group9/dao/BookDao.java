@@ -1,5 +1,6 @@
 package com.group9.dao;
 
+import com.group9.controller.BookstoreController;
 import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.BookAttributeTranslation;
@@ -9,9 +10,12 @@ import com.group9.util.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class BookDao {
+
+    private static final Logger logger = Logger.getLogger(BookDao.class.getName());
 
   GenreDao genreDao = new GenreDao();
   AuthorDao authorDao = new AuthorDao();
@@ -188,61 +192,70 @@ public class BookDao {
 
 
     public void updateBook(Book book) {
-    Connection conn = null;
-    try {
-      conn = Database.getConnection();
-      conn.setAutoCommit(false);
-
-      // Update book details
-      String updateBookSql = "UPDATE books SET title = ?, isbn = ?, published_year = ?, price = ?, description = ? WHERE id = ?";
-      PreparedStatement stmt = conn.prepareStatement(updateBookSql);
-      stmt.setString(1, book.getTitle());
-      stmt.setString(2, book.getIsbn());
-      stmt.setInt(3, book.getYear());
-      stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
-      stmt.setString(5, book.getDescription());
-      stmt.setInt(6, book.getId());
-      stmt.executeUpdate();
-
-      // Update authors and genres associations
-      // Clear existing associations
-      String deleteAuthorsSql = "DELETE FROM book_authors WHERE book_id = ?";
-      PreparedStatement deleteAuthorsStmt = conn.prepareStatement(deleteAuthorsSql);
-      deleteAuthorsStmt.setInt(1, book.getId());
-      deleteAuthorsStmt.executeUpdate();
-
-      String deleteGenresSql = "DELETE FROM book_genres WHERE book_id = ?";
-      PreparedStatement deleteGenresStmt = conn.prepareStatement(deleteGenresSql);
-      deleteGenresStmt.setInt(1, book.getId());
-      deleteGenresStmt.executeUpdate();
-
-      // Re-establish associations
-      for (Author author : book.getAuthors()) {
-        linkBookAuthor(conn, book.getId(), author.getId()); // Use existing connection
-      }
-      for (Genre genre : book.getGenres()) {
-        linkBookGenre(conn, book.getId(), genre.getId()); // Use existing connection
-      }
-
-      conn.commit();
-    } catch (SQLException e) {
-      if (conn != null) {
+        Connection conn = null;
         try {
-          conn.rollback();
-        } catch (SQLException ex) {
-          throw new RuntimeException("Error rolling back transaction", ex);
+            conn = Database.getConnection();
+            conn.setAutoCommit(false);
+
+            // Update book details
+            String updateBookSql =
+                    "UPDATE books SET title = ?, isbn = ?, published_year = ?, price = ?, description = ? WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(updateBookSql)) {
+                stmt.setString(1, book.getTitle());
+                stmt.setString(2, book.getIsbn());
+                stmt.setInt(3, book.getYear());
+                stmt.setBigDecimal(4, java.math.BigDecimal.valueOf(book.getPrice()));
+                stmt.setString(5, book.getDescription());
+                stmt.setInt(6, book.getId());
+                stmt.executeUpdate();
+            }
+
+            // Delete existing authors
+            String deleteAuthorsSql = "DELETE FROM book_authors WHERE book_id = ?";
+            try (PreparedStatement deleteAuthorsStmt = conn.prepareStatement(deleteAuthorsSql)) {
+                deleteAuthorsStmt.setInt(1, book.getId());
+                deleteAuthorsStmt.executeUpdate();
+            }
+
+            // Delete existing genres
+            String deleteGenresSql = "DELETE FROM book_genres WHERE book_id = ?";
+            try (PreparedStatement deleteGenresStmt = conn.prepareStatement(deleteGenresSql)) {
+                deleteGenresStmt.setInt(1, book.getId());
+                deleteGenresStmt.executeUpdate();
+            }
+
+            for (Author author : book.getAuthors()) {
+                linkBookAuthor(conn, book.getId(), author.getId());
+            }
+
+            for (Genre genre : book.getGenres()) {
+                linkBookGenre(conn, book.getId(), genre.getId());
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException("Error rolling back transaction", ex);
+                }
+            }
+            throw new RuntimeException("Error updating book", e);
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.warning("Error closing connection: " + e.getMessage());
+                }
+            }
         }
-      }
-      throw new RuntimeException("Error updating book", e);
-    } finally {
-      if (conn != null) {
-        try {
-          conn.setAutoCommit(true);
-          conn.close();
-        } catch (SQLException ignored) {}
-      }
     }
-  }
+
 
     public void inActivateBook(Integer id) throws SQLException {
         Connection conn = null;
