@@ -2,6 +2,7 @@ package com.group9.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group9.controller.ShoppingCartController;
 import com.group9.dao.BookDao;
 import com.group9.model.Author;
 import com.group9.model.Book;
@@ -11,8 +12,11 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MockData {
+    private static final Logger log = Logger.getLogger(MockData.class.getName());
   public static void main(String[] args) throws Exception {
     BookDao bookDao = new BookDao();
     InputStream in = MockData.class.getClassLoader().getResourceAsStream("mockData.json");
@@ -25,7 +29,7 @@ public class MockData {
       for (JsonNode node : booksNode) {
         Book book = parseBook(node);
         bookDao.addFullBookGenreAuthor(book);
-        System.out.println("Added book: " + book.getTitle());
+        log.log(Level.INFO, "Added book: {0}", book.getTitle());
       }
     }
   }
