@@ -20,6 +20,10 @@ public class Database {
   private static final String USER = System.getenv().getOrDefault("DATABASE_USER", DEFAULT_USER);
   private static final String PASSWORD = System.getenv().getOrDefault("DATABASE_PASSWORD", DEFAULT_PASSWORD);
 
+    // Private constructor prevents instantiation
+    private Database() {
+        throw new UnsupportedOperationException("Database class");
+    }
   public static Connection getConnection() throws SQLException {
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
