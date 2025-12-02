@@ -436,7 +436,7 @@ public class BookDao {
         ));
       }
     } catch (SQLException e) {
-      System.err.println("Error fetching book translations: " + e.getMessage());
+      logger.warning("Error fetching book translations: " + e.getMessage());
       throw new IllegalArgumentException("Error fetching book translations");
     }
 
@@ -463,8 +463,8 @@ public class BookDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      System.err.println("Error upserting book translations: " + e.getMessage());
-      throw new IllegalArgumentException("Error upserting book translations");
+        logger.warning("Error upserting book translations: " + e.getMessage());
+        throw new IllegalArgumentException("Error upserting book translations");
     }
   }
 }
