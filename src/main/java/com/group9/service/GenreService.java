@@ -26,7 +26,7 @@ public class GenreService {
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingGenres");
       System.err.println(message + " " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -42,7 +42,7 @@ public class GenreService {
     } catch (Exception e) {
       String message = rb.getString("errorAddingGenre");
       System.out.println(message + " " + e.getMessage());
-      throw new Exception(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -76,7 +76,7 @@ public class GenreService {
       String message = rb.getString("errorCheckingGenre");
       String message2 = rb.getString("errorUpdatingGenre");
       System.err.println(message + " " + e.getMessage());
-      throw new RuntimeException(message2);
+      throw new IllegalArgumentException(message2);
     }
 
     try {
@@ -84,7 +84,7 @@ public class GenreService {
     } catch (Exception e) {
       String message = rb.getString("errorUpdatingGenre");
       System.out.println(message + " " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -97,13 +97,13 @@ public class GenreService {
       try {
         genreId = addGenre(genre.getName(), genre.getDescription());
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new IllegalArgumentException(e);
       }
     } else {
       try {
         updateGenre(genre);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new IllegalArgumentException(e);
       }
     }
 
@@ -113,7 +113,7 @@ public class GenreService {
     } catch (Exception e) {
       String message = rb.getString("errorSavingTranslations");
       System.err.println(message + " " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -129,7 +129,7 @@ public class GenreService {
     } catch (Exception e) {
       String message = rb.getString("errorDeletingGenre");
       System.out.println(message + " " + e.getMessage());
-      throw new Exception(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -139,7 +139,7 @@ public class GenreService {
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingTranslations");
       System.out.println(message + " " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 }

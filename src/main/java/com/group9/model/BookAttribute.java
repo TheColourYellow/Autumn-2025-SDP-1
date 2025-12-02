@@ -1,7 +1,5 @@
 package com.group9.model;
 
-import com.group9.controller.ShoppingCartController;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -40,7 +40,7 @@ public class AuthorService {
         } catch (Exception e) {
             String message = rb.getString("errorAddingAuthor");
             System.out.println(message + ": " + e.getMessage());
-            throw new Exception(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -73,7 +73,7 @@ public class AuthorService {
             String message = rb.getString("errorCheckingExistingAuthor");
             String message2 = rb.getString("errorUpdatingAuthor");
             System.err.println(message + ": " + e.getMessage());
-            throw new RuntimeException(message2);
+            throw new IllegalArgumentException(message2);
         }
 
         // Proceed to update
@@ -82,7 +82,7 @@ public class AuthorService {
         } catch (Exception e) {
             String message = rb.getString("errorUpdatingAuthor");
             System.err.println(message + ": " + e.getMessage());
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -98,7 +98,7 @@ public class AuthorService {
         } catch (SQLException e) {
             String message = rb.getString("errorDeletingAuthor");
             System.out.println(message + ": " + e.getMessage());
-            throw new Exception(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -113,13 +113,13 @@ public class AuthorService {
             } catch (Exception e) {
                 String message = rb.getString("errorAddingAuthor");
                 System.out.println(message + ": " + e.getMessage());
-                throw new RuntimeException(message);
+                throw new IllegalArgumentException(message);
             }
         } else {
             try {
                 updateAuthor(author);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }
 
@@ -129,7 +129,7 @@ public class AuthorService {
         } catch (Exception e) {
             String message = rb.getString("errorSavingTranslations");
             System.err.println(message + ": " + e.getMessage());
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -139,7 +139,7 @@ public class AuthorService {
         } catch (Exception e) {
             String message = rb.getString("errorRetrievingTranslations");
             System.err.println(message + ": " + e.getMessage());
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 }

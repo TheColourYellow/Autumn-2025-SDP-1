@@ -24,7 +24,7 @@ public class BookService {
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingBooks");
       System.err.println(message + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -74,7 +74,7 @@ public class BookService {
     } catch (Exception e) {
       String message = rb.getString("errorUpdatingBook");
       System.out.println(message + ": " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -95,7 +95,7 @@ public class BookService {
     } catch (Exception e) {
       String message = rb.getString("errorSavingTranslations");
       System.err.println(message + ": " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -111,7 +111,7 @@ public class BookService {
     } catch (Exception e) {
       String message = rb.getString("errorDeletingBook");
       System.out.println(message + ": " + e.getMessage());
-      throw new Exception(message);
+      throw new IllegalArgumentException(message);
     }
   }
 
@@ -122,7 +122,7 @@ public class BookService {
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingTranslations");
       System.err.println(message + ": " + e.getMessage());
-      throw new RuntimeException(message);
+      throw new IllegalArgumentException(message);
     }
   }
 

@@ -1,6 +1,5 @@
 package com.group9.dao;
 
-import com.group9.model.Genre;
 import com.group9.model.User;
 import com.group9.util.Database;
 
