@@ -6,6 +6,7 @@ import com.group9.model.BookAttributeTranslation;
 import com.group9.util.SessionManager;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ public class AuthorService {
         } catch (Exception e) {
             String message = rb.getString("errorRetrievingAuthors");
             log.log(Level.SEVERE, message, e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
