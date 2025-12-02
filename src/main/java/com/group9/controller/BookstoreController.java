@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static com.group9.util.PopupUtils.showConfirmation;
 import static com.group9.util.PopupUtils.showError;
 
 public class BookstoreController {
@@ -243,6 +244,7 @@ public class BookstoreController {
                                 Book book = getTableView().getItems().get(getIndex());
                                 cart.add(book);
                                 logger.info("Clicked Add to Cart for: " + book.getTitle());
+                                showConfirmation(rb.getString("confirmation"), rb.getString("book") + book.getTitle() + rb.getString("addedToCart"));
                             });
 
                             btn.setText(rb.getString("addToCartButton"));

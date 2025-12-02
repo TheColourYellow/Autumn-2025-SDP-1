@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static com.group9.util.PopupUtils.showError;
 import static com.group9.util.SessionManager.getLanguage;
 
 public class CheckoutController {
@@ -161,18 +162,21 @@ public class CheckoutController {
 
         if (selectedCard == null) {
             log.info("No card selected!");
+            showError(rb.getString("error"), rb.getString("noCardSelected"));
             return;
         }
 
         String cardNumber = cardNumberField.getText().trim();
         if (cardNumber.isEmpty()) {
             log.info("Card number cannot be empty!");
+            showError(rb.getString("error"), rb.getString("cardNumberEmpty"));
             return;
         }
 
         cardNumber = cardNumber.replaceAll("\\s+", "");
         if (!cardNumber.matches("\\d{16}")) {
             log.info("Card number must be 16 digits!");
+            showError(rb.getString("error"), rb.getString("invalidCardNumber"));
             return;
         }
 
