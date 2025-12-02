@@ -22,7 +22,7 @@ public class UserDao {
         return null; // User not found
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Error retrieving user by username: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Error retrieving user by username: " + e.getMessage(), e);
     }
   }
 
@@ -38,7 +38,7 @@ public class UserDao {
         return null; // User not found
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Error retrieving user by email: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Error retrieving user by email: " + e.getMessage(), e);
     }
   }
 
@@ -70,7 +70,7 @@ public class UserDao {
         throw new SQLException("Failed to retrieve generated user ID");
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Error adding user: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Error adding user: " + e.getMessage(), e);
     }
   }
 
@@ -82,7 +82,7 @@ public class UserDao {
       stmt.setInt(1, id);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw new RuntimeException("Error deleting user: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Error deleting user: " + e.getMessage(), e);
     }
   }
 
@@ -94,7 +94,7 @@ public class UserDao {
       int rowsAffected = stmt.executeUpdate();
       return rowsAffected > 0;
     } catch (SQLException e) {
-      throw new RuntimeException("Error adding admin user: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Error adding admin user: " + e.getMessage(), e);
     }
   }
   //Function added 15.11. for database localisation
@@ -110,7 +110,7 @@ public class UserDao {
         return null; // User not found
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Error retrieving user by username: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Error retrieving user by username: " + e.getMessage(), e);
     }
   }
   //Function added 15.11. for database localisation
@@ -123,7 +123,7 @@ public class UserDao {
       ps.executeUpdate();
     } catch (SQLException e) {
       System.out.println("Error updating genre: " + e.getMessage());
-      throw new RuntimeException("Error updating genre", e);
+      throw new IllegalArgumentException("Error updating genre", e);
     }
   }
 }

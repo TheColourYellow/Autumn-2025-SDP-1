@@ -101,7 +101,7 @@ public class BookDao {
 
       return books;
     } catch (SQLException e) {
-      throw new RuntimeException("Error searching books", e);
+      throw new IllegalArgumentException("Error searching books", e);
     }
   }
 
@@ -239,10 +239,10 @@ public class BookDao {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException("Error rolling back transaction", ex);
+                    throw new IllegalArgumentException("Error rolling back transaction", ex);
                 }
             }
-            throw new RuntimeException("Error updating book", e);
+            throw new IllegalArgumentException("Error updating book", e);
 
         } finally {
             if (conn != null) {
@@ -437,7 +437,7 @@ public class BookDao {
       }
     } catch (SQLException e) {
       System.err.println("Error fetching book translations: " + e.getMessage());
-      throw new RuntimeException("Error fetching book translations");
+      throw new IllegalArgumentException("Error fetching book translations");
     }
 
     return translations;
@@ -464,7 +464,7 @@ public class BookDao {
       ps.executeBatch();
     } catch (SQLException e) {
       System.err.println("Error upserting book translations: " + e.getMessage());
-      throw new RuntimeException("Error upserting book translations");
+      throw new IllegalArgumentException("Error upserting book translations");
     }
   }
 }

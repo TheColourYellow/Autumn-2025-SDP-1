@@ -29,7 +29,7 @@ public class OrderDao {
 
                 return orders;
         } catch (Exception e) {
-            throw new RuntimeException("Error retrieving orders by user ID: " + userId, e);
+            throw new IllegalArgumentException("Error retrieving orders by user ID: " + userId, e);
         }
     }
 
@@ -55,12 +55,12 @@ public class OrderDao {
                     );
                     items.add(item);
                 } else {
-                    throw new RuntimeException("Book with ID " + rs.getInt("book_id") + " not found for order item ID " + rs.getInt("id"));
+                    throw new IllegalArgumentException("Book with ID " + rs.getInt("book_id") + " not found for order item ID " + rs.getInt("id"));
                 }
             }
             return items;
         } catch (SQLException e) {
-            throw new RuntimeException("Error retrieving order items by order ID: " + orderId, e);
+            throw new IllegalArgumentException("Error retrieving order items by order ID: " + orderId, e);
         }
     }
 

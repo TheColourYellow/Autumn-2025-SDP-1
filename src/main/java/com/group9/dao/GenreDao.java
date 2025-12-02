@@ -153,12 +153,12 @@ public class GenreDao {
         if (keys.next()) {
           return keys.getInt(1);
         } else {
-          throw new RuntimeException("Creating genre failed, no ID obtained.");
+          throw new IllegalArgumentException("Creating genre failed, no ID obtained.");
         }
       }
     } catch (SQLException e) {
       System.err.println("Error adding genre: " + e.getMessage());
-      throw new RuntimeException("Error adding genre", e);
+      throw new IllegalArgumentException("Error adding genre", e);
     }
   }
 
@@ -172,7 +172,7 @@ public class GenreDao {
       ps.executeUpdate();
     } catch (SQLException e) {
       System.out.println("Error updating genre: " + e.getMessage());
-      throw new RuntimeException("Error updating genre", e);
+      throw new IllegalArgumentException("Error updating genre", e);
     }
   }
 
@@ -234,7 +234,7 @@ public class GenreDao {
       ps.executeBatch();
     } catch (SQLException e) {
       System.err.println("Error upserting genre translations: " + e.getMessage());
-      throw new RuntimeException("Error upserting genre translations");
+      throw new IllegalArgumentException("Error upserting genre translations");
     }
   }
 }

@@ -157,11 +157,11 @@ public class AuthorDao {
         if (keys.next())
           return keys.getInt(1);
         else
-          throw new RuntimeException("Creating author failed, no ID obtained.");
+          throw new IllegalArgumentException("Creating author failed, no ID obtained.");
       }
     } catch (SQLException e) {
       //removed print
-      throw new RuntimeException("Error adding author", e);
+      throw new IllegalArgumentException("Error adding author", e);
     }
   }
 
@@ -175,7 +175,7 @@ public class AuthorDao {
       ps.executeUpdate();
     } catch (SQLException e) {
       //removed print
-      throw new RuntimeException("Error updating author", e);
+      throw new IllegalArgumentException("Error updating author", e);
     }
   }
 
@@ -209,7 +209,7 @@ public class AuthorDao {
       }
     } catch (SQLException e) {
       //removed print
-      throw new RuntimeException("Error fetching author translations", e);
+      throw new IllegalArgumentException("Error fetching author translations", e);
     }
 
     return translations;
