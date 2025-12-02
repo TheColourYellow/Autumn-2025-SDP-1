@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Database {
@@ -43,7 +44,7 @@ public class Database {
       }
 
     } catch (SQLException e) {
-      System.err.println("Failed to connect to the database: " + e.getMessage());
+      log.log(Level.SEVERE, "Failed to connect to the database: {0}", e.getMessage());
     }
   }
 }

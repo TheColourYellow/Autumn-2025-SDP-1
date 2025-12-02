@@ -7,11 +7,14 @@ import com.group9.util.SessionManager;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookService {
   private final BookDao bookDao;
   private ResourceBundle rb;
   private static final String BOOK_ID_ERROR = "bookIdError";
+    private static final Logger log = Logger.getLogger(BookService.class.getName());
 
   public BookService(BookDao bookDao) {
     this.bookDao = bookDao;
@@ -23,7 +26,7 @@ public class BookService {
       return bookDao.getAllBooks(SessionManager.getLocale().getLanguage());
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingBooks");
-      System.err.println(message + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -39,7 +42,7 @@ public class BookService {
       return bookDao.getBookById(id);
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingBookById");
-      System.out.println(message + ": " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       return null;
     }
   }
@@ -56,7 +59,7 @@ public class BookService {
       return bookDao.addFullBook(book);
     } catch (Exception e) {
       String message = rb.getString("errorAddingBook");
-      System.out.println(message + ": " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       return -1;
     }
   }
@@ -73,7 +76,7 @@ public class BookService {
       bookDao.updateBook(book);
     } catch (Exception e) {
       String message = rb.getString("errorUpdatingBook");
-      System.out.println(message + ": " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -94,7 +97,7 @@ public class BookService {
       bookDao.upsertTranslations(bookId, translations);
     } catch (Exception e) {
       String message = rb.getString("errorSavingTranslations");
-      System.err.println(message + ": " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -110,7 +113,7 @@ public class BookService {
       bookDao.inActivateBook(bookId); // Soft delete
     } catch (Exception e) {
       String message = rb.getString("errorDeletingBook");
-      System.out.println(message + ": " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -121,7 +124,7 @@ public class BookService {
       return bookDao.getTranslations(bookId);
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingTranslations");
-      System.err.println(message + ": " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }

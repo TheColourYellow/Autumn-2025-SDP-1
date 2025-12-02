@@ -8,10 +8,13 @@ import com.group9.util.SessionManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuthorService {
     private AuthorDao authorDao;
     private ResourceBundle rb;
+    private static final Logger log = Logger.getLogger(AuthorService.class.getName());
 
     public AuthorService(AuthorDao authorDao) {
     this.authorDao = authorDao;
@@ -23,7 +26,7 @@ public class AuthorService {
             return authorDao.getAllAuthors(SessionManager.getLocale().getLanguage());
         } catch (Exception e) {
             String message = rb.getString("errorRetrievingAuthors");
-            System.out.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             return null;
         }
     }
@@ -39,7 +42,7 @@ public class AuthorService {
             return authorDao.addAuthor(name, desc);
         } catch (Exception e) {
             String message = rb.getString("errorAddingAuthor");
-            System.out.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             throw new IllegalArgumentException(message);
         }
     }
@@ -72,7 +75,7 @@ public class AuthorService {
         } catch (SQLException e) {
             String message = rb.getString("errorCheckingExistingAuthor");
             String message2 = rb.getString("errorUpdatingAuthor");
-            System.err.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             throw new IllegalArgumentException(message2);
         }
 
@@ -81,7 +84,7 @@ public class AuthorService {
             authorDao.updateAuthor(author);
         } catch (Exception e) {
             String message = rb.getString("errorUpdatingAuthor");
-            System.err.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             throw new IllegalArgumentException(message);
         }
     }
@@ -97,7 +100,7 @@ public class AuthorService {
             authorDao.deleteAuthorByName(name);
         } catch (SQLException e) {
             String message = rb.getString("errorDeletingAuthor");
-            System.out.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             throw new IllegalArgumentException(message);
         }
     }
@@ -112,7 +115,7 @@ public class AuthorService {
                 authorId = addAuthor(author.getName(), author.getDescription());
             } catch (Exception e) {
                 String message = rb.getString("errorAddingAuthor");
-                System.out.println(message + ": " + e.getMessage());
+                log.log(Level.SEVERE, message, e.getMessage());
                 throw new IllegalArgumentException(message);
             }
         } else {
@@ -128,7 +131,7 @@ public class AuthorService {
             authorDao.upsertTranslations(authorId, translations);
         } catch (Exception e) {
             String message = rb.getString("errorSavingTranslations");
-            System.err.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             throw new IllegalArgumentException(message);
         }
     }
@@ -138,7 +141,7 @@ public class AuthorService {
             return authorDao.getTranslations(authorId);
         } catch (Exception e) {
             String message = rb.getString("errorRetrievingTranslations");
-            System.err.println(message + ": " + e.getMessage());
+            log.log(Level.SEVERE, message, e.getMessage());
             throw new IllegalArgumentException(message);
         }
     }

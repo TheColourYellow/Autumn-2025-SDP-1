@@ -8,10 +8,13 @@ import com.group9.util.SessionManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GenreService {
   private GenreDao genreDao;
   private ResourceBundle rb;
+  private static final Logger log = Logger.getLogger(GenreService.class.getName());
 
 
   public GenreService(GenreDao genreDao) {
@@ -24,7 +27,7 @@ public class GenreService {
       return genreDao.getAllGenres(SessionManager.getLocale().getLanguage());
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingGenres");
-      System.err.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -40,7 +43,7 @@ public class GenreService {
       return genreDao.addGenre(name, desc);
     } catch (Exception e) {
       String message = rb.getString("errorAddingGenre");
-      System.out.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -74,7 +77,7 @@ public class GenreService {
     } catch (SQLException e) {
       String message = rb.getString("errorCheckingGenre");
       String message2 = rb.getString("errorUpdatingGenre");
-      System.err.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message2);
     }
 
@@ -82,7 +85,7 @@ public class GenreService {
       genreDao.updateGenre(genre);
     } catch (Exception e) {
       String message = rb.getString("errorUpdatingGenre");
-      System.out.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -111,7 +114,7 @@ public class GenreService {
       genreDao.upsertTranslations(genreId, translations);
     } catch (Exception e) {
       String message = rb.getString("errorSavingTranslations");
-      System.err.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -127,7 +130,7 @@ public class GenreService {
       genreDao.deleteGenreByName(name);
     } catch (Exception e) {
       String message = rb.getString("errorDeletingGenre");
-      System.out.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }
@@ -137,7 +140,7 @@ public class GenreService {
       return genreDao.getTranslations(genreId);
     } catch (Exception e) {
       String message = rb.getString("errorRetrievingTranslations");
-      System.out.println(message + " " + e.getMessage());
+      log.log(Level.SEVERE, message, e.getMessage());
       throw new IllegalArgumentException(message);
     }
   }

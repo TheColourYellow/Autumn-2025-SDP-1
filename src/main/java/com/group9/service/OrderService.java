@@ -7,10 +7,13 @@ import com.group9.util.SessionManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OrderService {
     private final OrderDao orderDao;
     private ResourceBundle rb;
+    private static final Logger log = Logger.getLogger(OrderService.class.getName());
 
     public OrderService(OrderDao orderDao) {
     this.orderDao = orderDao;
@@ -31,7 +34,7 @@ public class OrderService {
           return orderDao.insertOrder(order); // Return the generated order ID
       } catch (SQLException e) {
           String message = rb.getString("orderError");
-          System.err.println(message + " " + e.getMessage());
+          log.log(Level.SEVERE, message, e.getMessage());
           return -1; // Indicate failure
       }
   }
