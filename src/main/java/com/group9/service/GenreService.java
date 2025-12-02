@@ -6,7 +6,6 @@ import com.group9.model.Genre;
 import com.group9.util.SessionManager;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -30,7 +29,7 @@ public class GenreService {
     }
   }
 
-  public int addGenre(String name, String desc) throws Exception {
+  public int addGenre(String name, String desc) throws IllegalArgumentException {
     rb = SessionManager.getResourceBundle();
     if (name == null || name.isEmpty()) {
       String message = rb.getString("genreNull");
@@ -117,7 +116,7 @@ public class GenreService {
     }
   }
 
-  public void deleteGenre(String name) throws Exception {
+  public void deleteGenre(String name) throws IllegalArgumentException {
     rb = SessionManager.getResourceBundle();
     if (name.isEmpty()) {
       String message = rb.getString("genreNameNull");

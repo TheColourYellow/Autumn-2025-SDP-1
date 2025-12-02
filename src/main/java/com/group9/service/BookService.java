@@ -99,7 +99,7 @@ public class BookService {
     }
   }
 
-  public void deleteBook(int bookId) throws Exception {
+  public void deleteBook(int bookId) throws IllegalArgumentException {
     rb = SessionManager.getResourceBundle();
     if (bookId <= 0) {
       String message = rb.getString(BOOK_ID_ERROR);

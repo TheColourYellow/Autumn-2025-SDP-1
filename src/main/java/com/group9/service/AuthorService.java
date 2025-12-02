@@ -28,7 +28,7 @@ public class AuthorService {
         }
     }
 
-    public int addAuthor(String name, String desc) throws Exception {
+    public int addAuthor(String name, String desc) throws IllegalArgumentException {
         rb = SessionManager.getResourceBundle();
         if (name == null || name.isEmpty()) {
             String message = rb.getString("authorNull");
@@ -86,7 +86,7 @@ public class AuthorService {
         }
     }
 
-    public void deleteAuthor(String name) throws Exception {
+    public void deleteAuthor(String name) throws IllegalArgumentException {
         rb = SessionManager.getResourceBundle();
         if (name.isEmpty()) {
             String message = rb.getString("authorNameNull");
