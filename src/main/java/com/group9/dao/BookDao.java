@@ -183,7 +183,9 @@ public class BookDao {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                } catch (SQLException ignored) {}
+                } catch (SQLException ignored) {
+                    // no need to handle
+                }
             }
         }
 
@@ -284,7 +286,9 @@ public class BookDao {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                } catch (SQLException ignored) {}
+                } catch (SQLException ignored) {
+                    // no need to handle
+                }
             }
         }
     }
@@ -316,7 +320,9 @@ public class BookDao {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                } catch (SQLException ignored) {}
+                } catch (SQLException ignored) {
+                    // no need to handle
+                }
             }
         }
     }
