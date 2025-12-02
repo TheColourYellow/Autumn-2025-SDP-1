@@ -6,9 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class Database {
   private static ResourceBundle rd = ResourceBundle.getBundle("System");
+  private static final Logger log = Logger.getLogger(Database.class.getName());
   // Default values if environment variables are not set
   private static final String DEFAULT_URL = "jdbc:mariadb://localhost:3306/bookstore";
   private static final String DEFAULT_USER = "bookstore_user";
@@ -25,14 +27,14 @@ public class Database {
   // Create default admin user if not exists
   public static void init() {
     try (Connection conn = getConnection()) {
-      System.out.println("Database connection established.");
+      log.info("Database connection established.");
 
       UserDao userDao = new UserDao();
       if (userDao.getUserByUsername("admin") == null) {
         if (userDao.addAdminUser()) {
-          System.out.println("Default admin user created.");
+            log.info("Default admin user created.");
         } else {
-          System.err.println("Failed to create admin user.");
+            log.info("Failed to create admin user.");
         }
       }
 
