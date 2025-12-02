@@ -2,7 +2,6 @@ package com.group9.dao;
 
 import com.group9.model.User;
 import com.group9.util.Database;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -121,7 +120,6 @@ public class UserDao {
       ps.setInt(2, user.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("Error updating genre: " + e.getMessage());
       throw new IllegalArgumentException("Error updating genre", e);
     }
   }
