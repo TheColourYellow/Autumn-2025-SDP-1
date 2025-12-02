@@ -6,6 +6,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class SessionManager {
+    // Prevent instantiation
+    private SessionManager() {
+        throw new UnsupportedOperationException("SessionManager is a utility class and cannot be instantiated");
+    }
+
   private static User currentUser;
   private static ResourceBundle currentBundle;
   private static Locale currentLocale = new Locale("en", "US");
