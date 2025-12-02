@@ -5,12 +5,14 @@ import com.group9.dao.UserDao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 public class Database {
+  private static ResourceBundle rd = ResourceBundle.getBundle("System");
   // Default values if environment variables are not set
   private static final String DEFAULT_URL = "jdbc:mariadb://localhost:3306/bookstore";
   private static final String DEFAULT_USER = "bookstore_user";
-  private static final String DEFAULT_PASSWORD = "bookstore_pass";
+  private static final String DEFAULT_PASSWORD = rd.getString("password");
 
   private static final String URL = System.getenv().getOrDefault("DATABASE_URL", DEFAULT_URL);
   private static final String USER = System.getenv().getOrDefault("DATABASE_USER", DEFAULT_USER);
