@@ -12,6 +12,7 @@ public class GenreDao {
     private static final String DESCRIPTION = "description";
     private static final String NAME = "name";
     private static final String ID = "id";
+
     public List<Genre> getAllGenres(String languageCode) throws SQLException {
         List<Genre> genres = new ArrayList<>();
         boolean isEnglish = "en".equalsIgnoreCase(languageCode);
@@ -157,7 +158,6 @@ public class GenreDao {
         }
       }
     } catch (SQLException e) {
-      System.err.println("Error adding genre: " + e.getMessage());
       throw new IllegalArgumentException("Error adding genre", e);
     }
   }
@@ -171,7 +171,6 @@ public class GenreDao {
       ps.setInt(3, genre.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("Error updating genre: " + e.getMessage());
       throw new IllegalArgumentException("Error updating genre", e);
     }
   }
@@ -233,8 +232,7 @@ public class GenreDao {
 
       ps.executeBatch();
     } catch (SQLException e) {
-      System.err.println("Error upserting genre translations: " + e.getMessage());
-      throw new IllegalArgumentException("Error upserting genre translations");
+      throw new IllegalArgumentException("Error upserting genre translations", e);
     }
   }
 }
