@@ -28,7 +28,7 @@ public class AuthorService {
         } catch (Exception e) {
             String message = rb.getString("errorRetrievingAuthors");
             log.log(Level.SEVERE, message, e.getMessage());
-            return Collections.emptyList();
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -138,6 +138,7 @@ public class AuthorService {
     }
 
     public List<BookAttributeTranslation> getTranslationsForAuthor(int authorId) {
+        rb = SessionManager.getResourceBundle();
         try {
             return authorDao.getTranslations(authorId);
         } catch (Exception e) {

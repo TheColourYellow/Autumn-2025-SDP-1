@@ -136,6 +136,7 @@ public class GenreService {
   }
 
   public List<BookAttributeTranslation> getTranslationsForGenre(int genreId) {
+    rb = SessionManager.getResourceBundle();
     try {
       return genreDao.getTranslations(genreId);
     } catch (Exception e) {

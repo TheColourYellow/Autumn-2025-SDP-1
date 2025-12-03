@@ -27,7 +27,22 @@ public class BookServiceTest {
     bookDao = mock(BookDao.class);
     bookService = new BookService(bookDao);
   }
-// removed testGetAllBooks, as getAllBooks is no longer used in BookService ?
+
+  // removed testGetAllBooks, as getAllBooks is no longer used in BookService ?
+  @Test
+  public void testGetAllBooks() throws SQLException {
+    // Mock Dao response
+    when(bookDao.getAllBooks("en")).thenReturn(Collections.emptyList());
+
+    // BookService should call the Dao method and return the same empty list
+    assertEquals(Collections.emptyList(), bookService.getAllBooks());
+    verify(bookDao).getAllBooks("en");
+
+    // Simulate DB error
+    when(bookDao.getAllBooks("en"))
+            .thenThrow(new SQLException(DB_ERROR));
+    assertThrows(RuntimeException.class, () -> bookService.getAllBooks());
+  }
 
   @Test
   public void testGetBookById() throws SQLException {
@@ -215,5 +230,51 @@ public class BookServiceTest {
     // Simulate DB error on delete
     doThrow(new SQLException(DB_ERROR)).when(bookDao).inActivateBook(2);
     assertThrows(Exception.class, () -> bookService.deleteBook(2));
+  }
+
+  @Test
+  public void testGetTranslations() {
+    int bookId = 1;
+    // Mock Dao response
+    when(bookDao.getTranslations(bookId))
+            .thenReturn(Collections.emptyList());
+
+    // Valid translation retrieval
+    assertEquals(Collections.emptyList(), bookService.getTranslations(bookId));
+    verify(bookDao).getTranslations(bookId);
+
+    // Simulate DB error on retrieval
+    when(bookDao.getTranslations(2))
+            .thenThrow(new RuntimeException(DB_ERROR));
+    assertThrows(RuntimeException.class, () -> bookService.getTranslations(2));
+  }
+
+  @Test
+  public void testSaveBookWithTranslations() throws SQLException {
+    Book testBook = new Book(
+            -1,
+            TEST_BOOK,
+            ISBN,
+            2025,
+            10.00,
+            BOOK_FOR_TESTING
+    );
+
+    // Mock Dao response for adding book
+    when(bookDao.addFullBook(any(Book.class)))
+            .thenAnswer(invocation -> 1);
+    // Valid save (add) without translations
+    bookService.saveBookWithTranslations(testBook, Collections.emptyList());
+    verify(bookDao).addFullBook(testBook);
+
+    // Update existing book
+    testBook.setId(2);
+    // Valid save with translations
+    bookService.saveBookWithTranslations(testBook, Collections.emptyList());
+    verify(bookDao).upsertTranslations(testBook.getId(), Collections.emptyList());
+
+    // Simulate DB error on upsert translations
+    doThrow(new RuntimeException(DB_ERROR)).when(bookDao).upsertTranslations(anyInt(), anyList());
+    assertThrows(Exception.class, () -> bookService.saveBookWithTranslations(testBook, Collections.emptyList()));
   }
 }

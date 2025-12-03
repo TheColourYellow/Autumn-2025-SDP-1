@@ -38,7 +38,7 @@ public class AuthorServiceTest {
 
     // Return null on exception
     when(authorDao.getAllAuthors(EN)).thenThrow(new SQLException(DB_ERROR));
-    assertNull(authorService.getAllAuthors());
+    assertThrows(RuntimeException.class, () -> authorService.getAllAuthors());
   }
 
   @Test
@@ -105,5 +105,56 @@ public class AuthorServiceTest {
     // Simulate Dao exception
     doThrow(new SQLException(DB_ERROR)).when(authorDao).deleteAuthorByName(AUTHOR_NAME);
     assertThrows(Exception.class, () -> authorService.deleteAuthor(AUTHOR_NAME));
+  }
+
+  @Test
+  public void testSaveAuthorWithTranslations() throws SQLException {
+    Author author = new Author(0, NEW_AUTHOR, DESC);
+
+    // Mock Dao response for adding author
+    when(authorDao.addAuthor(NEW_AUTHOR, DESC))
+            .thenAnswer(invocation -> 1);
+    // Valid save (add) without translations
+    authorService.saveAuthorWithTranslations(author, new ArrayList<>());
+    verify(authorDao).addAuthor(NEW_AUTHOR, DESC);
+    verify(authorDao).upsertTranslations(1, new ArrayList<>());
+
+    // Update existing author
+    Author existingAuthor = new Author(2, AUTHOR, DESC);
+    when(authorDao.getAuthorByName(AUTHOR)).thenReturn(existingAuthor);
+    authorService.saveAuthorWithTranslations(existingAuthor, new ArrayList<>());
+    verify(authorDao).updateAuthor(existingAuthor);
+    verify(authorDao).upsertTranslations(2, new ArrayList<>());
+
+    // Simulate Dao exception on add
+    doThrow(new RuntimeException(DB_ERROR)).when(authorDao).addAuthor(NEW_AUTHOR, DESC);
+    assertThrows(IllegalArgumentException.class, () -> authorService.saveAuthorWithTranslations(author, new ArrayList<>()));
+
+    // Simulate Dao exception on update
+    doThrow(new RuntimeException(DB_ERROR)).when(authorDao).updateAuthor(existingAuthor);
+    assertThrows(IllegalArgumentException.class, () -> authorService.saveAuthorWithTranslations(existingAuthor, new ArrayList<>()));
+
+    // Simulate Dao exception on upsert translations
+    Author authorForUpsertError = new Author(3, NEW_AUTHOR, DESC);
+    when(authorDao.getAuthorByName(NEW_AUTHOR)).thenReturn(authorForUpsertError);
+    doThrow(new RuntimeException(DB_ERROR)).when(authorDao).upsertTranslations(3, new ArrayList<>());
+    assertThrows(IllegalArgumentException.class, () -> authorService.saveAuthorWithTranslations(authorForUpsertError, new ArrayList<>()));
+  }
+
+  @Test
+  public void testGetTranslationsForAuthor() {
+    int authorId = 1;
+    // Mock Dao response
+    when(authorDao.getTranslations(authorId))
+            .thenReturn(new ArrayList<>());
+
+    // Valid translation retrieval
+    assertEquals(new ArrayList<>(), authorService.getTranslationsForAuthor(authorId));
+    verify(authorDao).getTranslations(authorId);
+
+    // Simulate DB error on retrieval
+    when(authorDao.getTranslations(2))
+            .thenThrow(new RuntimeException(DB_ERROR));
+    assertThrows(RuntimeException.class, () -> authorService.getTranslationsForAuthor(2));
   }
 }
