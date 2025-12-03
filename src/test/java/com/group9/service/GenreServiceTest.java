@@ -31,7 +31,7 @@ public class GenreServiceTest {
   @Test
   public void testGetAllGenres() throws SQLException {
     // Mock Dao response with empty list
-    when(genreDao.getAllGenres(EN)).thenReturn(new ArrayList<Genre>());
+    when(genreDao.getAllGenres(EN)).thenReturn(new ArrayList<>());
     assertEquals(new ArrayList<Genre>(), genreService.getAllGenres());
     verify(genreDao).getAllGenres(EN);
 
@@ -41,7 +41,7 @@ public class GenreServiceTest {
   }
 
   @Test
-  public void testAddGenre() throws Exception {
+  public void testAddGenre() {
     // Invalid inputs
     assertThrows(IllegalArgumentException.class, () -> genreService.addGenre("", DESC));
     assertThrows(IllegalArgumentException.class, () -> genreService.addGenre(null, DESC));

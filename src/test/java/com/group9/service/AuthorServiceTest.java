@@ -32,7 +32,7 @@ public class AuthorServiceTest {
   @Test
   public void testGetAllAuthors() throws SQLException {
     // Mock Dao response with empty list
-    when(authorDao.getAllAuthors(EN)).thenReturn(new ArrayList<Author>());
+    when(authorDao.getAllAuthors(EN)).thenReturn(new ArrayList<>());
     assertEquals(new ArrayList<Author>(), authorService.getAllAuthors());
     verify(authorDao).getAllAuthors(EN);
 
@@ -42,7 +42,7 @@ public class AuthorServiceTest {
   }
 
   @Test
-  public void testAddAuthor() throws Exception {
+  public void testAddAuthor() {
     // Invalid inputs
     assertThrows(IllegalArgumentException.class, () -> authorService.addAuthor("", DESC));
     assertThrows(IllegalArgumentException.class, () -> authorService.addAuthor(null, DESC));

@@ -6,14 +6,13 @@ import com.group9.model.BookAttributeTranslation;
 import com.group9.util.SessionManager;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AuthorService {
-    private AuthorDao authorDao;
+    private final AuthorDao authorDao;
     private ResourceBundle rb;
     private static final Logger log = Logger.getLogger(AuthorService.class.getName());
 
