@@ -11,16 +11,29 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Service class for managing genres and their translations.
+ */
 public class GenreService {
   private final GenreDao genreDao;
   private ResourceBundle rb;
   private static final Logger log = Logger.getLogger(GenreService.class.getName());
 
-
+  /**
+   * Constructor for GenreService.
+   *
+   * @param genreDao the {@link GenreDao} instance for database operations
+   */
   public GenreService(GenreDao genreDao) {
     this.genreDao = genreDao;
   }
 
+  /**
+   * Retrieves all genres from the database.
+   *
+   * @return a list of {@link Genre} objects
+   * @throws IllegalArgumentException if an error occurs during retrieval
+   */
   public List<Genre> getAllGenres() {
     rb = SessionManager.getResourceBundle();
     try {
@@ -32,6 +45,14 @@ public class GenreService {
     }
   }
 
+  /**
+   * Adds a new genre to the database.
+   *
+   * @param name the name of the genre
+   * @param desc the description of the genre
+   * @return the ID of the newly added genre
+   * @throws IllegalArgumentException if the name is null/empty or an error occurs during addition
+   */
   public int addGenre(String name, String desc) throws IllegalArgumentException {
     rb = SessionManager.getResourceBundle();
     if (name == null || name.isEmpty()) {
@@ -48,6 +69,12 @@ public class GenreService {
     }
   }
 
+  /**
+   * Updates an existing genre in the database.
+   *
+   * @param genre the {@link Genre} object to update
+   * @throws IllegalArgumentException if the genre is invalid or an error occurs during update
+   */
   public void updateGenre(Genre genre) {
     rb = SessionManager.getResourceBundle();
 
@@ -90,6 +117,13 @@ public class GenreService {
     }
   }
 
+  /**
+   * Saves a genre along with its translations.
+   *
+   * @param genre        the {@link Genre} object to save
+   * @param translations the list of {@link BookAttributeTranslation} objects
+   * @throws IllegalArgumentException if an error occurs during saving
+   */
   public void saveGenreWithTranslations(Genre genre, List<BookAttributeTranslation> translations) {
     rb = SessionManager.getResourceBundle();
     int genreId = genre.getId();
@@ -119,6 +153,12 @@ public class GenreService {
     }
   }
 
+  /**
+   * Deletes (soft delete) a genre by its name.
+   *
+   * @param name the name of the genre to delete
+   * @throws IllegalArgumentException if the name is null/empty or an error occurs during deletion
+   */
   public void deleteGenre(String name) throws IllegalArgumentException {
     rb = SessionManager.getResourceBundle();
     if (name.isEmpty()) {
@@ -135,6 +175,13 @@ public class GenreService {
     }
   }
 
+  /**
+   * Retrieves translations for a specific genre by its ID.
+   *
+   * @param genreId the ID of the genre
+   * @return a list of {@link BookAttributeTranslation} objects
+   * @throws IllegalArgumentException if an error occurs during retrieval
+   */
   public List<BookAttributeTranslation> getTranslationsForGenre(int genreId) {
     rb = SessionManager.getResourceBundle();
     try {

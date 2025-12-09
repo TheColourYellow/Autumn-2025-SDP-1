@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Utility class to populate the database with mock data from a JSON file.
+ * For testing and development purposes.
+ */
 public class MockData {
     private static final Logger log = Logger.getLogger(MockData.class.getName());
   public static void main(String[] args) throws Exception {

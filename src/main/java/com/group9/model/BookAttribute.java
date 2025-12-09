@@ -3,6 +3,9 @@ package com.group9.model;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Abstract class representing a book attribute.
+ */
 public abstract class BookAttribute {
   private int id;
   private String name;

@@ -7,14 +7,30 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ResourceBundle;
 
+/**
+ * Service class for managing user-related operations such as registration and login.
+ */
 public class UserService {
   private final UserDao userDao;
   private ResourceBundle rb;
 
+  /**
+   * Constructs a UserService with the specified UserDao.
+   *
+   * @param userDao the {@link UserDao} for database interactions
+   */
   public UserService(UserDao userDao) {
     this.userDao = userDao;
   }
 
+  /**
+   * Logs in a user by validating credentials.
+   *
+   * @param username the username
+   * @param password the password
+   * @return the {@link User} object if login is successful
+   * @throws IllegalArgumentException if validation fails or credentials are invalid
+   */
   public User loginUser(String username, String password) {
       rb = SessionManager.getResourceBundle();
       // Validate input
@@ -41,6 +57,15 @@ public class UserService {
         return user;
   }
 
+  /**
+   * Registers a new user after validating input and hashing the password.
+   *
+   * @param username the desired username
+   * @param password the desired password
+   * @param email    the user's email address
+   * @return the newly created {@link User} object
+   * @throws IllegalArgumentException if validation fails or username/email already exists
+   */
   public User registerUser(String username, String password, String email) {
       rb = SessionManager.getResourceBundle();
       User newUser = new User(username.trim(), password, email.trim());
@@ -64,6 +89,12 @@ public class UserService {
       return userDao.addUser(newUser);
   }
 
+  /**
+   * Validates the {@link User} object for registration.
+   *
+   * @param user the {@link User} object to validate
+   * @throws IllegalArgumentException if validation fails
+   */
   private void validateUser(User user) {
       rb = SessionManager.getResourceBundle();
       if (user == null) {

@@ -2,12 +2,23 @@ package com.group9.dao;
 
 import com.group9.model.User;
 import com.group9.util.Database;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Data Access Object (DAO) for managing user-related database operations.
+ */
 public class UserDao {
+  /**
+   * Retrieves a user from the database by their username.
+   *
+   * @param username the username of the user to retrieve
+   * @return the User object if found, null otherwise
+   * @throws IllegalArgumentException if a database error occurs
+   */
   public User getUserByUsername(String username) {
     String sql = "SELECT id, username, password_hash, email, role FROM users WHERE username = ?";
     try (Connection conn = Database.getConnection();
@@ -27,7 +38,7 @@ public class UserDao {
   public User getUserByEmail(String email) {
     String sql = "SELECT id, username, password_hash, email FROM users WHERE email = ?";
     try (Connection conn = Database.getConnection();
-          PreparedStatement stmt = conn.prepareStatement(sql)) {
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setString(1, email);
       ResultSet rs = stmt.executeQuery();
       if (rs.next()) {
@@ -84,17 +95,36 @@ public class UserDao {
     }
   }
 
+  /**
+   * Adds a default admin user to the database using environment variables.
+   *
+   * @return true if the admin user was added successfully, false otherwise
+   */
   public boolean addAdminUser() {
-    String sql = "INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'default@admin.com', '$2a$10$hBux0sXhxyo8KX1vi6YEo.leo.4QyOCGfnBE3yxu6xrKHYrCowD.q', 'admin');";
+    String adminUser = System.getenv("ADMIN_USERNAME");
+    String adminEmail = System.getenv("ADMIN_EMAIL");
+    String adminPassword = System.getenv("ADMIN_PASSWORD");
+
+    if (adminUser == null || adminEmail == null || adminPassword == null) {
+      throw new IllegalArgumentException("Admin user environment variables are not set.");
+    }
+
+    String sql = "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?);";
 
     try (Connection conn = Database.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setString(1, adminUser);
+      stmt.setString(2, adminEmail);
+      stmt.setString(3, adminPassword);
+      stmt.setString(4, "admin"); // Set role to admin
+
       int rowsAffected = stmt.executeUpdate();
       return rowsAffected > 0;
     } catch (SQLException e) {
       throw new IllegalArgumentException("Error adding admin user: " + e.getMessage(), e);
     }
   }
+
   //Function added 15.11. for database localisation
   public String getLanguageByUsername(String username) {
     String sql = "SELECT username, language_code FROM users WHERE username = ?";
@@ -111,6 +141,7 @@ public class UserDao {
       throw new IllegalArgumentException("Error retrieving user by username: " + e.getMessage(), e);
     }
   }
+
   //Function added 15.11. for database localisation
   public void updateUserLanguage(User user, String languageCode) {
     String update = "UPDATE users SET language_code = ? WHERE id = ?";

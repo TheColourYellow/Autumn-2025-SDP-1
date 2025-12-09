@@ -8,104 +8,107 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) class for managing authors and their translations.
+ */
 public class AuthorDao {
-    private static final String DESCRIPTION = "description";
-    private static final String NAME = "name";
-    private static final String ID = "id";
+  private static final String DESCRIPTION = "description";
+  private static final String NAME = "name";
+  private static final String ID = "id";
 
-    // java
-    public List<Author> getAllAuthors(String languageCode) throws SQLException {
-        List<Author> authors = new ArrayList<>();
-        boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+  // java
+  public List<Author> getAllAuthors(String languageCode) throws SQLException {
+    List<Author> authors = new ArrayList<>();
+    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
 
-        String query;
-        if (isEnglish) {
-            query = "SELECT id, name, description FROM authors";
-        } else {
-            query = "SELECT " +
-                    "au.id, " +
-                    "COALESCE(aut.translated_name, au.name) AS name, " +
-                    "COALESCE(aut.translated_description, au.description) AS description " +
-                    "FROM authors au " +
-                    "LEFT JOIN author_translations aut " +
-                    "ON au.id = aut.author_id " +
-                    "AND aut.language_code = ?";
-        }
-
-        try (Connection conn = Database.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            if (!isEnglish) {
-                ps.setString(1, languageCode);
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Author author = new Author(
-                            rs.getInt(ID),
-                            rs.getString(NAME),
-                            rs.getString(DESCRIPTION)
-                    );
-                    authors.add(author);
-                }
-            }
-        }
-
-        return authors;
+    String query;
+    if (isEnglish) {
+      query = "SELECT id, name, description FROM authors";
+    } else {
+      query = "SELECT " +
+              "au.id, " +
+              "COALESCE(aut.translated_name, au.name) AS name, " +
+              "COALESCE(aut.translated_description, au.description) AS description " +
+              "FROM authors au " +
+              "LEFT JOIN author_translations aut " +
+              "ON au.id = aut.author_id " +
+              "AND aut.language_code = ?";
     }
 
-    public List<Author> getAuthorsByBookId(int bookId, String languageCode) throws SQLException {
-        List<Author> authors = new ArrayList<>();
-        boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
 
-        String query;
-        if (isEnglish) {
-            query =
-                    "SELECT a.id, a.name, a.description " +
-                            "FROM authors a " +
-                            "JOIN book_authors ba ON a.id = ba.author_id " +
-                            "WHERE ba.book_id = ?";
-        } else {
-            query =
-                    "SELECT a.id, " +
-                            "       COALESCE(at.translated_name, a.name) AS name, " +
-                            "       COALESCE(at.translated_description, a.description) AS description " +
-                            "FROM authors a " +
-                            "JOIN book_authors ba ON a.id = ba.author_id " +
-                            "LEFT JOIN author_translations at ON at.author_id = a.id " +
-                            "     AND at.language_code = ? " +
-                            "WHERE ba.book_id = ?";
+      if (!isEnglish) {
+        ps.setString(1, languageCode);
+      }
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          Author author = new Author(
+                  rs.getInt(ID),
+                  rs.getString(NAME),
+                  rs.getString(DESCRIPTION)
+          );
+          authors.add(author);
         }
-
-        try (Connection conn = Database.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            if (isEnglish) {
-                ps.setInt(1, bookId);
-            } else {
-                ps.setString(1, languageCode);
-                ps.setInt(2, bookId);
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Author author = new Author(
-                            rs.getInt(ID),
-                            rs.getString(NAME),
-                            rs.getString(DESCRIPTION)
-                    );
-                    authors.add(author);
-                }
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Error fetching authors for book ID " + bookId, e);
-        }
-
-        return authors;
+      }
     }
 
+    return authors;
+  }
 
-    public static int addOrGetAuthor(String name) throws SQLException {
+  public List<Author> getAuthorsByBookId(int bookId, String languageCode) throws SQLException {
+    List<Author> authors = new ArrayList<>();
+    boolean isEnglish = "en".equalsIgnoreCase(languageCode);
+
+    String query;
+    if (isEnglish) {
+      query =
+              "SELECT a.id, a.name, a.description " +
+                      "FROM authors a " +
+                      "JOIN book_authors ba ON a.id = ba.author_id " +
+                      "WHERE ba.book_id = ?";
+    } else {
+      query =
+              "SELECT a.id, " +
+                      "       COALESCE(at.translated_name, a.name) AS name, " +
+                      "       COALESCE(at.translated_description, a.description) AS description " +
+                      "FROM authors a " +
+                      "JOIN book_authors ba ON a.id = ba.author_id " +
+                      "LEFT JOIN author_translations at ON at.author_id = a.id " +
+                      "     AND at.language_code = ? " +
+                      "WHERE ba.book_id = ?";
+    }
+
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
+
+      if (isEnglish) {
+        ps.setInt(1, bookId);
+      } else {
+        ps.setString(1, languageCode);
+        ps.setInt(2, bookId);
+      }
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          Author author = new Author(
+                  rs.getInt(ID),
+                  rs.getString(NAME),
+                  rs.getString(DESCRIPTION)
+          );
+          authors.add(author);
+        }
+      }
+    } catch (SQLException e) {
+      throw new SQLException("Error fetching authors for book ID " + bookId, e);
+    }
+
+    return authors;
+  }
+
+
+  public static int addOrGetAuthor(String name) throws SQLException {
     String select = "SELECT id FROM authors WHERE name = ?";
     try (Connection conn = Database.getConnection();
          PreparedStatement ps = conn.prepareStatement(select)) {
@@ -179,25 +182,25 @@ public class AuthorDao {
     }
   }
 
-    public void deleteAuthorByName(String authorName) throws SQLException {
-        String delete = "DELETE FROM authors WHERE name = ?";
-        try (Connection conn = Database.getConnection();
-             PreparedStatement ps = conn.prepareStatement(delete)) {
-            ps.setString(1, authorName);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Error deleting author with name " + authorName, e);
-        }
+  public void deleteAuthorByName(String authorName) throws SQLException {
+    String delete = "DELETE FROM authors WHERE name = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement ps = conn.prepareStatement(delete)) {
+      ps.setString(1, authorName);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new SQLException("Error deleting author with name " + authorName, e);
     }
+  }
 
-    public List<BookAttributeTranslation> getTranslations(int authorId) {
+  public List<BookAttributeTranslation> getTranslations(int authorId) {
     String sql = "SELECT language_code, translated_name, translated_description " +
             "FROM author_translations " +
             "WHERE author_id = ?";
     List<BookAttributeTranslation> translations = new ArrayList<>();
 
     try (Connection conn = Database.getConnection();
-    PreparedStatement ps = conn.prepareStatement(sql)) {
+         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setInt(1, authorId);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {

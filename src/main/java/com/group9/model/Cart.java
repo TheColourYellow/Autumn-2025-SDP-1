@@ -2,6 +2,9 @@ package com.group9.model;
 
 import java.util.List;
 
+/**
+ * Represents a shopping cart containing multiple cart items.
+ */
 public class Cart {
     private List<CartItem> items;
 

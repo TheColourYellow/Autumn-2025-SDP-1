@@ -5,31 +5,37 @@ import com.group9.dao.UserDao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Database {
-  private static ResourceBundle rd = ResourceBundle.getBundle("System");
   private static final Logger log = Logger.getLogger(Database.class.getName());
-  // Default values if environment variables are not set
-  private static final String DEFAULT_URL = "jdbc:mariadb://localhost:3306/bookstore";
-  private static final String DEFAULT_USER = "bookstore_user";
-  private static final String DEFAULT_PASSWORD = rd.getString("password");
 
-  private static final String URL = System.getenv().getOrDefault("DATABASE_URL", DEFAULT_URL);
-  private static final String USER = System.getenv().getOrDefault("DATABASE_USER", DEFAULT_USER);
-  private static final String PASSWORD = System.getenv().getOrDefault("DATABASE_PASSWORD", DEFAULT_PASSWORD);
+  // Database configuration from environment variables
+  private static final String URL = System.getenv().get("DATABASE_URL");
+  private static final String USER = System.getenv().get("DATABASE_USER");
+  private static final String PASSWORD = System.getenv().get("DATABASE_PASSWORD");
 
-    // Private constructor prevents instantiation
-    private Database() {
-        throw new UnsupportedOperationException("Database class");
-    }
+  // Private constructor prevents instantiation
+  private Database() {
+    throw new UnsupportedOperationException("Database class");
+  }
+
+  /**
+   * Creates and returns a JDBC connection using the configured database URL, username, and password.
+   * This method does not manage connection pooling; each call opens a new connection.
+   *
+   * @return an active {@link Connection} to the database
+   * @throws SQLException if the database is unreachable or credentials are invalid
+   */
   public static Connection getConnection() throws SQLException {
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
 
   // Create default admin user if not exists
+  /**
+   * Initialize the database by creating a default admin user if it does not exist.
+   */
   public static void init() {
     try (Connection conn = getConnection()) {
       log.info("Database connection established.");
@@ -37,9 +43,9 @@ public class Database {
       UserDao userDao = new UserDao();
       if (userDao.getUserByUsername("admin") == null) {
         if (userDao.addAdminUser()) {
-            log.info("Default admin user created.");
+          log.info("Default admin user created.");
         } else {
-            log.info("Failed to create admin user.");
+          log.info("Failed to create admin user.");
         }
       }
 

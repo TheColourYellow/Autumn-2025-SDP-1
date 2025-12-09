@@ -1,5 +1,8 @@
 package com.group9.model;
 
+/**
+ * Represents a user in the system.
+ */
 public class User {
   private int id = -1;
   private String username;

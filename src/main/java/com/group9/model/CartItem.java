@@ -1,5 +1,8 @@
 package com.group9.model;
 
+/**
+ * Represents an item in the shopping cart.
+ */
 public class CartItem {
     private Book book;
     private int quantity;

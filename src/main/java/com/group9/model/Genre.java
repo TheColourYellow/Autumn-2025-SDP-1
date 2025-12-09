@@ -1,5 +1,8 @@
 package com.group9.model;
 
+/**
+ * Represents a genre attribute for books.
+ */
 public class Genre extends BookAttribute {
   public Genre(int id, String name, String description) {
     super(id, name, description);

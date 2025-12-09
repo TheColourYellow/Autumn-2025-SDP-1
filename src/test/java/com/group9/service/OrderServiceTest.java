@@ -31,7 +31,7 @@ public class OrderServiceTest {
     verify(orderDao).findOrdersByUserId(userId);
 
     // Mock Dao response
-    when(orderDao.findOrdersByUserId(userId)).thenReturn(new ArrayList<Order>());
+    when(orderDao.findOrdersByUserId(userId)).thenReturn(new ArrayList<>());
 
     // Ensure the returned list is as expected
     assertEquals(new ArrayList<Order>(), orderService.getOrdersByUserId(userId));

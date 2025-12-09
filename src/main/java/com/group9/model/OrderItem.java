@@ -1,5 +1,8 @@
 package com.group9.model;
 
+/**
+ * Represents an item in an order.
+ */
 public class OrderItem {
     private int id = -1;
     private int orderId;

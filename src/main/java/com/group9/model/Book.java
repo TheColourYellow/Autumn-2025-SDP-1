@@ -3,6 +3,9 @@ package com.group9.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a book with its details, authors, and genres.
+ */
 public class Book {
   private int id;
   private String title;

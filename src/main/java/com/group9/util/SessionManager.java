@@ -5,11 +5,14 @@ import com.group9.model.User;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Manages the user session and localization settings.
+ */
 public class SessionManager {
-    // Prevent instantiation
-    private SessionManager() {
-        throw new UnsupportedOperationException("SessionManager is a utility class and cannot be instantiated");
-    }
+  // Prevent instantiation
+  private SessionManager() {
+    throw new UnsupportedOperationException("SessionManager is a utility class and cannot be instantiated");
+  }
 
   private static User currentUser;
   private static ResourceBundle currentBundle;
@@ -58,6 +61,7 @@ public class SessionManager {
   public static String getLanguage() {
     return currentLanguage;
   }
+
   public static void setLanguage(String language) {
     currentLanguage = language;
   }
