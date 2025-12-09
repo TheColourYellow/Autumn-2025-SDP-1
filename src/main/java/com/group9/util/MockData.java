@@ -2,7 +2,6 @@ package com.group9.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.group9.controller.ShoppingCartController;
 import com.group9.dao.BookDao;
 import com.group9.model.Author;
 import com.group9.model.Book;

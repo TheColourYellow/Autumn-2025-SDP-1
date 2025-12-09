@@ -1,6 +1,5 @@
 package com.group9.dao;
 
-import com.group9.controller.BookstoreController;
 import com.group9.model.Author;
 import com.group9.model.Book;
 import com.group9.model.BookAttributeTranslation;
