@@ -2,6 +2,7 @@ package com.group9.dao;
 
 import com.group9.model.User;
 import com.group9.util.Database;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -104,6 +105,7 @@ public class UserDao {
     String adminUser = System.getenv("ADMIN_USERNAME");
     String adminEmail = System.getenv("ADMIN_EMAIL");
     String adminPassword = System.getenv("ADMIN_PASSWORD");
+    String passwordHash = BCrypt.hashpw(adminPassword, BCrypt.gensalt());
 
     if (adminUser == null || adminEmail == null || adminPassword == null) {
       throw new IllegalArgumentException("Admin user environment variables are not set.");
@@ -115,7 +117,7 @@ public class UserDao {
          PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setString(1, adminUser);
       stmt.setString(2, adminEmail);
-      stmt.setString(3, adminPassword);
+      stmt.setString(3, passwordHash);
       stmt.setString(4, "admin"); // Set role to admin
 
       int rowsAffected = stmt.executeUpdate();
