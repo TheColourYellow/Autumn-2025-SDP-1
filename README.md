@@ -52,3 +52,41 @@ The application supports following languages:
 The database uses seperate translation tables for genres, authors and book names, so that management
 of the book catalogue is possible in each supported language.  
 User selected langauge settings are saved to the user table through row-based localisation.
+
+## SonarQube Code Analysis
+The project uses SonarQube for comprehensive static code analysis, focusing on security, 
+reliability, and maintainability.
+
+Current Quality Gate Rating:
+    - Security: A
+    - Reliability: A
+    - Maintainability: A
+    - Hotspots Reviewed: A
+
+How to Run SonarQube Analysis
+1. Start SonarQube Server (if running locally):
+    - Navigate to the `bin` directory of your SonarQube installation.
+    - Run the appropriate script:
+      On windows: `StartSonar.bat`
+      On macOS/Linux: `./sonar.sh start`
+    - Access the server at `http://localhost:9000` in your web browser.
+2. Configure Your Project:
+    - Create a `sonar-project.properties` file in the root directory of your project with the following content:
+      ```
+      sonar.projectKey=your_project_key
+      sonar.projectName=YourProjectName
+      sonar.projectVersion=1.0
+      sonar.host.url=http://localhost:9000
+      sonar.sources=src
+      sonar.java.binaries=target/classes
+      sonar.java.libraries=target/classes
+      sonar.tokens=your_sonar_token
+      
+      ```
+3. Run Sonar Scanne:
+    - Open a terminal in your project directory.
+    - Execute the command:
+      `sonar-scanner`
+4. View Results:
+    - Open your web browser and navigate to `http://localhost:9000`
+    - Navigate to your project to view the analysis results.
