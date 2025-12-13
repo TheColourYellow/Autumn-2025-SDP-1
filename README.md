@@ -108,4 +108,8 @@ Two findings were ranked with a 3 and one finding was ranked with 4.
 Rank 4 finding was deemed important enough to be fixed following the evaluation.  
 
 ### User Acceptance Testing  
-User Acceptance Test Plan was completed during development, focusing on user registration, user log in and capability to browse books and utilise shopping cart.
+User Acceptance Test Plan was completed during development, focusing on user registration, user log in and capability to browse books and utilise shopping cart.  
+
+### Performance Tests  
+![Performance test results](https://github.com/TheColourYellow/Autumn-2025-SDP-1/blob/main/Documents/reports/performance_test_results.png)  
+Performance tests were conducted as part of CI / CD pipeline applied through Jenkins
