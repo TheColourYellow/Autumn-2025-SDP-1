@@ -32,9 +32,16 @@ Docker
 JUnit  
 Mockito  
 TestFx  
+Xming  
+SonarQube  
+SonarScanner  
+JMeter
 
 ## Development Method
-Agile
+Agile  
+
+## Activity Diagram
+![UML activity diagram of the project](https://github.com/TheColourYellow/Autumn-2025-SDP-1/blob/main/Documents/UML_diagrams/activity_diagram.png)
 
 ## Localization
 The Bookstore Management System allows users to switch between multiple languages.
@@ -51,7 +58,10 @@ The application supports following languages:
 
 The database uses seperate translation tables for genres, authors and book names, so that management
 of the book catalogue is possible in each supported language.  
-User selected langauge settings are saved to the user table through row-based localisation.
+User selected langauge settings are saved to the user table through row-based localisation.  
+
+## Set Up and Installation  
+Placeholder
 
 ## SonarQube Code Analysis
 The project uses SonarQube for comprehensive static code analysis, focusing on security, 
@@ -90,3 +100,12 @@ How to Run SonarQube Analysis
 4. View Results:
     - Open your web browser and navigate to `http://localhost:9000`
     - Navigate to your project to view the analysis results.
+
+## Non-functional Tests  
+### Heuristic Evaluation    
+Application has been heuristically evaluated according to Nielsen's Heuristics. Majority of the findings were severity ranking 2.  
+Two findings were ranked with a 3 and one finding was ranked with 4.  
+Rank 4 finding was deemed important enough to be fixed following the evaluation.  
+
+### User Acceptance Testing  
+User Acceptance Test Plan was completed during development, focusing on user registration, user log in and capability to browse books and utilise shopping cart.
