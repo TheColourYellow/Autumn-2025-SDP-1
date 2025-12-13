@@ -61,7 +61,91 @@ of the book catalogue is possible in each supported language.
 User selected langauge settings are saved to the user table through row-based localisation.  
 
 ## Set Up and Installation  
-Placeholder
+### Prerequisites
+Before installing and running this project, make sure the following software is installed:
+- **Docker** (Docker Desktop recommended)
+- **Docker Compose** (included with Docker Desktop)
+- **X11 Server for GUI support (JavaFX)**:
+  - **Windows**: [Xming](https://sourceforge.net/projects/xming/)
+  - **macOS**: [XQuartz](https://www.xquartz.org/)
+  - **Linux**: Ensure X11 is installed and running
+
+Verify installations:
+```bash
+docker --version
+docker compose version
+git --version
+```
+---
+### Getting the project
+Clone the project repository using Git (command line or IDE):
+```bash
+git clone <repository-url>
+cd <project-root>
+```
+---
+### Configuration
+Ensure the following files exist in the project root:
+- 'docker-compose.yml'
+- '.env'
+
+Example '.env'
+```env
+# Database configuration
+DATABASE_URL = jdbc:mariadb://mariadb:3306/bookstore_db
+DATABASE_USER = bookstore_user
+DATABASE_PASSWORD = <insert db password>
+DATABASE_ROOT_PASSWORD = <insert root db password>
+
+# Admin user credentials
+ADMIN_USERNAME = admin
+ADMIN_EMAIL = default@admin.com
+ADMIN_PASSWORD = <insert admin password>
+```
+> **Warning**: Never commit '.env' files containing secrets to version control.
+---
+### GUI Requirements (JavaFX)
+Since the application uses JavaFX, an X11 server is required to display the GUI when running the application via Docker container.
+- **Windows**: Start Xming before running the application.
+- **macOS**: Start XQuartz before running the application.
+- **Linux**: Ensure X11 is running.
+---
+### Running the Application
+The project consists of two Docker containers:
+- **JavaFX Bookstore Application**
+- **MariaDB Database**
+
+From the project root, start the containers:
+#### Using the prebuilt image:
+```bash
+docker compose up -d
+```
+#### Building the image locally:
+```bash
+docker compose up --build -d
+```
+> **Note**: To build locally, comment out the 'image:' line and uncomment the 'build:' line under javafx-app in docker-compose.yml.
+---
+### Verifying installation
+Check that both containers are running:
+```bash
+docker compose ps
+```
+If using Docker Desktop, container status can also be checked via the **Containers** tab.
+
+---
+### Stopping and Removing the application
+To stop and remove the containers:
+```bash
+docker compose down
+```
+---
+### Database Access (Optional)
+To connect to the running MariaDB container from command line:
+```bash
+docker exec -it bookstore-db mariadb -u bookstore_user -p
+```
+Enter the password specified in the '.env' file when prompted.
 
 ## SonarQube Code Analysis
 The project uses SonarQube for comprehensive static code analysis, focusing on security, 
